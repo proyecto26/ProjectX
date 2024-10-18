@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@projectx/ui": ["libs/ui/src/index.ts"],
+      "@projectx/ui-utils": ["libs/ui-utils/src/index.ts"],
       "@projectx/ui/*": ["libs/ui/*"],
       "@projectx/ui/tailwind-config": ["libs/ui/tailwind.config.ts"]
     }

@@ -4,7 +4,7 @@ export type ButtonProps = ComponentProps<'button'>;
 
 export function Button({ children }: ButtonProps) {
   return (
-    <button className="bg-primary text-white p-2 rounded-md">
+    <button className="btn">
       {children}
     </button>
   );

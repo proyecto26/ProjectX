@@ -38,7 +38,8 @@ npm install -g nx
 
 ### Installation 📚
 
-Commands used to create the project structure [here](./docs/INSTRUCTIONS_README.md).
+- FrontEnd:
+Commands used to create the project structure [here](./docs/frontend/README.md).
 
 ## Usage
 
@@ -60,4 +61,9 @@ npm run build
 npm run dev:web
 ```
 
+### Run the ui lib
+
+```sh
+npm run storybook
+```
 

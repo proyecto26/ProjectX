@@ -11,7 +11,7 @@ const config: StorybookConfig = {
     name: '@storybook/react-vite',
     options: {},
   },
-
+  staticDirs: ['../../../apps/web/public'],
   viteFinal: async (config) =>
     mergeConfig(config, {
       plugins: [react(), nxViteTsPaths()],

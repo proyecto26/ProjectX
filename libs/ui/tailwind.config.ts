@@ -5,6 +5,7 @@ import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
 import aspectRatio from '@tailwindcss/aspect-ratio';
+import daisyui from 'daisyui';
 
 export default {
   darkMode: 'class',
@@ -12,7 +13,11 @@ export default {
     forms,
     typography,
     aspectRatio,
+    daisyui,
   ],
+  daisyui: {
+    themes: ["light", "dark", "cupcake"],
+  },
   content: [
     join(
       __dirname,
