@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-const opts: AddEventListenerOptions & EventListenerOptions = { passive: true };
-
 export function useScroll () {
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -10,9 +8,9 @@ export function useScroll () {
       setIsScrolled(window.scrollY > 0);
     }
     onScroll();
-    window.addEventListener('scroll', onScroll, opts);
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', onScroll, opts);
+      window.removeEventListener('scroll', onScroll);
     };
   }, []);
 

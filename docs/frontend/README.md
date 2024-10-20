@@ -9,7 +9,7 @@ cd projectx
 ```
 
 - Create web project:
-```
+```sh
 npx nx add @nx/remix
 npx nx g @nx/remix:app apps/web
 ```
@@ -26,6 +26,7 @@ npx nx g setup-tailwind --project=web
 ```sh
 npx nx g @nx/react:lib libs/ui --publishable --importPath=@projectx/ui
 npx nx add @nx/storybook
+npm add -D @babel/preset-react @babel/preset-typescript
 npx nx g storybook-configuration --project=ui
 ```
 
@@ -78,15 +79,5 @@ export default {
 - Install More dependencies for UX:
 ```sh
 npm i -D daisyui@latest 
-npm add @heroicons/react @headlessui/react framer-motion react-cool-onclickoutside react-responsive
-```
-
-- Create lib for common ui utilities:
-```sh
-npx nx g @nx/react:lib libs/ui-utils --publishable --importPath=@projectx/ui-utils
-```
-
-- Create lib for a theme provider
-```sh
-
+npm add @heroicons/react @headlessui/react framer-motion usehooks-ts react-responsive
 ```

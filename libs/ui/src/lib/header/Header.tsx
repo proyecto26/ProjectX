@@ -1,14 +1,14 @@
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid';
-import { classnames } from '@projectx/ui-utils';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
-import useOnclickOutside from 'react-cool-onclickoutside';
+import { useRef, useState } from 'react';
+import { useOnClickOutside } from 'usehooks-ts'
 
 import { useScroll } from '../../hooks/useScroll';
 import Search from '../inputs/search/Search';
 import { MobileNavigation } from '../navigation/MobileNavigation';
 import { NavigationSection } from '../navigation/Navigation';
+import { classnames } from '../../utils';
 
 export interface HeaderProps {
   logoImgSrc: string;
@@ -37,9 +37,8 @@ export function Header({
     setSearchFocused(false);
     setMobileSearchFocused(false);
   };
-  const headerRef = useOnclickOutside(onCloseSearch, {
-    ignoreClass: 'ignore-onclickoutside',
-  });
+  const headerRef = useRef<HTMLElement>(null)
+  useOnClickOutside(headerRef, onCloseSearch);
   const openSearch = () => {
     setSearchFocused(true);
   };

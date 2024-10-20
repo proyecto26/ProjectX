@@ -1,6 +1,7 @@
 import { MagnifyingGlassIcon, MicrophoneIcon } from '@heroicons/react/20/solid';
-import { classnames } from '@projectx/ui-utils';
 import React, { useId } from 'react';
+
+import { classnames } from '../../../utils';
 
 type SearchProps = {
   className?: string;

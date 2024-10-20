@@ -1,6 +1,5 @@
 import { MoonIcon } from '@heroicons/react/20/solid';
 import { SunIcon } from '@heroicons/react/24/outline';
-import { classnames } from '@projectx/ui-utils';
 
 export interface ThemeButtonProps {
   theme: string;
@@ -21,21 +20,15 @@ export function ThemeButton({ theme, onChange }: ThemeButtonProps) {
         type="checkbox"
         onChange={toggleTheme}
         className="theme-controller sr-only"
-        value="synthwave"
+        checked={theme === 'dark'}
       />
 
       <SunIcon
-        className={classnames(
-          'h-10 w-10 fill-current',
-          theme === 'dark' ? 'swap-on' : 'swap-off'
-        )}
+        className='h-10 w-10 fill-current swap-off'
         aria-hidden="true"
       />
       <MoonIcon
-        className={classnames(
-          'h-10 w-10 fill-current',
-          theme === 'dark' ? 'swap-off' : 'swap-on'
-        )}
+        className='h-10 w-10 fill-current swap-on'
         aria-hidden="true"
       />
     </label>
