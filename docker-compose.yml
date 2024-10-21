@@ -1,0 +1,71 @@
+version: '3.6'
+services:
+  postgresql:
+    image: postgis/postgis:13-3.1-alpine
+    container_name: projectx-db
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    networks: [projectx-network]
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+
+  temporal:
+    container_name: projectx-temporal
+    depends_on:
+      - postgresql
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PWD=postgres
+      - POSTGRES_SEEDS=postgresql
+      - TEMPORAL_CLI_SHOW_STACKS=1
+    image: temporalio/auto-setup:1.22.2
+    networks: [projectx-network]
+    ports:
+      - 7233:7233
+    expose:
+      - 7233
+
+  temporal-admin-tools:
+    container_name: temporal-admin-tools
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CLI_ADDRESS=temporal:7233
+    image: temporalio/admin-tools:1.22.2
+    networks: [projectx-network]
+    stdin_open: true
+    tty: true
+
+  temporal-ui:
+    container_name: temporal-ui
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+    image: temporalio/ui:${TEMPORAL_UI_VERSION}
+    networks: [projectx-network]
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
+
+  # PROJECTX SERVICES
+
+networks:
+  projectx-network:
+    driver: bridge
+    name: projectx-network
+
+volumes:
+  db_data:

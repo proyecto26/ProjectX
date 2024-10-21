@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  extensions = [postgis]
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  username      String?   @unique @db.VarChar(60)
+  email         String    @unique @db.VarChar(100)
+  firstName     String?   @map("first_name") @db.VarChar(100)
+  lastName      String?   @map("last_name") @db.VarChar(100)
+  addressLine1  String?   @map("address_line1") @db.VarChar(100)
+  addressLine2  String?   @map("address_line2") @db.VarChar(50)
+  city          String?   @db.VarChar(100)
+  state         String?   @db.VarChar(100)
+  postalCode    String?   @map("postal_code") @db.VarChar(10)
+  country       String?   @db.VarChar(100)
+  phoneNumber   String?   @map("phone_number") @db.VarChar(100)
+  location      Unsupported("geometry(Point, 4326)")? @map("location")
+  status        UserStatus
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+  
+  manufacturers Manufacturer[]
+  products      Product[]
+  orders        Order[]
+  reviews       Review[]
+  carts         Cart[]
+  roles         UserRole[] @relation("UserRoles", fields: [id], references: [userId], onUpdate: Cascade, onDelete: NoAction, map: "fk_user_id")
+
+  @@map("user")
+}
+
+model Role {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(100)
+  description String?   @db.Text
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  userRoles   UserRole[] @relation("RoleUsers", fields: [id], references: [roleId], onUpdate: Cascade, onDelete: NoAction, map: "fk_role_id")
+  rolePermissions RolePermission[]
+
+  @@map("role")
+}
+
+model UserRole {
+  userId    Int     @map("user_id")
+  roleId    Int     @map("role_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User    @relation("UserRoles", fields: [userId], references: [id], onUpdate: Cascade, onDelete: NoAction, map: "fk_userrole_user_id")
+  role      Role    @relation("RoleUsers", fields: [roleId], references: [id], onUpdate: Cascade, onDelete: NoAction, map: "fk_userrole_role_id")
+
+  @@id([userId, roleId])
+  @@map("user_role")
+  @@index([userId], map: "ix_user_role_user_id")
+  @@index([roleId], map: "ix_user_role_role_id")
+}
+
+
