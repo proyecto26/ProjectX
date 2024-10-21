@@ -68,14 +68,14 @@ export function Header({
               aria-label="Home page"
               className="flex flex-row items-center justify-center gap-x-3 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
             >
-              <h1 className="my-4 hidden text-center text-3xl font-bold text-dark-gray dark:text-dark lg:block">
-                {title}
-              </h1>
               <img
                 alt="Logo"
                 src={logoImgSrc}
                 className="h-9 w-auto rounded-full fill-slate-700 dark:fill-sky-100"
               />
+              <h1 className="my-4 hidden text-center text-3xl font-bold text-dark-gray dark:text-dark lg:block">
+                {title}
+              </h1>
             </Link>
           </div>
           <div className="hidden flex-1 md:block">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { MagnifyingGlassIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
-import { Button } from '@projectx/ui';
+import { Button, ShoppingCartDrawer } from '@projectx/ui';
 
 const products = [
   { id: 1, name: 'Wireless Earbuds', price: 79.99, image: 'https://placehold.co/200x200?text=Earbuds' },
@@ -15,28 +15,6 @@ const products = [
 export const MarketplacePage: React.FC = () => {
   return (
     <div className="container mx-auto px-4">
-      <motion.div 
-        className="flex justify-between items-center mb-8"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className="text-3xl font-bold">Marketplace</h1>
-        <div className="flex items-center">
-          <div className="relative mr-4">
-            <input
-              type="text"
-              placeholder="Search products"
-              className="input input-bordered w-full max-w-xs pr-10"
-            />
-            <MagnifyingGlassIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-          </div>
-          <Button variant="ghost" className="btn-circle">
-            <ShoppingCartIcon className="h-6 w-6" />
-          </Button>
-        </div>
-      </motion.div>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product) => (
           <motion.div

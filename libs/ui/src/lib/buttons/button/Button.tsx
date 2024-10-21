@@ -18,7 +18,7 @@ export const Button: React.FC<ButtonProps> = ({
     ghost: 'btn-ghost',
   };
   return (
-    <button className={`${baseStyles} ${variantStyles[variant]} ${className}`}>
+    <button {...props} className={`${baseStyles} ${variantStyles[variant]} ${className}`}>
       {children}
     </button>
   );

@@ -10,9 +10,9 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function Marketplace() {
+export default function Index() {
   return (
-    <Layout title="Marketplace">
+    <Layout title="ProjectX">
       <MarketplacePage />
     </Layout>
   );

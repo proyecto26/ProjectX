@@ -3,7 +3,8 @@
     "jsx": "react-jsx",
     "allowJs": true,
     "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "Bundler"
   },
   "files": [],
   "include": [],

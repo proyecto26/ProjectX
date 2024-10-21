@@ -10,6 +10,7 @@ import Header from '../header/Header';
 import ThemeButton from '../buttons/theme/ThemeButton';
 import Footer from '../footer/Footer';
 import type { NavigationSection } from '../navigation';
+import { ShoppingCartDrawer } from '../drawers';
 
 const sections: NavigationSection[] = [
   {
@@ -47,7 +48,7 @@ const socialLinks: NavigationSection['links'] = [
     title: 'ConcertX on GitHub',
     href: 'https://www.github.com/proyecto26',
     icon: GitHubIcon,
-  }
+  },
 ];
 
 type LayoutProps = PropsWithChildren<{
@@ -79,9 +80,12 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       <Header
         title={title}
         sections={sections}
-        logoImgSrc='/logo.svg'
+        logoImgSrc="/logo.svg"
         renderRight={() => (
-          <ThemeButton theme={theme} onChange={onThemeChange} />
+          <>
+            <ShoppingCartDrawer />
+            <ThemeButton theme={theme} onChange={onThemeChange} />
+          </>
         )}
       />
       <main className="flex-grow container mx-auto px-4 py-8">{children}</main>

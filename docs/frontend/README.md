@@ -79,5 +79,5 @@ export default {
 - Install More dependencies for UX:
 ```sh
 npm i -D daisyui@latest 
-npm add @heroicons/react @headlessui/react framer-motion usehooks-ts react-responsive
+npm add @heroicons/react @headlessui/react framer-motion usehooks-ts react-responsive remix-utils
 ```

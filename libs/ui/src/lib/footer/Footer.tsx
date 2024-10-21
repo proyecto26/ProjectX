@@ -4,11 +4,12 @@ import React, { type PropsWithChildren, useState } from 'react';
 import { NavigationSection } from '../navigation';
 
 type FooterProps = PropsWithChildren<{
-  title: string;
+  title?: string;
   socialLinks: NavigationSection['links'];
 }>;
 
 export const Footer: React.FC<FooterProps> = ({
+  title = 'ProjectX',
   socialLinks,
 }) => {
   const [currentYear] = useState(() => new Date().getFullYear());
@@ -39,7 +40,7 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
         <div className="mt-8 md:order-1 md:mt-0">
           <div className="text-center text-medium font-medium text-sm lg:text-base">
-            Copyright &copy; {currentYear} ProjectX, All rights reserved.
+            Copyright &copy; {currentYear} ${title}, All rights reserved.
           </div>
         </div>
       </div>
