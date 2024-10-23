@@ -5,7 +5,14 @@
     "module": "commonjs",
     "types": ["node"],
     "emitDecoratorMetadata": true,
-    "target": "es2021"
+    "declaration": true,
+    "target": "es2021",
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["src/*"],
+      "@projectx/utils": ["../../libs/backend/utils/src/index.ts"],
+    },
   },
   "include": ["src/**/*.ts"],
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]

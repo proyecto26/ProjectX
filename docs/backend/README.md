@@ -34,11 +34,11 @@ npx prisma init
 npx nx g @nx/nest:lib libs/backend/email
 ```
 
-- Create a lib for backend utils (hashing functions, etc):
+- Create a lib for backend utils (hashing functions, nestjs and temporal utils, etc):
 ```sh
 npx nx g @nx/nest:lib libs/backend/utils
 npm add -D @types/bcrypt
-npm add bcrypt
+npm add bcrypt @nestjs/config body-parser helmet express-rate-limit
 ```
 
 

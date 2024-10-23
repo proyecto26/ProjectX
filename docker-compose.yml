@@ -1,71 +1,92 @@
 version: '3.6'
+
+x-project-name: &project-name ${COMPOSE_PROJECT_NAME:-projectx}
+
 services:
-  postgresql:
-    image: postgis/postgis:13-3.1-alpine
-    container_name: projectx-db
+  db:
+    image: postgis/postgis:14-3.3-alpine
+    container_name: ${COMPOSE_PROJECT_NAME:-projectx}-db
     restart: always
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-    networks: [projectx-network]
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - backend
     ports:
-      - 5432:5432
-    expose:
-      - 5432
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "com.*project-name.service=database"
 
   temporal:
-    container_name: projectx-temporal
+    image: temporalio/auto-setup:1.22.2
+    container_name: ${COMPOSE_PROJECT_NAME:-projectx}-temporal
     depends_on:
-      - postgresql
+      db:
+        condition: service_healthy
     environment:
       - DB=postgresql
-      - DB_PORT=5432
-      - POSTGRES_USER=postgres
-      - POSTGRES_PWD=postgres
-      - POSTGRES_SEEDS=postgresql
-      - TEMPORAL_CLI_SHOW_STACKS=1
-    image: temporalio/auto-setup:1.22.2
-    networks: [projectx-network]
+      - DB_PORT=${POSTGRES_PORT:-5432}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PWD=${POSTGRES_PASSWORD}
+      - POSTGRES_SEEDS=db
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
+    volumes:
+      - ./temporal-dynamicconfig:/etc/temporal/config/dynamicconfig
+    networks:
+      - backend
     ports:
-      - 7233:7233
-    expose:
-      - 7233
+      - "${TEMPORAL_PORT:-7233}:7233"
+    labels:
+      - "com.*project-name.service=temporal"
+    entrypoint: bash -c "chmod +x /etc/temporal/config/dynamicconfig/entrypoint.sh && /etc/temporal/config/dynamicconfig/entrypoint.sh && exec /bin/bash"
 
   temporal-admin-tools:
-    container_name: temporal-admin-tools
+    image: temporalio/admin-tools:1.22.2
+    container_name: ${COMPOSE_PROJECT_NAME:-projectx}-temporal-admin-tools
     depends_on:
       - temporal
     environment:
-      - TEMPORAL_ADDRESS=temporal:7233
-      - TEMPORAL_CLI_ADDRESS=temporal:7233
-    image: temporalio/admin-tools:1.22.2
-    networks: [projectx-network]
+      - TEMPORAL_ADDRESS=temporal:${TEMPORAL_PORT:-7233}
+      - TEMPORAL_CLI_ADDRESS=temporal:${TEMPORAL_PORT:-7233}
+    networks:
+      - backend
     stdin_open: true
     tty: true
+    labels:
+      - "com.*project-name.service=temporal-admin-tools"
 
   temporal-ui:
-    container_name: temporal-ui
+    image: temporalio/ui:2.21.3
+    container_name: ${COMPOSE_PROJECT_NAME:-projectx}-temporal-ui
     depends_on:
       - temporal
     environment:
-      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_ADDRESS=temporal:${TEMPORAL_PORT:-7233}
       - TEMPORAL_CORS_ORIGINS=http://localhost:3000
-    image: temporalio/ui:${TEMPORAL_UI_VERSION}
-    networks: [projectx-network]
+    networks:
+      - backend
     ports:
-      - 8080:8080
+      - "${TEMPORAL_UI_PORT:-8080}:8080"
+    labels:
+      - "com.*project-name.service=temporal-ui"
     expose:
-      - 8080
+      - "${TEMPORAL_UI_PORT:-8080}"
 
   # PROJECTX SERVICES
 
 networks:
-  projectx-network:
-    driver: bridge
-    name: projectx-network
+  backend:
+    name: ${COMPOSE_PROJECT_NAME:-projectx}-network
 
 volumes:
-  db_data:
+  postgres_data:
+    name: ${COMPOSE_PROJECT_NAME:-projectx}-postgres-data

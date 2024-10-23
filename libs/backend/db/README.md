@@ -6,8 +6,8 @@ This library was generated with [Nx](https://nx.dev).
 erDiagram
     USER {
         int id PK
-        text username
-        text email
+        text username UK
+        text email UK
         text first_name
         text last_name
         text address_line1
@@ -16,8 +16,8 @@ erDiagram
         text state
         text postal_code
         text country
-        text phone_number
-        geography location
+        text phone_number UK
+        geometry location
         user_status status
         timestamp created_at
         timestamp updated_at
@@ -51,14 +51,6 @@ erDiagram
         int permission_id FK
         timestamp created_at
     }
-
-    MANUFACTURER {
-        int id PK FK
-        text name
-        manufacturer_status status
-        timestamp created_at
-        timestamp updated_at
-    }
     
     PRODUCT {
         int id PK
@@ -71,28 +63,19 @@ erDiagram
         timestamp updated_at
     }
 
+    MANUFACTURER {
+        int id PK
+        int user_id FK
+        text name
+        manufacturer_status status
+        timestamp created_at
+        timestamp updated_at
+    }
+
     MANUFACTURER_PRICE {
         int manufacturer_id FK
         int product_id FK
         numeric price
-        timestamp created_at
-        timestamp updated_at
-        PRIMARY KEY (manufacturer_id, product_id)
-    }
-
-    CART {
-        int id PK
-        int user_id FK
-        cart_status status
-        timestamp created_at
-        timestamp updated_at
-    }
-    
-    CART_ITEM {
-        int id PK
-        int cart_id FK
-        int product_id FK
-        integer quantity
         timestamp created_at
         timestamp updated_at
     }
@@ -100,9 +83,9 @@ erDiagram
     ORDER {
         int id PK
         int user_id FK
-        int cart_id FK
         numeric total_price
         order_status status
+        text shipping_address
         timestamp created_at
         timestamp updated_at
     }
@@ -111,9 +94,9 @@ erDiagram
         int id PK
         int order_id FK
         int product_id FK
+        int manufacturer_id FK
         integer quantity
         numeric price_at_purchase
-        int manufacturer_id FK
         timestamp created_at
         timestamp updated_at
     }
@@ -125,12 +108,15 @@ erDiagram
         payment_status status
         text transaction_id
         numeric amount
+        text payment_method
+        text billing_address
         timestamp created_at
         timestamp updated_at
     }
 
     REVIEW {
         int id PK
+        int order_item_id FK
         int manufacturer_id FK
         int user_id FK
         int item_rating
@@ -142,58 +128,22 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     USER ||--o{ PRODUCT : "created by"
     USER ||--o{ ORDER : "places"
-    USER ||--o{ CART : "owns"
     USER ||--o{ USER_ROLE : "has"
-    USER ||--o{ MANUFACTURER : "owns"
+    USER ||--|| MANUFACTURER : "acts as"
     USER ||--o{ REVIEW : "writes"
-    PRODUCT ||--o{ ORDER_ITEM : "contains"
+    PRODUCT ||--o{ ORDER_ITEM : "included in"
     PRODUCT ||--o{ MANUFACTURER_PRICE : "has"
-    ORDER ||--o{ ORDER_ITEM : "includes"
-    CART ||--o{ CART_ITEM : "contains"
-    CART_ITEM ||--o{ PRODUCT : "references"
-    ORDER_ITEM ||--o{ PRODUCT : "references"
-    ORDER_ITEM ||--o{ USER : "manufactured by"
-    ORDER ||--o{ PAYMENT : "has"
+    ORDER ||--o{ ORDER_ITEM : "contains"
+    ORDER ||--|| PAYMENT : "has"
     ROLE ||--o{ USER_ROLE : "assigned to"
     ROLE ||--o{ ROLE_PERMISSION : "grants"
     PERMISSION ||--o{ ROLE_PERMISSION : "assigned to"
-    MANUFACTURER ||--o{ ORDER_ITEM : "assigned to"
+    MANUFACTURER ||--o{ ORDER_ITEM : "supplies"
     MANUFACTURER ||--o{ REVIEW : "receives"
     MANUFACTURER ||--o{ MANUFACTURER_PRICE : "sets"
-
-    %% Notes to indicate enum types
-    note right of USER::status
-      Enum: user_status
-      Values: Active, Inactive, Deleted, Suspended
-    end note
-
-    note right of PRODUCT::status
-      Enum: product_status
-      Values: Available, Unavailable, Discontinued
-    end note
-
-    note right of CART::status
-      Enum: cart_status
-      Values: Active, Abandoned, Completed
-    end note
-
-    note right of ORDER::status
-      Enum: order_status
-      Values: Pending, Confirmed, Shipped, Delivered, Cancelled
-    end note
-
-    note right of PAYMENT::status
-      Enum: payment_status
-      Values: Pending, Completed, Failed, Refunded
-    end note
-
-    note right of MANUFACTURER::status
-      Enum: manufacturer_status
-      Values: Active, Inactive, Suspended, UnderReview
-    end note
 ```
 
 ## Running unit tests

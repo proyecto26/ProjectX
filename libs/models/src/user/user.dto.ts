@@ -60,7 +60,7 @@ export class UserDto {
   @ApiProperty({ description: 'Status of the user' })
   @IsEnum(UserStatus, { message: 'Status must be one of the defined enum values.' })
   @Expose()
-  status?: UserStatus;
+  status!: UserStatus;
 
   @ApiProperty({ description: 'First name of the user' })
   @IsString()
