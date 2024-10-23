@@ -82,10 +82,9 @@ npm i -D daisyui@latest
 npm add @heroicons/react @headlessui/react framer-motion usehooks-ts react-responsive remix-utils
 ```
 
-- Install dependencies for the shopping cart:
+- Install dependencies for the web features (shopping cart, verification code input):
 ```sh
-npm add react-use-cart
-npm add react-code-input
+npm add react-use-cart react-otp-input
 ```
 
 - Install 'lucide-react for Admin/Dashboard page:
