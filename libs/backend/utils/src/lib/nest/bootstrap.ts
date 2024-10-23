@@ -1,20 +1,22 @@
 import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger, NestApplicationOptions, ValidationPipe } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { Environment } from '@projectx/models';
 import { json, urlencoded } from 'body-parser';
 
 import { setupAppSecurity } from '../security';
 import { setupAppSwagger } from '../swagger';
-import { Environment } from '../constants';
 
 const TRUSTED_IPS = ['127.0.0.1'];
 
-export async function bootstrapApp(
-  ...params: Parameters<typeof NestFactory.create<NestExpressApplication>>
-){
+type NestFactoryCreate = [module: object, options?: NestApplicationOptions];
+
+export async function bootstrapApp<T extends NestExpressApplication>(
+  ...params: NestFactoryCreate
+) {
   // Initialize app
-  const app = await NestFactory.create<NestExpressApplication>(...params);
+  const app = await NestFactory.create<T>(...params);
 
   const configService = app.get(ConfigService);
   const env = configService.get('app.environment');
@@ -34,7 +36,7 @@ export async function bootstrapApp(
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-    }),
+    })
   );
 
   // SECURITY
@@ -57,4 +59,5 @@ export async function bootstrapApp(
   }
 
   await app.listen(port);
+  logger.log(`🚀 Application is running on port ${port}`);
 }

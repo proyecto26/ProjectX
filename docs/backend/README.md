@@ -14,7 +14,7 @@ npx nx add @nx/nest
 npx nx g @nx/nest:app apps/auth --frontendProject web
 ```
 
-- Create a lib for the business models:
+- Create a lib for the business models (DTOs, common types, etc):
 ```sh
 npx nx g @nx/nest:lib libs/models
 npm add @nestjs/swagger class-validator class-transformer lodash @2toad/profanity
@@ -41,5 +41,10 @@ npm add -D @types/bcrypt
 npm add bcrypt @nestjs/config body-parser helmet express-rate-limit
 ```
 
+- Install dependencies for authentication
+```sh
+npm add @nestjs/jwt @nestjs/passport passport passport-local passport-jwt
+npm add -D @types/passport-local @types/passport-jwt
+```
 
 More details [here](https://nx.dev/recipes/react/remix).

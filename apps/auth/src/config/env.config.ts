@@ -1,4 +1,4 @@
-import { Environment } from '@projectx/utils';
+import { Environment } from '@projectx/models';
 import { IsEnum, IsNumber, Max, Min } from 'class-validator';
 
 export class EnvironmentVariables {
