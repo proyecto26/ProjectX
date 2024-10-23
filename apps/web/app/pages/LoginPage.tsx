@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { EnvelopeIcon } from '@heroicons/react/24/outline'
