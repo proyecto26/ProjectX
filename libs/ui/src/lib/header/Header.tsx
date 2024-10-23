@@ -2,13 +2,14 @@ import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { useOnClickOutside } from 'usehooks-ts'
+import { useOnClickOutside } from 'usehooks-ts';
 
 import { useScroll } from '../../hooks/useScroll';
 import Search from '../inputs/search/Search';
 import { MobileNavigation } from '../navigation/MobileNavigation';
 import { NavigationSection } from '../navigation/Navigation';
 import { classnames } from '../../utils';
+import Button from '../buttons/button/Button';
 
 export interface HeaderProps {
   logoImgSrc: string;
@@ -51,11 +52,11 @@ export function Header({
       <header
         ref={headerRef}
         className={classnames(
-          'sticky top-0 z-50 flex flex-wrap items-center justify-between bg-primary-contrast px-4 py-1 shadow-md shadow-slate-900/5 transition duration-500 dark:shadow-2xl sm:px-6 lg:px-8',
+          'sticky top-0 z-50 flex flex-wrap items-center justify-between bg-white px-4 py-1 shadow-md shadow-slate-900/5 transition duration-500 dark:shadow-2xl sm:px-6 lg:px-8',
           className,
           isScrolled
             ? 'dark:bg-slate-900/95 dark:backdrop-blur dark:[@supports(backdrop-filter:blur(0))]:bg-slate-900/75'
-            : 'dark:bg-transparent'
+            : 'dark:bg-slate-900/95'
         )}
       >
         <div className="flex w-full flex-wrap items-center justify-between">
@@ -132,7 +133,7 @@ export function Header({
               onFocus={openMobileSearch}
               onBlur={onCloseSearch}
             />
-            <button
+            <Button
               onClick={onCloseSearch}
               type="button"
               className="inline-flex flex-none flex-shrink-0 items-center p-2 focus:outline-none"
@@ -142,7 +143,7 @@ export function Header({
                 aria-hidden="true"
               />
               <span className="sr-only">Close Search</span>
-            </button>
+            </Button>
           </motion.div>
         )}
       </header>

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { MagnifyingGlassIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { Button, ShoppingCartDrawer } from '@projectx/ui';
+import { useCart } from 'react-use-cart';
 
 const products = [
   { id: 1, name: 'Wireless Earbuds', price: 79.99, image: 'https://placehold.co/200x200?text=Earbuds' },
@@ -13,6 +14,20 @@ const products = [
 ];
 
 export const MarketplacePage: React.FC = () => {
+  const { addItem } = useCart();
+
+  const handleAddToCart = (product: typeof products[0]) => {
+    addItem({
+      id: String(product.id),
+      name: product.name,
+      price: product.price,
+      currency: 'USD',
+      image: product.image,
+      // quantity: 1,
+      // You can add more properties if needed
+    });
+  };
+  
   return (
     <div className="container mx-auto px-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -26,10 +41,12 @@ export const MarketplacePage: React.FC = () => {
           >
             <figure><img src={product.image} alt={product.name} className="w-full h-48 object-cover" /></figure>
             <div className="card-body">
-              <h2 className="card-title">{product.name}</h2>
-              <p className="text-lg font-semibold">${product.price.toFixed(2)}</p>
+              <h2 className="card-title font-semibold">${product.price.toFixed(2)}</h2>
+              <p className="text-lg ">{product.name}</p>
               <div className="card-actions justify-end">
-                <Button variant="primary">Add to Cart</Button>
+              <Button className="btn btn-sm" variant="primary" onClick={() => handleAddToCart(product)}>
+                Add to Cart
+              </Button>
               </div>
             </div>
           </motion.div>

@@ -81,3 +81,15 @@ export default {
 npm i -D daisyui@latest 
 npm add @heroicons/react @headlessui/react framer-motion usehooks-ts react-responsive remix-utils
 ```
+
+- Install dependencies for the shopping cart:
+```sh
+npm add react-use-cart
+npm add react-code-input
+```
+
+- Install 'lucide-react for Admin/Dashboard page:
+```sh
+npm add lucide-react
+```
+

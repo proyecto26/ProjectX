@@ -6,9 +6,11 @@ import {
 } from '@heroicons/react/24/solid';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useId } from 'react';
+import { useCart } from 'react-use-cart';
 
 import { classnames } from '../../utils';
 import Button from '../buttons/button/Button';
+import CheckoutButton from '../buttons/checkout/CheckoutButton';
 
 export type CartItem = {
   id: number;
@@ -21,24 +23,22 @@ export type CartItem = {
 type ShoppingCartContentProps = {
   isOpen: boolean;
   onClose: () => void;
-  cartItems: CartItem[];
-  removeItem: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
 };
 
 export function ShoppingCartContent({
   isOpen,
   onClose,
-  cartItems,
-  removeItem,
-  updateQuantity,
 }: ShoppingCartContentProps) {
   const inputId = useId();
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  const shipping = 10;
+  const {
+    items,
+    updateItemQuantity,
+    removeItem,
+    isEmpty,
+  } = useCart();
+
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shipping = 10.00; // Ejemplo de costo de envío
   const total = subtotal + shipping;
 
   return (
@@ -69,7 +69,7 @@ export function ShoppingCartContent({
           <div className="flex flex-col h-full">
             <div className="flex-grow overflow-y-auto">
               <AnimatePresence>
-                {cartItems.map((item) => (
+                {items.map((item) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, x: 20 }}
@@ -92,41 +92,46 @@ export function ShoppingCartContent({
                       </p>
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center">
-                          <button
+                          <Button
                             className="btn btn-xs btn-outline"
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity - 1)
-                            }
+                            onClick={() => {
+                              const newQuantity = item.quantity - 1;
+                              if (newQuantity > 0) {
+                                updateItemQuantity(item.id, newQuantity);
+                              } else {
+                                removeItem(item.id);
+                              }
+                            }}
                             aria-label={`Decrease quantity of ${item.name}`}
                           >
                             <MinusIcon className="w-3 h-3" />
-                          </button>
+                          </Button>
                           <span className="mx-2">{item.quantity}</span>
-                          <button
+                          <Button
                             className="btn btn-xs btn-outline"
                             onClick={() =>
-                              updateQuantity(item.id, item.quantity + 1)
+                              updateItemQuantity(item.id, item.quantity + 1)
                             }
                             aria-label={`Increase quantity of ${item.name}`}
                           >
                             <PlusIcon className="w-3 h-3" />
-                          </button>
+                          </Button>
                         </div>
-                        <button
+                        <Button
                           className="btn btn-ghost btn-xs"
                           onClick={() => removeItem(item.id)}
                           aria-label={`Remove ${item.name} from cart`}
                         >
                           <TrashIcon className="w-4 h-4 text-error" />
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </motion.div>
                 ))}
               </AnimatePresence>
-              {cartItems.length === 0 && (
+              {isEmpty && (
                 <div className="alert alert-info">
-                  <span>Your cart is empty</span>
+                  <span>Your cart is empty.</span>
                 </div>
               )}
             </div>
@@ -148,9 +153,7 @@ export function ShoppingCartContent({
                     <span>${total.toFixed(2)}</span>
                   </div>
                   <div className="card-actions justify-end mt-4">
-                    <button className="btn btn-primary btn-block">
-                      Proceed to Checkout
-                    </button>
+                  <CheckoutButton />
                   </div>
                 </div>
               </div>

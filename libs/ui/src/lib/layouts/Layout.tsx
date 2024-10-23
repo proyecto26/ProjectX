@@ -11,6 +11,7 @@ import ThemeButton from '../buttons/theme/ThemeButton';
 import Footer from '../footer/Footer';
 import type { NavigationSection } from '../navigation';
 import { ShoppingCartDrawer } from '../drawers';
+import { classnames } from '../../utils';
 
 const sections: NavigationSection[] = [
   {
@@ -53,11 +54,18 @@ const socialLinks: NavigationSection['links'] = [
 
 type LayoutProps = PropsWithChildren<{
   title?: string;
+  className?: string;
+  containerClassName?: string;
 }>;
 
 const COOKIE_NAME = 'theme';
 
-export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
+export const Layout: React.FC<LayoutProps> = ({
+  children,
+  title,
+  className,
+  containerClassName,
+}) => {
   const [theme, setTheme] = React.useState('light');
 
   React.useEffect(() => {
@@ -71,12 +79,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
   };
 
   return (
-    <motion.section
-      className="min-h-screen flex flex-col bg-base-100 text-base-content"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
+    <motion.section className={classnames('min-h-screen flex flex-col bg-base-100 text-base-content', className)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       <Header
         title={title}
         sections={sections}
@@ -88,7 +91,14 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
           </>
         )}
       />
-      <main className="flex-grow container mx-auto px-4 py-8">{children}</main>
+      <main className={
+        classnames(
+          "flex-grow container mx-auto px-4 py-8",
+          containerClassName
+        )
+      }>
+        {children}
+      </main>
       <Footer socialLinks={socialLinks} />
     </motion.section>
   );

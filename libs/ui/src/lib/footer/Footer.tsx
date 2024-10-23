@@ -15,7 +15,7 @@ export const Footer: React.FC<FooterProps> = ({
   const [currentYear] = useState(() => new Date().getFullYear());
   return (
     <footer className="bg-dark-gray py-6">
-      <div className="mx-auto container py-12 px-6 md:flex md:items-center md:justify-between lg:px-8">
+      <div className="mx-auto container py-2 px-6 md:flex md:items-center md:justify-between lg:px-8">
         <div className="space-6 md:order-2 flex flex-col md:flex-row items-center justify-between">
           <div className="text-gray-300 text-sm lg:text-base flex gap-4">
             <NavLink to="/privacy" className="navlink">

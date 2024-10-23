@@ -11,15 +11,12 @@
   "references": [
     {
       "path": "./tsconfig.lib.json",
-      "composite": true
     },
     {
       "path": "./tsconfig.storybook.json",
-      "composite": true
     },
     {
       "path": "./tsconfig.tailwind.json",
-      "composite": true
     }
   ],
   "extends": "../../tsconfig.base.json"

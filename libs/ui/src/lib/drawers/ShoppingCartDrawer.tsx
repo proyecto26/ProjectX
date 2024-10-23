@@ -4,6 +4,8 @@ import {
 import { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { ClientOnly } from 'remix-utils/client-only';
+import { useCart } from 'react-use-cart';
+
 
 import Button from '../buttons/button/Button';
 import { CartItem, ShoppingCartContent } from './ShoppingCartContent';
@@ -33,20 +35,8 @@ const initialCartItems: CartItem[] = [
 ];
 
 export function ShoppingCartDrawer() {
-  const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems);
+  const { totalItems } = useCart();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const removeItem = (id: number) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
-  };
-
-  const updateQuantity = (id: number, newQuantity: number) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item
-      )
-    );
-  };
 
   const toggleDrawer = () => {
     setIsDrawerOpen((prevState) => !prevState);
@@ -54,8 +44,13 @@ export function ShoppingCartDrawer() {
 
   return (
     <>
-      <Button variant="ghost" className="btn-circle" onClick={toggleDrawer}>
+      <Button variant="ghost" className="btn-circle relative" onClick={toggleDrawer}>
         <ShoppingCartIcon className="w-6 h-6" />
+        {totalItems > 0 && (
+            <span className="badge badge-sm badge-primary absolute top-0 right-0">
+              {totalItems}
+            </span>
+          )}
       </Button>
 
       <ClientOnly fallback={<div key="shopping-cart-content">Loading...</div>}>
@@ -66,9 +61,6 @@ export function ShoppingCartDrawer() {
                 key="shopping-cart-content"
                 isOpen={isDrawerOpen}
                 onClose={() => setIsDrawerOpen(false)}
-                cartItems={cartItems}
-                removeItem={removeItem}
-                updateQuantity={updateQuantity}
               />
             </div>,
             document.body

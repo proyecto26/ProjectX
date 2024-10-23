@@ -1,7 +1,7 @@
 import { Layout } from "@projectx/ui";
 import type { MetaFunction } from "@remix-run/node";
 
-import { LoginPage } from "~/pages/LoginPage";
+import HomePage from "~/pages/HomePage";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,8 +12,6 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <Layout title="Login" className="bg-gradient-to-b from-purple-600 to-indigo-700 dark:from-gray-900 dark:to-gray-800">
-      <LoginPage />
-    </Layout>
+    <HomePage />
   );
 }

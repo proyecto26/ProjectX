@@ -8,7 +8,7 @@ import aspectRatio from '@tailwindcss/aspect-ratio';
 import daisyui from 'daisyui';
 
 export default {
-  darkMode: 'class',
+  darkMode: ['class', '[data-theme="dark"]'],
   plugins: [
     forms,
     typography,

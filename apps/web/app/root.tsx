@@ -11,6 +11,7 @@ import {
 } from '@remix-run/react';
 
 import twStyles from './tailwind.css';
+import CartProvider from './providers/CartProvider';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: twStyles },
@@ -42,6 +43,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function App() {
   const { theme } = useLoaderData<{ theme: string }>();
   return (
+    <CartProvider>
     <html lang="en" data-theme={theme}>
       <head>
         <meta charSet="utf-8" />
@@ -55,6 +57,7 @@ export default function App() {
         <Scripts />
         <LiveReload />
       </body>
-    </html>
+      </html>
+    </CartProvider>
   );
 }
