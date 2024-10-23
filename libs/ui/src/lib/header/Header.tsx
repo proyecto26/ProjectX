@@ -1,14 +1,15 @@
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid';
-import { classnames } from '@projectx/ui-utils';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
-import useOnclickOutside from 'react-cool-onclickoutside';
+import { useRef, useState } from 'react';
+import { useOnClickOutside } from 'usehooks-ts';
 
 import { useScroll } from '../../hooks/useScroll';
 import Search from '../inputs/search/Search';
 import { MobileNavigation } from '../navigation/MobileNavigation';
 import { NavigationSection } from '../navigation/Navigation';
+import { classnames } from '../../utils';
+import Button from '../buttons/button/Button';
 
 export interface HeaderProps {
   logoImgSrc: string;
@@ -37,9 +38,8 @@ export function Header({
     setSearchFocused(false);
     setMobileSearchFocused(false);
   };
-  const headerRef = useOnclickOutside(onCloseSearch, {
-    ignoreClass: 'ignore-onclickoutside',
-  });
+  const headerRef = useRef<HTMLElement>(null)
+  useOnClickOutside(headerRef, onCloseSearch);
   const openSearch = () => {
     setSearchFocused(true);
   };
@@ -52,11 +52,11 @@ export function Header({
       <header
         ref={headerRef}
         className={classnames(
-          'sticky top-0 z-50 flex flex-wrap items-center justify-between bg-primary-contrast px-4 py-1 shadow-md shadow-slate-900/5 transition duration-500 dark:shadow-2xl sm:px-6 lg:px-8',
+          'sticky top-0 z-50 flex flex-wrap items-center justify-between bg-white px-4 py-1 shadow-md shadow-slate-900/5 transition duration-500 dark:shadow-2xl sm:px-6 lg:px-8',
           className,
           isScrolled
             ? 'dark:bg-slate-900/95 dark:backdrop-blur dark:[@supports(backdrop-filter:blur(0))]:bg-slate-900/75'
-            : 'dark:bg-transparent'
+            : 'dark:bg-slate-900/95'
         )}
       >
         <div className="flex w-full flex-wrap items-center justify-between">
@@ -69,14 +69,14 @@ export function Header({
               aria-label="Home page"
               className="flex flex-row items-center justify-center gap-x-3 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
             >
-              <h1 className="my-4 hidden text-center text-3xl font-bold text-dark-gray dark:text-dark lg:block">
-                {title}
-              </h1>
               <img
                 alt="Logo"
                 src={logoImgSrc}
                 className="h-9 w-auto rounded-full fill-slate-700 dark:fill-sky-100"
               />
+              <h1 className="my-4 hidden text-center text-3xl font-bold text-dark-gray dark:text-dark lg:block">
+                {title}
+              </h1>
             </Link>
           </div>
           <div className="hidden flex-1 md:block">
@@ -133,7 +133,7 @@ export function Header({
               onFocus={openMobileSearch}
               onBlur={onCloseSearch}
             />
-            <button
+            <Button
               onClick={onCloseSearch}
               type="button"
               className="inline-flex flex-none flex-shrink-0 items-center p-2 focus:outline-none"
@@ -143,7 +143,7 @@ export function Header({
                 aria-hidden="true"
               />
               <span className="sr-only">Close Search</span>
-            </button>
+            </Button>
           </motion.div>
         )}
       </header>

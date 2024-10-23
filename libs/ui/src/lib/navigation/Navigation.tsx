@@ -1,11 +1,14 @@
-import { classnames } from '@projectx/ui-utils';
 import { Link, useLocation } from '@remix-run/react';
+import { HTMLAttributes } from 'react';
+
+import { classnames } from '../../utils';
 
 export type NavigationSection = {
   title: string;
   links: {
     title: string;
     href: string;
+    icon?: React.FC<Partial<HTMLAttributes<HTMLDivElement>>>;
   }[];
 };
 

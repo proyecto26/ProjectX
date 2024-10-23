@@ -6,7 +6,9 @@
         "runtime": "automatic",
         "useBuiltIns": "usage"
       }
-    ]
+    ],
+    "@babel/preset-react",
+    "@babel/preset-typescript"
   ],
   "plugins": []
 }

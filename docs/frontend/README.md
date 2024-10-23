@@ -9,7 +9,7 @@ cd projectx
 ```
 
 - Create web project:
-```
+```sh
 npx nx add @nx/remix
 npx nx g @nx/remix:app apps/web
 ```
@@ -26,6 +26,7 @@ npx nx g setup-tailwind --project=web
 ```sh
 npx nx g @nx/react:lib libs/ui --publishable --importPath=@projectx/ui
 npx nx add @nx/storybook
+npm add -D @babel/preset-react @babel/preset-typescript
 npx nx g storybook-configuration --project=ui
 ```
 
@@ -78,15 +79,17 @@ export default {
 - Install More dependencies for UX:
 ```sh
 npm i -D daisyui@latest 
-npm add @heroicons/react @headlessui/react framer-motion react-cool-onclickoutside react-responsive
+npm add @heroicons/react @headlessui/react framer-motion usehooks-ts react-responsive remix-utils
 ```
 
-- Create lib for common ui utilities:
+- Install dependencies for the shopping cart:
 ```sh
-npx nx g @nx/react:lib libs/ui-utils --publishable --importPath=@projectx/ui-utils
+npm add react-use-cart
+npm add react-code-input
 ```
 
-- Create lib for a theme provider
+- Install 'lucide-react for Admin/Dashboard page:
 ```sh
-
+npm add lucide-react
 ```
+

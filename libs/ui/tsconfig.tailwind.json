@@ -3,7 +3,6 @@
   "compilerOptions": {
     "outDir": "../../dist",
     "esModuleInterop": true,
-    "module": "commonjs",
     "target": "es2019",
     "resolveJsonModule": true
   },

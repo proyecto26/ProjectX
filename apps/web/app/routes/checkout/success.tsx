@@ -12,8 +12,6 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <Layout title="Marketplace">
-      <HomePage />
-    </Layout>
+    <HomePage />
   );
 }
