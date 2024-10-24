@@ -32,6 +32,7 @@ npx prisma init
 - Create a lib for sending emails:
 ```sh
 npx nx g @nx/nest:lib libs/backend/email
+npm add @nestjs-modules/mailer mjml
 ```
 
 - Create a lib for backend utils (hashing functions, nestjs, logger and temporal core, etc):

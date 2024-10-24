@@ -11,6 +11,7 @@ export default {
   tailwind: true,
   postcss: true,
   ignoredRouteFiles: ['**/.*'],
+  serverDependenciesToBundle: ['@project-x/email'],
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
   // serverBuildPath: "build/index.js",

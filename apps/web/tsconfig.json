@@ -16,6 +16,8 @@
       "~/*": ["app/*"],
       "@projectx/ui": ["../../libs/ui/src/index.ts"],
       "@projectx/ui/*": ["../../libs/ui/*"],
+      "@projectx/email": ["../../libs/backend/email/src/index.ts"],
+      "@projectx/ui/tailwind-config": ["../../libs/ui/tailwind.config.ts"]
     },
     // Remix takes care of building everything in `remix build`.
     "noEmit": true

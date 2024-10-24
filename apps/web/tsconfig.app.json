@@ -16,9 +16,5 @@
     "tests/**/*.test.js",
     "tests/**/*.spec.jsx",
     "tests/**/*.test.jsx"
-  ],
-  "compilerOptions": {
-    "composite": true,
-    "noEmit": false
-  }
+  ]
 }
