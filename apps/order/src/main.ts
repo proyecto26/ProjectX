@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { bootstrapApp } from '@projectx/utils';
+import { bootstrapApp } from '@projectx/core';
 
 import { AppModule } from './app/app.module';
 

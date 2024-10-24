@@ -22,7 +22,7 @@ export function setupAppSecurity(app: INestApplication): void {
       if (
         !origin ||
         allowedOrigins.some((allowedOrigin: string) =>
-          origin.startsWith(allowedOrigin),
+          origin.startsWith(allowedOrigin)
         )
       ) {
         callback(null, true);
@@ -48,6 +48,6 @@ export function setupAppSecurity(app: INestApplication): void {
       max: 1000, // limit each IP to 1000 requests per windowMs
       message:
         'Too many requests from this IP, please try again after 5 minutes',
-    }),
+    })
   );
 }

@@ -21,7 +21,7 @@ export async function bootstrapApp<T extends NestExpressApplication>(
   params[1].bufferLogs = true;
   // Initialize app
   const app = await NestFactory.create<T>(...params);
-  
+
   const logger = app.get(Logger);
   app.useLogger(logger);
   app.useGlobalInterceptors(new LoggerErrorInterceptor());

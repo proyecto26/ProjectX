@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { UtilsModule, validateConfiguration } from '@projectx/utils';
+import { CoreModule, validateConfiguration } from '@projectx/core';
 import { DbModule } from '@projectx/db';
 
 import { EnvironmentVariables } from '../config/env.config';
@@ -12,7 +12,7 @@ import { AppService } from './app.service';
 @Module({
   imports: [
     DbModule,
-    UtilsModule,
+    CoreModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [

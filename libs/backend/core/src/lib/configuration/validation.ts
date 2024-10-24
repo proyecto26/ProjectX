@@ -3,7 +3,7 @@ import { validateSync } from 'class-validator';
 
 export function validateConfiguration<T>(
   config: Record<string, unknown>,
-  envVariablesClass: ClassConstructor<T>,
+  envVariablesClass: ClassConstructor<T>
 ): T {
   const validatedConfig = plainToInstance(envVariablesClass, config, {
     enableImplicitConversion: true,

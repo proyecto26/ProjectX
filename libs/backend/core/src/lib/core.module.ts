@@ -27,4 +27,4 @@ import { HealthModule } from './health';
   providers: [],
   exports: [],
 })
-export class UtilsModule {}
+export class CoreModule {}

@@ -100,3 +100,14 @@ docker-compose up -d
 ```sh
 docker-compose down --volumes
 ```
+
+## Explore the project
+
+```sh
+npx nx show projects
+```
+
+Do you want to change the path of a project to decide your own organization? No problem:
+```sh
+npx nx g @nx/workspace:move --project core libs/backend/common
+```
