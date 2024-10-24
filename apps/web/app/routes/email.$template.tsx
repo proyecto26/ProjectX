@@ -1,5 +1,5 @@
-import { json, LoaderFunctionArgs } from '@remix-run/node';
 import { EmailTemplates, getEmailTemplate } from '@projectx/email';
+import { json, LoaderFunctionArgs } from '@remix-run/node';
 import invariant from 'tiny-invariant';
 
 export const loader = ({  params }: LoaderFunctionArgs) => {
@@ -7,6 +7,7 @@ export const loader = ({  params }: LoaderFunctionArgs) => {
   const html = getEmailTemplate(params.template as unknown as EmailTemplates, {
     token: '123',
     orderId: '123',
+    userName: 'John Doe',
   });
   if (!html) {
     return json(null, { status: 404 });

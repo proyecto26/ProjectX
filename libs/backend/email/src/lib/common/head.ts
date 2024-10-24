@@ -10,16 +10,16 @@ import {
 
 export const getHeadTemplate = (title?: string, preview?: string) => `
   <mj-head>
-    <mj-title>${[PROJECT_NAME, title].join(' - ')}</mj-title>
+    <mj-title>${[PROJECT_NAME, title].filter(Boolean).join(' - ')}</mj-title>
     <mj-preview>${preview}</mj-preview>
     <mj-attributes>
       <mj-all font-family="${FONTS.primary}"></mj-all>
       <mj-text font-weight="${FONT_WEIGHTS.normal}" font-size="${
-  FONT_SIZES.base
-}" color="${COLORS.text}" line-height="24px"></mj-text>
+        FONT_SIZES.base
+      }" color="${COLORS.text}" line-height="24px"></mj-text>
       <mj-section background-color="${COLORS.white}" padding="${
-  SPACING.lg
-} 0"></mj-section>
+        SPACING.lg
+      } 0"></mj-section>
       <mj-column width="600px"></mj-column>
     </mj-attributes>
     <mj-font name="Roboto" href="${FONT_URLS.ROBOTO}" />

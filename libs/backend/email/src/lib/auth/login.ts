@@ -3,6 +3,7 @@ import { getEmailHtml } from '../common/mjml';
 
 export type LoginEmailData = {
   token: string;
+  userName: string;
 };
 
 export function getLoginEmailHtml<T extends LoginEmailData>(data: T): string {
@@ -13,7 +14,7 @@ export function getLoginEmailHtml<T extends LoginEmailData>(data: T): string {
           Let's sign you up
         </mj-text>
         <mj-text font-size="${FONT_SIZES.base}" align="center" color="${COLORS.text}">
-          Hi,
+          ${['Hi', data.userName].filter(Boolean).join(', ')}
         </mj-text>
         <mj-text font-size="${FONT_SIZES.base}" align="center" color="${COLORS.text}">
           Here is the security code to verify your account
