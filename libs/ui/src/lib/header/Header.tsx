@@ -1,15 +1,18 @@
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 
 import { useScroll } from '../../hooks/useScroll';
 import Search from '../inputs/search/Search';
 import { MobileNavigation } from '../navigation/MobileNavigation';
 import { NavigationSection } from '../navigation/Navigation';
-import { classnames } from '../../utils';
+import { classnames, getCookie, saveCookie } from '../../utils';
 import Button from '../buttons/button/Button';
+import { ShoppingCartDrawer } from '../drawers';
+import ThemeButton from '../buttons/theme/ThemeButton';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 
 export interface HeaderProps {
   logoImgSrc: string;
@@ -20,6 +23,8 @@ export interface HeaderProps {
   searchPlaceholder?: string;
   renderRight?: () => React.ReactNode;
 }
+
+const COOKIE_NAME = 'theme';
 
 export function Header({
   title,
@@ -33,6 +38,17 @@ export function Header({
   const { isScrolled } = useScroll();
   const [isSearchFocused, setSearchFocused] = useState(false);
   const [isMobileSearchFocused, setMobileSearchFocused] = useState(false);
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    const theme = getCookie(COOKIE_NAME) ?? 'light';
+    setTheme(theme);
+  }, []);
+
+  const onThemeChange = (newTheme: string) => {
+    saveCookie(COOKIE_NAME, newTheme);
+    setTheme(newTheme);
+  };
 
   const onCloseSearch = () => {
     setSearchFocused(false);
@@ -82,7 +98,7 @@ export function Header({
           <div className="hidden flex-1 md:block">
             <Search placeholder={searchPlaceholder} onFocus={openSearch} onBlur={onCloseSearch} />
           </div>
-          <div className="relative flex justify-end sm:gap-4 md:flex-[0.2_0_auto] md:gap-8">
+          <div className="relative flex justify-end sm:gap-0 md:flex-[0.2_0_auto] md:gap-0">
             <ul className="list-reset hidden flex-1 items-center justify-end xl:flex">
               {desktopLinks?.map((link) => (
                 <li className="mr-3" key={link.href}>
@@ -111,6 +127,48 @@ export function Header({
                 <span className="sr-only">Open Search</span>
               </motion.button>
             )}
+            <ShoppingCartDrawer />
+            <ThemeButton theme={theme} onChange={onThemeChange} />
+            <Menu as="div" className="relative ml-3 mt-2">
+              <div>
+                <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                  <span className="absolute -inset-1.5" />
+                  <span className="sr-only">Open user menu</span>
+                  <img
+                    alt=""
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    className="h-8 w-8 rounded-full"
+                  />
+                </MenuButton>
+              </div>
+              <MenuItems
+                transition
+                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+              >
+                <MenuItem>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
+                    Your Profile
+                  </a>
+                </MenuItem>
+                <MenuItem>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
+                    Admin
+                  </a>
+                </MenuItem>
+                <MenuItem>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
+                    Sign out
+                  </a>
+                </MenuItem>
+              </MenuItems>
+            </Menu>
+            <a
+              href="#"
+              className="ml-6 inline-flex items-center self-center h-[30px] rounded-md bg-gray-800 dark:bg-purple-600 px-3 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 dark:hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Log in
+            </a>
+
             {renderRight && renderRight()}
           </div>
         </div>

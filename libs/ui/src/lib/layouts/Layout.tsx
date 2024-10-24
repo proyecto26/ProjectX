@@ -5,12 +5,9 @@ import { motion } from 'framer-motion';
 import FacebookIcon from '../icons/Facebook';
 import InstagramIcon from '../icons/Instagram';
 import GitHubIcon from '../icons/GitHub';
-import { getCookie, saveCookie } from '../../utils/cookie';
 import Header from '../header/Header';
-import ThemeButton from '../buttons/theme/ThemeButton';
 import Footer from '../footer/Footer';
 import type { NavigationSection } from '../navigation';
-import { ShoppingCartDrawer } from '../drawers';
 import { classnames } from '../../utils';
 
 const sections: NavigationSection[] = [
@@ -58,38 +55,18 @@ type LayoutProps = PropsWithChildren<{
   containerClassName?: string;
 }>;
 
-const COOKIE_NAME = 'theme';
-
 export const Layout: React.FC<LayoutProps> = ({
   children,
   title,
   className,
   containerClassName,
 }) => {
-  const [theme, setTheme] = React.useState('light');
-
-  React.useEffect(() => {
-    const theme = getCookie(COOKIE_NAME) ?? 'light';
-    setTheme(theme);
-  }, []);
-
-  const onThemeChange = (newTheme: string) => {
-    saveCookie(COOKIE_NAME, newTheme);
-    setTheme(newTheme);
-  };
-
   return (
     <motion.section className={classnames('min-h-screen flex flex-col bg-base-100 text-base-content', className)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       <Header
         title={title}
         sections={sections}
         logoImgSrc="/logo.svg"
-        renderRight={() => (
-          <>
-            <ShoppingCartDrawer />
-            <ThemeButton theme={theme} onChange={onThemeChange} />
-          </>
-        )}
       />
       <main className={
         classnames(
