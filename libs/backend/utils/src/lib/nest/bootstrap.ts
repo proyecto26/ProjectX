@@ -1,9 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
-import { Logger, NestApplicationOptions, ValidationPipe } from '@nestjs/common';
+import { NestApplicationOptions, ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Environment } from '@projectx/models';
 import { json, urlencoded } from 'body-parser';
+import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 
 import { setupAppSecurity } from '../security';
 import { setupAppSwagger } from '../swagger';
@@ -15,8 +16,15 @@ type NestFactoryCreate = [module: object, options?: NestApplicationOptions];
 export async function bootstrapApp<T extends NestExpressApplication>(
   ...params: NestFactoryCreate
 ) {
+  // Enable logging to buffer
+  params[1] = params[1] || {};
+  params[1].bufferLogs = true;
   // Initialize app
   const app = await NestFactory.create<T>(...params);
+  
+  const logger = app.get(Logger);
+  app.useLogger(logger);
+  app.useGlobalInterceptors(new LoggerErrorInterceptor());
 
   const configService = app.get(ConfigService);
   const env = configService.get('app.environment');
@@ -25,7 +33,6 @@ export async function bootstrapApp<T extends NestExpressApplication>(
 
   app.setGlobalPrefix(apiPrefix);
 
-  const logger = new Logger('BootstrapWorker');
   logger.log(`Starting worker on port ${port}`);
 
   // PARSE HTTP REQUESTS
@@ -45,7 +52,6 @@ export async function bootstrapApp<T extends NestExpressApplication>(
   // Local development
   if (env === Environment.Development) {
     app.enableShutdownHooks();
-    app.useLogger(['error', 'warn', 'debug', 'verbose']);
   }
 
   // Register the proxy's IP address (load balancer or reverse proxy)

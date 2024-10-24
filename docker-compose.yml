@@ -4,7 +4,7 @@ x-project-name: &project-name ${COMPOSE_PROJECT_NAME:-projectx}
 
 services:
   db:
-    image: postgis/postgis:14-3.3-alpine
+    image: postgis/postgis:17-3.5
     container_name: ${COMPOSE_PROJECT_NAME:-projectx}-db
     restart: always
     volumes:
@@ -27,45 +27,53 @@ services:
       - "com.*project-name.service=database"
 
   temporal:
-    image: temporalio/auto-setup:1.22.2
+    image: temporalio/auto-setup:1.24.3.0
     container_name: ${COMPOSE_PROJECT_NAME:-projectx}-temporal
     depends_on:
       db:
         condition: service_healthy
     environment:
-      - DB=postgresql
+      - DB=postgres12
       - DB_PORT=${POSTGRES_PORT:-5432}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PWD=${POSTGRES_PASSWORD}
       - POSTGRES_SEEDS=db
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
     volumes:
-      - ./temporal-dynamicconfig:/etc/temporal/config/dynamicconfig
+      - ./deployment/config/dynamicconfig:/etc/temporal/config/dynamicconfig
     networks:
       - backend
     ports:
       - "${TEMPORAL_PORT:-7233}:7233"
     labels:
       - "com.*project-name.service=temporal"
-    entrypoint: bash -c "chmod +x /etc/temporal/config/dynamicconfig/entrypoint.sh && /etc/temporal/config/dynamicconfig/entrypoint.sh && exec /bin/bash"
 
   temporal-admin-tools:
-    image: temporalio/admin-tools:1.22.2
+    image: temporalio/admin-tools:1.25.1-tctl-1.18.1-cli-1.1.1
     container_name: ${COMPOSE_PROJECT_NAME:-projectx}-temporal-admin-tools
     depends_on:
       - temporal
     environment:
       - TEMPORAL_ADDRESS=temporal:${TEMPORAL_PORT:-7233}
       - TEMPORAL_CLI_ADDRESS=temporal:${TEMPORAL_PORT:-7233}
+      - TEMPORAL_CLI_SHOW_STACKS=1
     networks:
       - backend
     stdin_open: true
     tty: true
     labels:
       - "com.*project-name.service=temporal-admin-tools"
+    volumes:
+      - ./deployment/scripts/search-attributes.sh:/etc/temporal/entrypoint.sh
+    entrypoint: >
+      /bin/sh -c "
+      chmod +x /etc/temporal/entrypoint.sh &&
+      /etc/temporal/entrypoint.sh &&
+      exec /bin/bash
+      "
 
   temporal-ui:
-    image: temporalio/ui:2.21.3
+    image: temporalio/ui:2.31.2
     container_name: ${COMPOSE_PROJECT_NAME:-projectx}-temporal-ui
     depends_on:
       - temporal

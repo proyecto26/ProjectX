@@ -34,7 +34,7 @@ npx prisma init
 npx nx g @nx/nest:lib libs/backend/email
 ```
 
-- Create a lib for backend utils (hashing functions, nestjs and temporal utils, etc):
+- Create a lib for backend utils (hashing functions, nestjs, logger and temporal utils, etc):
 ```sh
 npx nx g @nx/nest:lib libs/backend/utils
 npm add -D @types/bcrypt
@@ -45,6 +45,21 @@ npm add bcrypt @nestjs/config body-parser helmet express-rate-limit
 ```sh
 npm add @nestjs/jwt @nestjs/passport passport passport-local passport-jwt
 npm add -D @types/passport-local @types/passport-jwt
+```
+
+- Install common dependencies
+```sh
+npm add nestjs-pino pino-http pino-pretty uuid @nestjs/terminus lodash
+```
+
+- Create order project:
+```sh
+npx nx g @nx/nest:app apps/order --frontendProject web
+```
+
+- Install temporal dependencies
+```sh
+npm add @temporalio/client @temporalio/worker @temporalio/workflow @temporalio/activity @temporalio/common
 ```
 
 More details [here](https://nx.dev/recipes/react/remix).

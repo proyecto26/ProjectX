@@ -8,5 +8,5 @@ export class EnvironmentVariables {
   @IsNumber({ allowNaN: false })
   @Min(0)
   @Max(65535)
-  PORT: number;
+  AUTH_PORT: number;
 }

@@ -84,3 +84,19 @@ npm run dev:web
 npm run storybook
 ```
 
+### Run services with Docker Compose
+
+- Build the image locally:
+```sh
+docker-compose build --no-cache
+```
+
+- Run the services:
+```sh
+docker-compose up -d
+```
+
+- To clear the images: 
+```sh
+docker-compose down --volumes
+```

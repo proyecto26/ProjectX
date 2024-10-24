@@ -74,7 +74,7 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/auth-e2e/**/*"]
+      "exclude": ["apps/auth-e2e/**/*", "apps/order-e2e/**/*"]
     }
   ],
   "targetDefaults": {

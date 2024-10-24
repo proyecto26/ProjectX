@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { UserRepositoryService } from '@projectx/db';
 
 @Injectable()
 export class AppService {
-  getData(): { message: string } {
-    return { message: 'Hello API' };
+  constructor(private readonly userService: UserRepositoryService) {}
+  
+  findAll() {
+    return this.userService.findAll();
   }
 }
