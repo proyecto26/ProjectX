@@ -16,7 +16,7 @@ const initialCartItems: CartItem[] = [
   { id: 3, name: "Running Shoes", price: 89.99, quantity: 1, image: "/placeholder.svg?height=80&width=80" },
 ]
 
-export default function ShoppingCart() {
+export function ShoppingCart() {
   const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems)
 
   const removeItem = (id: number) => {

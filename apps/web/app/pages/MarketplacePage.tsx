@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MagnifyingGlassIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
-import { Button, ShoppingCartDrawer } from '@projectx/ui';
+import { Button } from '@projectx/ui';
 import { useCart } from 'react-use-cart';
 
 const products = [

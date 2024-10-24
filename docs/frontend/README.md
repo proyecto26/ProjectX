@@ -91,4 +91,3 @@ npm add react-use-cart react-otp-input
 ```sh
 npm add lucide-react
 ```
-
