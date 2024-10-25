@@ -1,7 +1,7 @@
 import { EmailTemplateDataMap, EmailTemplateFactory } from './factory';
 
 export enum EmailTemplates {
-  AuthOpt = 'auth_login',
+  AuthLogin = 'auth_login',
   OrderPending = 'order_pending',
   OrderSuccess = 'order_success',
   OrderFailed = 'order_failed',

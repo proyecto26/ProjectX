@@ -1,5 +1,11 @@
-import type { MetaFunction, LinksFunction, LoaderFunction } from '@remix-run/node';
+import { UserDto } from '@projectx/models';
+import type {
+  MetaFunction,
+  LinksFunction,
+  LoaderFunction,
+} from '@remix-run/node';
 import {
+  isRouteErrorResponse,
   json,
   Links,
   LiveReload,
@@ -8,10 +14,21 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRouteError,
 } from '@remix-run/react';
+import { PropsWithChildren } from 'react';
+import { AuthenticityTokenProvider } from 'remix-utils/csrf/react';
 
-import twStyles from './tailwind.css';
-import CartProvider from './providers/CartProvider';
+import { getEnv } from '~/config/env.server';
+import { csrf } from '~/cookies/session.server';
+import twStyles from '~/tailwind.css';
+import {
+  withQueryClientProvider,
+  withCartProvider,
+  withAuthProvider,
+} from '~/providers';
+import { getAuthSession } from '~/cookies/auth.server';
+import { THEME } from './constants';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: twStyles },
@@ -29,35 +46,113 @@ export const links: LinksFunction = () => [
 
 export const meta: MetaFunction = () => [
   {
-    title: 'New Remix App',
+    title: 'ProjectX App',
   },
 ];
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const theme = request.headers.get('Cookie')?.includes('theme=dark')
-    ? 'dark'
-    : 'light';
-  return json({ theme });
+type LoaderData = {
+  csrfToken: string;
+  theme: string;
+  ENV: ReturnType<typeof getEnv>;
+  isAuthenticated: boolean;
+  user?: UserDto;
+  accessToken?: string;
 };
 
-export default function App() {
-  const { theme } = useLoaderData<{ theme: string }>();
+export const loader: LoaderFunction = async ({ request }) => {
+  const [csrfToken, cookieHeader] = await csrf.commitToken();
+  const theme = request.headers.get('Cookie')?.includes('theme=dark')
+    ? THEME.DARK
+    : THEME.LIGHT;
+  const { getAuthUser, getAuthAccessToken } = await getAuthSession(request);
+  const accessToken = getAuthAccessToken();
+  const user = getAuthUser()
+  return json<LoaderData>(
+    {
+      theme,
+      csrfToken,
+      ENV: getEnv(),
+      isAuthenticated: !!accessToken,
+      user,
+      accessToken,
+    },
+    {
+      headers: {
+        'Set-Cookie': cookieHeader as string,
+      },
+    }
+  );
+};
+
+export type AppProps = PropsWithChildren<
+  Pick<LoaderData, 'csrfToken' | 'theme'>
+>;
+function App({ csrfToken, theme }: AppProps) {
   return (
-    <CartProvider>
-    <html lang="en" data-theme={theme}>
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
+    <AuthenticityTokenProvider token={csrfToken}>
+      <html lang="en" data-theme={theme}>
+        <head>
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <meta
+            name="color-scheme"
+            content={theme === THEME.DARK ? 'dark light' : 'light dark'}
+          />
+          <Meta />
+          <Links />
+        </head>
+        <body>
+          <script
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{
+              __html: String.raw`
+                  window.ENV = ${JSON.stringify(ENV)};
+                `,
+            }}
+          />
+          <Outlet />
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </body>
       </html>
-    </CartProvider>
+    </AuthenticityTokenProvider>
   );
 }
+
+const AppWithProviders = withAuthProvider(
+  withQueryClientProvider(withCartProvider(App))
+);
+/**
+ * This is the root component of the app. It is used to wrap the app with the providers.
+ */
+export default function () {
+  const { user, ...props } = useLoaderData<LoaderData>();
+  return <AppWithProviders {...props} user={user as unknown as UserDto} />;
+}
+
+export const ErrorBoundary = () => {
+  const error = useRouteError();
+
+  return (
+    <div>
+      {isRouteErrorResponse(error) ? (
+        <div>
+          <h1>
+            {error.status} {error.statusText}
+          </h1>
+          <p>{error.data}</p>
+        </div>
+      ) : error instanceof Error ? (
+        <div>
+          <h1>Error</h1>
+          <p>{error.message}</p>
+          <p>The stack trace is:</p>
+          <pre>{error.stack}</pre>
+        </div>
+      ) : (
+        <h1>Unknown Error</h1>
+      )}
+    </div>
+  );
+};

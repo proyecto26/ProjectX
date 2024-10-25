@@ -32,7 +32,7 @@ npx prisma init
 - Create a lib for sending emails:
 ```sh
 npx nx g @nx/nest:lib libs/backend/email
-npm add @nestjs-modules/mailer mjml
+npm add @sendgrid/mail mjml
 ```
 
 - Create a lib for backend utils (hashing functions, nestjs, logger and temporal core, etc):
@@ -61,6 +61,11 @@ npx nx g @nx/nest:app apps/order --frontendProject web
 - Install temporal dependencies
 ```sh
 npm add @temporalio/client @temporalio/worker @temporalio/workflow @temporalio/activity @temporalio/common
+```
+
+- Testing... Why not?
+```sh
+npm add -D @golevelup/ts-jest
 ```
 
 More details [here](https://nx.dev/recipes/react/remix).

@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { UserRepositoryService } from '@projectx/db';
+import { Injectable, Logger } from '@nestjs/common';
+import { AuthLoginDto } from '@projectx/models';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly userService: UserRepositoryService) {}
+  readonly logger = new Logger(AppService.name);
   
-  findAll() {
-    return this.userService.findAll();
+  sendLoginEmail(data: AuthLoginDto) {
+    this.logger.log('sendLoginEmail()', data);
   }
 }

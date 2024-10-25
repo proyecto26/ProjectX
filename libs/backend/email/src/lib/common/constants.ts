@@ -51,9 +51,9 @@ export const COLORS = {
       'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap',
   };
   
-  export const PROJECT_NAME = 'MarketPlace';
+  export const PROJECT_NAME = 'ProjectX';
   
   export const PROJECT_LINKS = {
-    CONTACT_US: 'mailto:info@projectx.co',
+    CONTACT_US: 'mailto:support@projectx.com',
   };
   

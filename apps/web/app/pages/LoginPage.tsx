@@ -16,7 +16,7 @@ const INPUT_CLASS_NAMES = `
 `
 
 export function LoginPage() {
-  const [loginState, setLoginState] = useState<LoginState>('code');
+  const [loginState, setLoginState] = useState<LoginState>('email');
   const [formData, setFormData] = useState<FormData>({ email: '', code: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

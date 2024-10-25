@@ -135,7 +135,7 @@ export function ShoppingCartContent({
                 </div>
               )}
             </div>
-            <div className="mt-auto">
+            <div className="mt-auto pt-4">
               <div className="card bg-base-100 shadow-xl">
                 <div className="card-body p-4">
                   <h3 className="card-title text-lg">Summary</h3>

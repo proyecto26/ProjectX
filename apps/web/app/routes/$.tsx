@@ -1,5 +1,5 @@
-import { Layout } from '@projectx/ui';
 import { json, LoaderFunction } from '@remix-run/node';
+import PageLayout from '~/pages/PageLayout';
 
 export const loader: LoaderFunction = () => {
   return json(null, { status: 404 });
@@ -7,8 +7,8 @@ export const loader: LoaderFunction = () => {
 
 export default function NotFoundPage() {
   return (
-    <Layout>
+    <PageLayout>
       <h1>Not Found</h1>
-    </Layout>
+    </PageLayout>
   );
 }

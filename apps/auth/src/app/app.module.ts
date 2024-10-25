@@ -8,6 +8,7 @@ import appConfig from '../config/app.config';
 import swaggerConfig from '../config/swagger.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AppService } from './app.service';
       ],
       validate: (config) => validateConfiguration(config, EnvironmentVariables),
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

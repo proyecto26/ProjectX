@@ -49,10 +49,12 @@ const socialLinks: NavigationSection['links'] = [
   },
 ];
 
-type LayoutProps = PropsWithChildren<{
+export type LayoutProps = PropsWithChildren<{
   title?: string;
   className?: string;
   containerClassName?: string;
+  isAuthenticated?: boolean;
+  email?: string;
 }>;
 
 export const Layout: React.FC<LayoutProps> = ({
@@ -60,6 +62,8 @@ export const Layout: React.FC<LayoutProps> = ({
   title,
   className,
   containerClassName,
+  isAuthenticated,
+  email,
 }) => {
   return (
     <motion.section className={classnames('min-h-screen flex flex-col bg-base-100 text-base-content', className)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
@@ -67,6 +71,8 @@ export const Layout: React.FC<LayoutProps> = ({
         title={title}
         sections={sections}
         logoImgSrc="/logo.svg"
+        isAuthenticated={isAuthenticated}
+        email={email}
       />
       <main className={
         classnames(

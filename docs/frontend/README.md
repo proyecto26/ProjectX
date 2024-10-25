@@ -18,7 +18,7 @@ More details [here](https://nx.dev/recipes/react/remix).
 
 - Install Tailwind CSS:
 ```sh
-npm add -D tailwindcss postcss autoprefixer postcss-import
+npm add -D tailwindcss postcss autoprefixer postcss-import prettier-plugin-tailwindcss@0.4.1
 npx nx g setup-tailwind --project=web
 ```
 
@@ -76,10 +76,10 @@ export default {
 } satisfies Config;
 ```
 
-- Install More dependencies for UX:
+- Install dependencies for UX:
 ```sh
-npm i -D daisyui@latest 
-npm add @heroicons/react @headlessui/react framer-motion usehooks-ts react-responsive remix-utils
+npm i -D daisyui@latest @types/md5
+npm add @heroicons/react @headlessui/react framer-motion usehooks-ts react-responsive md5 
 ```
 
 - Install dependencies for the web features (shopping cart, verification code input):
@@ -87,7 +87,21 @@ npm add @heroicons/react @headlessui/react framer-motion usehooks-ts react-respo
 npm add react-use-cart react-otp-input
 ```
 
-- Install 'lucide-react for Admin/Dashboard page:
+- Install dependencies for Admin/Dashboard page:
 ```sh
 npm add lucide-react
 ```
+
+- Install dependencies for security (CSRF protection, etc):
+```sh
+npm add remix-utils crypto-js
+```
+
+- Install dependencies for http queries/requests with ssr support
+```sh
+npm add @tanstack/react-query use-dehydrated-state
+npm add -D @tanstack/react-query-devtools 
+```
+
+More details here: https://tanstack.com/query/latest/docs/framework/react/guides/ssr#using-the-hydration-apis
+

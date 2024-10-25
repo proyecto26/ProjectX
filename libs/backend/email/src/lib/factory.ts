@@ -1,4 +1,4 @@
-import { EmailTemplates } from './email';
+import { EmailTemplates } from './template';
 import { getLoginEmailHtml, LoginEmailData } from './auth/login';
 import {
   getOrderPendingEmailHtml,
@@ -14,7 +14,7 @@ import {
 } from './order/orderFailed';
 
 export type EmailTemplateDataMap = {
-  [EmailTemplates.AuthOpt]: LoginEmailData;
+  [EmailTemplates.AuthLogin]: LoginEmailData;
   [EmailTemplates.OrderPending]: OrderPendingEmailData;
   [EmailTemplates.OrderSuccess]: OrderSuccessEmailData;
   [EmailTemplates.OrderFailed]: OrderFailedEmailData;
@@ -26,7 +26,7 @@ class EmailTemplateFactory {
     data: EmailTemplateDataMap[T]
   ) {
     switch (templateKey) {
-      case EmailTemplates.AuthOpt:
+      case EmailTemplates.AuthLogin:
         return getLoginEmailHtml(data as LoginEmailData);
       case EmailTemplates.OrderPending:
         return getOrderPendingEmailHtml(data as OrderPendingEmailData);
