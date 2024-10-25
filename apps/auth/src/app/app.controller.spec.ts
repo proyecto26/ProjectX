@@ -1,3 +1,4 @@
+import { createMock } from '@golevelup/ts-jest';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AppController } from './app.controller';
@@ -5,18 +6,24 @@ import { AppService } from './app.service';
 
 describe('AppController', () => {
   let app: TestingModule;
+  let appService: AppService;
 
   beforeAll(async () => {
     app = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        { provide: AppService, useValue: createMock<AppService>() },
+      ],
     }).compile();
+
+    appService = app.get<AppService>(AppService);
   });
 
-  describe('findAll', () => {
-    it('should return something', () => {
+  describe('login', () => {
+    it('should do something', () => {
       const appController = app.get<AppController>(AppController);
-      expect(appController.findAll()).toBeDefined();
+      expect(appController.login({ email: 'test@test.com' })).toBeDefined();
+      expect(appService.sendLoginEmail).toHaveBeenCalled();
     });
   });
 });

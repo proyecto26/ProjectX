@@ -1,3 +1,5 @@
+import { OrderRepositoryService } from '@projectx/db';
+import { createMock } from '@golevelup/ts-jest';
 import { Test } from '@nestjs/testing';
 
 import { AppService } from './app.service';
@@ -7,7 +9,10 @@ describe('AppService', () => {
 
   beforeAll(async () => {
     const app = await Test.createTestingModule({
-      providers: [AppService],
+      providers: [
+        AppService,
+        { provide: OrderRepositoryService, useValue: createMock<OrderRepositoryService>() },
+      ],
     }).compile();
 
     service = app.get<AppService>(AppService);

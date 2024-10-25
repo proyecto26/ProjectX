@@ -1,8 +1,10 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { EnvelopeIcon } from '@heroicons/react/24/outline';
-import OtpInput from 'react-otp-input';
 import { classnames } from '@projectx/ui';
+import { useFetcher } from '@remix-run/react';
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import OtpInput from 'react-otp-input';
+import { useAuthenticityToken } from 'remix-utils/csrf/react';
 
 type LoginState = 'email' | 'code';
 
@@ -16,6 +18,8 @@ const INPUT_CLASS_NAMES = `
 `
 
 export function LoginPage() {
+  const csrf = useAuthenticityToken();
+  const fetcher = useFetcher<{ ok: boolean }>();
   const [loginState, setLoginState] = useState<LoginState>('email');
   const [formData, setFormData] = useState<FormData>({ email: '', code: '' });
   const [loading, setLoading] = useState(false);
@@ -25,11 +29,24 @@ export function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    // Placeholder for email submission logic
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setLoading(false);
-    setLoginState('code');
+
+    fetcher.submit(
+      {
+        csrf,
+        email: formData.email,
+        intent: 'login',
+      },
+      { method: 'post', action: '/login' },
+    );
   };
+
+  useEffect(() => {
+    if (fetcher.data?.ok) {
+      setLoading(false);
+      setLoginState('code');
+    }
+  }, [fetcher.data]);
+
 
   const handleCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +72,7 @@ export function LoginPage() {
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="w-full max-w-md bg-white dark:bg-gray-800 shadow-xl rounded-lg p-8">
         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Log in</h2>
         {loginState === 'email' ? (
-          <form onSubmit={handleEmailSubmit} className="space-y-4">
+          <fetcher.Form onSubmit={handleEmailSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Email
@@ -68,7 +85,7 @@ export function LoginPage() {
             <button type="submit" className={`w-full px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={loading}>
               {loading ? 'Sending...' : 'Send Login Code'}
             </button>
-          </form>
+          </fetcher.Form>
         ) : (
           <form onSubmit={handleCodeSubmit} className="space-y-4">
             <div>

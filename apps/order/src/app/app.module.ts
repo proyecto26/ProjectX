@@ -5,6 +5,7 @@ import { DbModule } from '@projectx/db';
 
 import { EnvironmentVariables } from '../config/env.config';
 import appConfig from '../config/app.config';
+import temporalConfig from '../config/temporal.config';
 import swaggerConfig from '../config/swagger.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -18,6 +19,7 @@ import { AppService } from './app.service';
       load: [
         appConfig,
         swaggerConfig,
+        temporalConfig,
       ],
       validate: (config) => validateConfiguration(config, EnvironmentVariables),
     }),

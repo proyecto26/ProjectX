@@ -1,5 +1,5 @@
-import { Layout } from "@projectx/ui";
 import type { MetaFunction } from "@remix-run/node";
+import PageLayout from "~/pages/PageLayout";
 import { ProfilePage } from "~/pages/Profile";
 
 export const meta: MetaFunction = () => {
@@ -11,8 +11,8 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <Layout title="ProjectX">
+    <PageLayout title="ProjectX">
       <ProfilePage />
-    </Layout>
+    </PageLayout>
   );
 }

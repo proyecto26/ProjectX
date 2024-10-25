@@ -1,8 +1,8 @@
-import { Layout } from '@projectx/ui';
 import type { LoaderFunction, MetaFunction } from '@remix-run/node';
 
 import { getAccessTokenOrRedirect } from '~/cookies/auth.server';
 import { OrderPage } from '~/pages/Order';
+import PageLayout from '~/pages/PageLayout';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Marketplace - Your E-commerce Store' }, { name: 'description', content: 'Browse our wide selection of products in our online marketplace.' }];
@@ -14,8 +14,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Index() {
   return (
-    <Layout title="ProjectX">
+    <PageLayout title="ProjectX">
       <OrderPage />
-    </Layout>
+    </PageLayout>
   );
 }

@@ -13,9 +13,7 @@ describe('AppService', () => {
     service = app.get<AppService>(AppService);
   });
 
-  describe('findAll', () => {
-    it('should return something', () => {
-      expect(service.findAll()).toBeDefined();
-    });
+  it('should be defined', () => {
+    expect(service).toBeDefined();
   });
 });

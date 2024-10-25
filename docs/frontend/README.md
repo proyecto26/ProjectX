@@ -79,7 +79,7 @@ export default {
 - Install dependencies for UX:
 ```sh
 npm i -D daisyui@latest @types/md5
-npm add @heroicons/react @headlessui/react framer-motion usehooks-ts react-responsive md5 
+npm add @heroicons/react @headlessui/react framer-motion usehooks-ts react-responsive md5 react-toastify
 ```
 
 - Install dependencies for the web features (shopping cart, verification code input):
@@ -99,7 +99,7 @@ npm add remix-utils crypto-js
 
 - Install dependencies for http queries/requests with ssr support
 ```sh
-npm add @tanstack/react-query use-dehydrated-state
+npm add @tanstack/react-query use-dehydrated-state immer
 npm add -D @tanstack/react-query-devtools 
 ```
 

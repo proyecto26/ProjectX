@@ -37,4 +37,5 @@ export const csrf = new CSRF({
     secrets: [sessionSecret],
   }),
 	secret: sessionSecret,
+  formDataKey: "csrf",
 });

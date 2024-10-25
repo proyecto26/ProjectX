@@ -14,8 +14,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
-    networks:
-      - backend
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
@@ -41,12 +39,12 @@ services:
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
     volumes:
       - ./deployment/config/dynamicconfig:/etc/temporal/config/dynamicconfig
-    networks:
-      - backend
     ports:
       - "${TEMPORAL_PORT:-7233}:7233"
     labels:
       - "com.*project-name.service=temporal"
+    expose:
+      - "${TEMPORAL_PORT:-7233}"
 
   temporal-admin-tools:
     image: temporalio/admin-tools:1.25.1-tctl-1.18.1-cli-1.1.1
@@ -57,8 +55,6 @@ services:
       - TEMPORAL_ADDRESS=temporal:${TEMPORAL_PORT:-7233}
       - TEMPORAL_CLI_ADDRESS=temporal:${TEMPORAL_PORT:-7233}
       - TEMPORAL_CLI_SHOW_STACKS=1
-    networks:
-      - backend
     stdin_open: true
     tty: true
     labels:
@@ -80,8 +76,6 @@ services:
     environment:
       - TEMPORAL_ADDRESS=temporal:${TEMPORAL_PORT:-7233}
       - TEMPORAL_CORS_ORIGINS=http://localhost:3000
-    networks:
-      - backend
     ports:
       - "${TEMPORAL_UI_PORT:-8080}:8080"
     labels:
@@ -90,9 +84,46 @@ services:
       - "${TEMPORAL_UI_PORT:-8080}"
 
   # PROJECTX SERVICES
+  auth:
+    container_name: auth
+    env_file: .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./apps:/app/apps
+      - ./libs:/app/libs
+    command: >
+      bash -c "npx nx reset &&
+      npm run dev:auth"
+    ports:
+      - "${AUTH_PORT:-8081}:8081"
+    depends_on:
+      - temporal
+      - db
+    expose:
+      - 8081
+
+  order:
+    container_name: order
+    env_file: .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./apps:/app/apps
+      - ./libs:/app/libs
+    command: >
+      bash -c "npx nx reset &&
+      npm run dev:order"
+    ports:
+      - "${ORDER_PORT:-8082}:8082"
+    depends_on:
+      - temporal
+      - db
 
 networks:
-  backend:
+  default:
     name: ${COMPOSE_PROJECT_NAME:-projectx}-network
 
 volumes:

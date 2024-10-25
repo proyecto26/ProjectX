@@ -26,6 +26,8 @@ import {
   withQueryClientProvider,
   withCartProvider,
   withAuthProvider,
+  withStoreProvider,
+  useWorkflows,
 } from '~/providers';
 import { getAuthSession } from '~/cookies/auth.server';
 import { THEME } from './constants';
@@ -85,9 +87,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export type AppProps = PropsWithChildren<
-  Pick<LoaderData, 'csrfToken' | 'theme'>
+  Pick<LoaderData, 'csrfToken' | 'theme' | 'user' | 'accessToken'>
 >;
-function App({ csrfToken, theme }: AppProps) {
+function App({ csrfToken, theme, user, accessToken }: AppProps) {
+  useWorkflows({ accessToken, email: user?.email });
   return (
     <AuthenticityTokenProvider token={csrfToken}>
       <html lang="en" data-theme={theme}>
@@ -120,9 +123,9 @@ function App({ csrfToken, theme }: AppProps) {
   );
 }
 
-const AppWithProviders = withAuthProvider(
+const AppWithProviders = withStoreProvider(withAuthProvider(
   withQueryClientProvider(withCartProvider(App))
-);
+));
 /**
  * This is the root component of the app. It is used to wrap the app with the providers.
  */

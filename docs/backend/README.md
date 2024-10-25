@@ -63,6 +63,11 @@ npx nx g @nx/nest:app apps/order --frontendProject web
 npm add @temporalio/client @temporalio/worker @temporalio/workflow @temporalio/activity @temporalio/common
 ```
 
+- Install packages for HTTP communication
+```sh
+npm add @nestjs/axios axios
+```
+
 - Testing... Why not?
 ```sh
 npm add -D @golevelup/ts-jest

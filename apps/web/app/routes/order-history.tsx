@@ -1,8 +1,8 @@
-import { Layout } from "@projectx/ui";
 import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 
 import { OrderHistory } from "~/pages/OrderHistory";
 import { getAccessTokenOrRedirect } from "~/cookies/auth.server";
+import PageLayout from "~/pages/PageLayout";
 
 export const meta: MetaFunction = () => {
   return [
@@ -17,8 +17,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Index() {
   return (
-    <Layout title="ProjectX">
+    <PageLayout title="ProjectX">
       <OrderHistory />
-    </Layout>
+    </PageLayout>
   );
 }

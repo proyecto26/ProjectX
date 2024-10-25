@@ -9,6 +9,8 @@ import swaggerConfig from '../config/swagger.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
+import { WorkerModule } from './worker/worker.module';
+import temporalConfig from '../config/temporal.config';
 
 @Module({
   imports: [
@@ -19,10 +21,12 @@ import { UserModule } from './user/user.module';
       load: [
         appConfig,
         swaggerConfig,
+        temporalConfig,
       ],
       validate: (config) => validateConfiguration(config, EnvironmentVariables),
     }),
     UserModule,
+    WorkerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

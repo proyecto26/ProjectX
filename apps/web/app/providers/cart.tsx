@@ -1,13 +1,14 @@
-import React, { ComponentType, PropsWithChildren, useId } from 'react';
+import React, { ComponentType, PropsWithChildren } from 'react';
 import { CartProvider } from 'react-use-cart';
+
+const CART_ID = 'shopping-cart';
 
 export function withCartProvider<T extends PropsWithChildren>(
   WrappedComponent: ComponentType<T>,
 ): ComponentType<T> {
   return function (props: T) {
-    const cartId = useId();
     return (
-      <CartProvider id={cartId}>
+      <CartProvider id={CART_ID}>
         <WrappedComponent {...props} />
       </CartProvider>
     );

@@ -23,7 +23,7 @@ export class EmailService {
     if (!apiKey || !fromEmail || !fromName) {
       throw new InternalServerErrorException('Email configuration is missing');
     }
-
+    this.logger.log('Email configuration is loaded');
     SendGrid.setApiKey(apiKey);
     this.fromEmail = fromEmail;
     this.fromName = fromName;
