@@ -11,8 +11,7 @@ module.exports = withNx(
     external: ['react', 'react-dom', 'react/jsx-runtime'],
     format: ['esm'],
     assets: [
-      { input: '.', output: '.', glob: 'README.md' },
-      { input: 'styles', output: 'styles', glob: '**.css' },
+      { input: '.', output: '.', glob: 'README.md' }
     ],
   },
   {

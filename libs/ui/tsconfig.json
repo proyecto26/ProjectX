@@ -1,22 +1,22 @@
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "allowJs": false,
+    "allowJs": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
-    "strict": true
+    "moduleResolution": "Bundler"
   },
   "files": [],
   "include": [],
   "references": [
     {
-      "path": "./tsconfig.lib.json"
+      "path": "./tsconfig.lib.json",
     },
     {
-      "path": "./tsconfig.storybook.json"
+      "path": "./tsconfig.storybook.json",
     },
     {
-      "path": "./tsconfig.tailwind.json"
+      "path": "./tsconfig.tailwind.json",
     }
   ],
   "extends": "../../tsconfig.base.json"

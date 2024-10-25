@@ -13,6 +13,27 @@
 - [Securing Temporal Applications with TypeScript](https://temporal.talentlms.com/catalog/info/id:211)
 - [Introduction to Temporal Cloud](https://temporal.talentlms.com/catalog/info/id:144)
 
+## Why Temporal?
+
+### Challenges of Maintaining State in Distributed Systems
+
+- Consistency
+- Fault Tolerance
+- Scalability
+- Concurrency Control
+- Security
+
+**Temporal** is introduced here as a Workflow Orchestration tool for managing long-running operations **(durable execution)**, humans in the loop and system lifecycle **(state management, guaranteed completion with compensations and uniqueness)**. 
+You can use **Temporal** today for implementing sequence actions in certain order for your business transactions **(workflows)**, 
+not only for communication between services **(Microservices Orchestration)** but also for **Monolith** apps. 
+**Workflows** can react to async and external events **(signals, updates)**, aggregating data and then doing some actions **(activities)** with exponential retries **(retry policy)** and run for extended periods **(heartbeat)** if needed, then you can check the state of these executions at any time **(queries)**. Also we can have periodic executions for business logic with time based and delays **(scheduling)**.
+
+### Use Cases
+
+•	**Order Processing Systems:** Managing the lifecycle of orders from placement to fulfillment, including inventory checks, payment processing, and shipping.
+•	**User Onboarding:** Coordinating steps involved in onboarding new users, such as account creation, email verification, and initial setup tasks.
+•	**Data Pipelines:** Orchestrating data ingestion, transformation, and storage processes with reliability and scalability.
+•	**Batch Processing:** Handling large-scale batch jobs with retry mechanisms and progress monitoring.
 
 ## Setting Up
 
@@ -38,18 +59,15 @@ npm install -g nx
 
 ### Installation 📚
 
-Commands used to create the project structure [here](./docs/INSTRUCTIONS_README.md).
+- FrontEnd:
+Commands used to create the project structure [here](./docs/frontend/README.md).
+
 
 ## Usage
 
 ### Monorepo
 
 Instructions to use Nx CLI [here](./docs/NX_README.md).
-
-To see all available commands and options:
-```sh
-nx help
-```
 
 For more information on using Nx, refer to the [Nx documentation](https://nx.dev/getting-started/intro).
 
@@ -60,4 +78,36 @@ npm run build
 npm run dev:web
 ```
 
+### Run the ui lib
 
+```sh
+npm run storybook
+```
+
+### Run services with Docker Compose
+
+- Build the image locally:
+```sh
+docker-compose build --no-cache
+```
+
+- Run the services:
+```sh
+docker-compose up -d
+```
+
+- To clear the images: 
+```sh
+docker-compose down --volumes
+```
+
+## Explore the project
+
+```sh
+npx nx show projects
+```
+
+Do you want to change the path of a project to decide your own organization? No problem:
+```sh
+npx nx g @nx/workspace:move --project core libs/backend/common
+```

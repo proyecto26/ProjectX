@@ -1,0 +1,131 @@
+version: '3.6'
+
+x-project-name: &project-name ${COMPOSE_PROJECT_NAME:-projectx}
+
+services:
+  db:
+    image: postgis/postgis:17-3.5
+    container_name: ${COMPOSE_PROJECT_NAME:-projectx}-db
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "com.*project-name.service=database"
+
+  temporal:
+    image: temporalio/auto-setup:1.24.3.0
+    container_name: ${COMPOSE_PROJECT_NAME:-projectx}-temporal
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB=postgres12
+      - DB_PORT=${POSTGRES_PORT:-5432}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PWD=${POSTGRES_PASSWORD}
+      - POSTGRES_SEEDS=db
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
+    volumes:
+      - ./deployment/config/dynamicconfig:/etc/temporal/config/dynamicconfig
+    ports:
+      - "${TEMPORAL_PORT:-7233}:7233"
+    labels:
+      - "com.*project-name.service=temporal"
+    expose:
+      - "${TEMPORAL_PORT:-7233}"
+
+  temporal-admin-tools:
+    image: temporalio/admin-tools:1.25.1-tctl-1.18.1-cli-1.1.1
+    container_name: ${COMPOSE_PROJECT_NAME:-projectx}-temporal-admin-tools
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:${TEMPORAL_PORT:-7233}
+      - TEMPORAL_CLI_ADDRESS=temporal:${TEMPORAL_PORT:-7233}
+      - TEMPORAL_CLI_SHOW_STACKS=1
+    stdin_open: true
+    tty: true
+    labels:
+      - "com.*project-name.service=temporal-admin-tools"
+    volumes:
+      - ./deployment/scripts/search-attributes.sh:/etc/temporal/entrypoint.sh
+    entrypoint: >
+      /bin/sh -c "
+      chmod +x /etc/temporal/entrypoint.sh &&
+      /etc/temporal/entrypoint.sh &&
+      exec /bin/bash
+      "
+
+  temporal-ui:
+    image: temporalio/ui:2.31.2
+    container_name: ${COMPOSE_PROJECT_NAME:-projectx}-temporal-ui
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:${TEMPORAL_PORT:-7233}
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+    ports:
+      - "${TEMPORAL_UI_PORT:-8080}:8080"
+    labels:
+      - "com.*project-name.service=temporal-ui"
+    expose:
+      - "${TEMPORAL_UI_PORT:-8080}"
+
+  # PROJECTX SERVICES
+  auth:
+    container_name: auth
+    env_file: .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./apps:/app/apps
+      - ./libs:/app/libs
+    command: >
+      bash -c "npx nx reset &&
+      npm run dev:auth"
+    ports:
+      - "${AUTH_PORT:-8081}:8081"
+    depends_on:
+      - temporal
+      - db
+    expose:
+      - 8081
+
+  order:
+    container_name: order
+    env_file: .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./apps:/app/apps
+      - ./libs:/app/libs
+    command: >
+      bash -c "npx nx reset &&
+      npm run dev:order"
+    ports:
+      - "${ORDER_PORT:-8082}:8082"
+    depends_on:
+      - temporal
+      - db
+
+networks:
+  default:
+    name: ${COMPOSE_PROJECT_NAME:-projectx}-network
+
+volumes:
+  postgres_data:
+    name: ${COMPOSE_PROJECT_NAME:-projectx}-postgres-data

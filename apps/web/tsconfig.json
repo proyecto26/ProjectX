@@ -5,18 +5,22 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
-    "target": "ES2019",
+    "target": "ES2022",
     "strict": true,
     "allowJs": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["app/*"],
       "@projectx/ui": ["../../libs/ui/src/index.ts"],
       "@projectx/ui/*": ["../../libs/ui/*"],
-      "@projectx/ui/tailwind-config": ["../../libs/ui/tailwind.config.ts"]
+      "@projectx/email": ["../../libs/backend/email/src/index.ts"],
+      "@projectx/ui/tailwind-config": ["../../libs/ui/tailwind.config.ts"],
+      "@projectx/models": ["../../libs/models/src/index.ts"],
     },
     // Remix takes care of building everything in `remix build`.
     "noEmit": true
