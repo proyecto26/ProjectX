@@ -11,6 +11,9 @@ export default {
   tailwind: true,
   postcss: true,
   ignoredRouteFiles: ['**/.*'],
+  serverDependenciesToBundle: [
+    /^remix-utils.*/
+  ],
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
   // serverBuildPath: "build/index.js",

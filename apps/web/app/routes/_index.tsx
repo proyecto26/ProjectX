@@ -1,8 +1,17 @@
+import { redirect } from '@remix-run/node';
+
+import HomePage from '~/pages/HomePage';
+import PageLayout from '~/pages/PageLayout';
+
+export const loader = () => {
+  // Set default route to marketplace
+  throw redirect('/marketplace');
+};
 
 export default function Index() {
   return (
-    <div>
-      <h1>Welcome to ProjectX</h1>
-    </div>
+    <PageLayout title="Marketplace">
+      <HomePage />
+    </PageLayout>
   );
 }

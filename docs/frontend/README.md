@@ -9,7 +9,7 @@ cd projectx
 ```
 
 - Create web project:
-```
+```sh
 npx nx add @nx/remix
 npx nx g @nx/remix:app apps/web
 ```
@@ -18,7 +18,7 @@ More details [here](https://nx.dev/recipes/react/remix).
 
 - Install Tailwind CSS:
 ```sh
-npm add -D tailwindcss postcss autoprefixer postcss-import
+npm add -D tailwindcss postcss autoprefixer postcss-import prettier-plugin-tailwindcss@0.4.1
 npx nx g setup-tailwind --project=web
 ```
 
@@ -26,6 +26,7 @@ npx nx g setup-tailwind --project=web
 ```sh
 npx nx g @nx/react:lib libs/ui --publishable --importPath=@projectx/ui
 npx nx add @nx/storybook
+npm add -D @babel/preset-react @babel/preset-typescript
 npx nx g storybook-configuration --project=ui
 ```
 
@@ -75,18 +76,32 @@ export default {
 } satisfies Config;
 ```
 
-- Install More dependencies for UX:
+- Install dependencies for UX:
 ```sh
-npm i -D daisyui@latest 
-npm add @heroicons/react @headlessui/react framer-motion react-cool-onclickoutside react-responsive
+npm i -D daisyui@latest @types/md5
+npm add @heroicons/react @headlessui/react framer-motion usehooks-ts react-responsive md5 react-toastify
 ```
 
-- Create lib for common ui utilities:
+- Install dependencies for the web features (shopping cart, verification code input):
 ```sh
-npx nx g @nx/react:lib libs/ui-utils --publishable --importPath=@projectx/ui-utils
+npm add react-use-cart react-otp-input
 ```
 
-- Create lib for a theme provider
+- Install dependencies for Admin/Dashboard page:
 ```sh
-
+npm add lucide-react
 ```
+
+- Install dependencies for security (CSRF protection, etc):
+```sh
+npm add remix-utils crypto-js
+```
+
+- Install dependencies for http queries/requests with ssr support
+```sh
+npm add @tanstack/react-query use-dehydrated-state immer
+npm add -D @tanstack/react-query-devtools 
+```
+
+More details here: https://tanstack.com/query/latest/docs/framework/react/guides/ssr#using-the-hydration-apis
+

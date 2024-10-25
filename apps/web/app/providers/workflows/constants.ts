@@ -1,0 +1,2 @@
+// HTTP STATUS GONE
+export const EXPIRED_STATUS_CODE = '410';
