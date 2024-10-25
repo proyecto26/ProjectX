@@ -13,4 +13,10 @@ export class UserService {
     this.logger.log(`findOne(${user.id})`, user);
     return this.userService.findOneByEmail(user.email);
   }
+
+  getOrCreate(
+    ...params: Parameters<typeof this.userService.getOrCreate>
+  ) {
+    return this.userService.getOrCreate(...params);
+  }
 }

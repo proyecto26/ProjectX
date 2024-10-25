@@ -17,12 +17,19 @@ export class WorkerService implements OnModuleInit {
 
   async onModuleInit() {
     try {
-      const activities = {
-        getHelloMessage: this.activitiesService.getHelloMessage.bind(
-          this.activitiesService
-        ),
-      };
-  
+      const activities = {};
+      for (const key of Object.getOwnPropertyNames(
+        Object.getPrototypeOf(this.activitiesService)
+      )) {
+        const property = this.activitiesService[key];
+
+        // Verifica si la propiedad es un método
+        if (typeof property === 'function') {
+          // Vincula el método al contexto de this.activitiesService
+          activities[key] = property.bind(this.activitiesService);
+        }
+      }
+
       const workflowsPath = path.join(__dirname, '/workflows');
       /*
       const worker = await Worker.create({
@@ -32,14 +39,14 @@ export class WorkerService implements OnModuleInit {
       });*/
       const workerOptions = await createWorkerOptions(
         this.configService,
-        workflowsPath,
+        workflowsPath
       );
-  
+
       const worker = await Worker.create({
         ...workerOptions,
         activities,
       });
-  
+
       worker.run();
       this.worker = worker;
       console.log('Started worker!');

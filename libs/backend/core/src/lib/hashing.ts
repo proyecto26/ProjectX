@@ -2,14 +2,14 @@ import { genSalt, hash, compare } from 'bcrypt';
 
 const SALT_ROUNDS = 10;
 
-export const hashPassword = async (password: string): Promise<string> => {
+export const hashValue = async (value: string): Promise<string> => {
   const salt = await genSalt(SALT_ROUNDS);
-  return hash(password, salt);
+  return hash(value, salt);
 };
 
-export const comparePassword = async (
-  password: string,
+export const compareValue = async (
+  value: string,
   hash: string
 ): Promise<boolean> => {
-  return compare(password, hash);
+  return compare(value, hash);
 };

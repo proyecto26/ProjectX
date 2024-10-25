@@ -73,4 +73,7 @@ npm add @nestjs/axios axios
 npm add -D @golevelup/ts-jest
 ```
 
-More details [here](https://nx.dev/recipes/react/remix).
+- Install Payment third party provider
+```sh
+npm add mercadopago
+```

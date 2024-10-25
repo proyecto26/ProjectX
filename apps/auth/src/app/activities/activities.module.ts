@@ -1,11 +1,11 @@
-import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
+import { UserModule } from '../user/user.module';
 
 import { ActivitiesService } from './activities.service';
+import { EmailModule } from '@projectx/email';
 
 @Module({
-  imports: [HttpModule],
-  controllers: [],
+  imports: [EmailModule, UserModule],
   providers: [ActivitiesService],
   exports: [ActivitiesService],
 })

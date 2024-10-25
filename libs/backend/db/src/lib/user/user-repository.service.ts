@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateUserDto, UserDto } from '@projectx/models';
+import { CreateUserDto, UserDto, UserStatus } from '@projectx/models';
 import { plainToInstance } from 'class-transformer';
 
 import { PrismaService } from '../prisma.service';
@@ -37,5 +37,17 @@ export class UserRepositoryService {
     return plainToInstance(UserDto, user, {
       excludeExtraneousValues: true,
     });
+  }
+
+  async getOrCreate(email: string) {
+    let user = await this.findOneByEmail(email);
+    if (!user) {
+      const newUser: CreateUserDto = {
+        email,
+        status: UserStatus.Active,
+      }
+      user = await this.createUser(newUser);
+    }
+    return user;
   }
 }

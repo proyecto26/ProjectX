@@ -11,6 +11,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { WorkerModule } from './worker/worker.module';
 import temporalConfig from '../config/temporal.config';
+import { EmailModule } from '@projectx/email';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import temporalConfig from '../config/temporal.config';
       ],
       validate: (config) => validateConfiguration(config, EnvironmentVariables),
     }),
+    EmailModule,
     UserModule,
     WorkerModule,
   ],

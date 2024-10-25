@@ -4,7 +4,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as SendGrid from '@sendgrid/mail';
+import SendGrid from '@sendgrid/mail';
 
 import { EmailTemplates, getEmailTemplate } from './template';
 import { LoginEmailData } from './auth/login';
