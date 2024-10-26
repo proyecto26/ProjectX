@@ -1,11 +1,7 @@
-import {
-  ShoppingCartIcon,
-} from '@heroicons/react/24/solid';
+import { ShoppingCartIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { ClientOnly } from 'remix-utils/client-only';
 import { useCart } from 'react-use-cart';
-
 
 import Button from '../buttons/button/Button';
 import { CartItem, ShoppingCartContent } from './ShoppingCartContent';
@@ -44,29 +40,29 @@ export function ShoppingCartDrawer() {
 
   return (
     <>
-      <Button variant="ghost" className="btn-circle relative" onClick={toggleDrawer}>
-        <ShoppingCartIcon className="w-6 h-6" />
+      <Button
+        variant="ghost"
+        className="btn-circle relative"
+        onClick={toggleDrawer}
+      >
+        <ShoppingCartIcon className="h-6 w-6" />
         {totalItems > 0 && (
-            <span className="badge badge-sm badge-primary absolute top-0 right-0">
-              {totalItems}
-            </span>
-          )}
+          <span className="badge badge-sm badge-primary absolute right-0 top-0">
+            {totalItems}
+          </span>
+        )}
       </Button>
 
-      <ClientOnly fallback={<div key="shopping-cart-content">Loading...</div>}>
-        {() =>
-          ReactDOM.createPortal(
-            <div className="z-[100] fixed top-0 right-0 w-full max-w-md">
-              <ShoppingCartContent
-                key="shopping-cart-content"
-                isOpen={isDrawerOpen}
-                onClose={() => setIsDrawerOpen(false)}
-              />
-            </div>,
-            document.body
-          )
-        }
-      </ClientOnly>
+      {isDrawerOpen && ReactDOM.createPortal(
+        <div className="fixed right-0 top-0 z-[100] w-full max-w-md">
+          <ShoppingCartContent
+            key="shopping-cart-content"
+            isOpen={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
+          />
+        </div>,
+        document.body
+      )}
     </>
   );
 }

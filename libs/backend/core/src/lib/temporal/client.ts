@@ -4,7 +4,7 @@ import { Client, Connection } from '@temporalio/client';
 
 @Injectable()
 export class ClientService implements OnModuleInit {
-  private client: Client | undefined;
+  public client: Client | undefined;
   readonly logger = new Logger(ClientService.name);
 
   constructor(private readonly configService: ConfigService) {}

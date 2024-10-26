@@ -1,4 +1,4 @@
-import { condition, proxyActivities, setHandler, log } from '@temporalio/workflow';
+import { condition, proxyActivities, setHandler, log, isCancellation, CancellationScope } from '@temporalio/workflow';
 
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import {
@@ -14,6 +14,15 @@ import type { ActivitiesService } from '../app/activities/activities.service';
 
 const { sendLoginEmail } = proxyActivities<ActivitiesService>({
   startToCloseTimeout: '5m',
+  retry: {
+    initialInterval: '2s',
+    maximumInterval: '10s',
+    maximumAttempts: 10,
+    backoffCoefficient: 2,
+    nonRetryableErrorTypes: [
+      LoginWorkflowNonRetryableErrors.UNKNOWN_ERROR
+    ],
+  },
 });
 
 const { verifyLoginCode } = proxyActivities<ActivitiesService>({
@@ -30,6 +39,7 @@ const { verifyLoginCode } = proxyActivities<ActivitiesService>({
 });
 
 export async function loginUserWorkflow(data: LoginWorkflowData): Promise<void> {
+
   const state: LoginWorkflowState = {
     codeStatus: LoginWorkflowCodeStatus.PENDING,
     status: LoginWorkflowStatus.PENDING,
@@ -45,16 +55,26 @@ export async function loginUserWorkflow(data: LoginWorkflowData): Promise<void> 
     { description: 'Validate login code' },
   );
 
-  // Send login email
-  const hashedCode = await sendLoginEmail(data.email);
-  state.code = hashedCode;
-  state.codeStatus = LoginWorkflowCodeStatus.SENT;
+  try {
+    // Send login email
+    const hashedCode = await sendLoginEmail(data.email);
+    state.code = hashedCode;
+    state.codeStatus = LoginWorkflowCodeStatus.SENT;
 
-  if (await condition(() => !!state.user, '10m')) {
-    state.status = LoginWorkflowStatus.SUCCESS;
-    log.info(`User logged in, user: ${state.user}`);
-  } else {
-    state.status = LoginWorkflowStatus.FAILED;
-    log.error(`User login failed, email: ${data.email}`);
+    if (await condition(() => !!state.user, '10m')) {
+      state.status = LoginWorkflowStatus.SUCCESS;
+      log.info(`User logged in, user: ${state.user}`);
+    } else {
+      state.status = LoginWorkflowStatus.FAILED;
+      log.error(`User login failed, email: ${data.email}`);
+    }
+  } catch (error) {
+    log.error(`Login workflow failed, email: ${data.email}, error: ${error}`);
+
+    if (isCancellation(error)) {
+      return await CancellationScope.nonCancellable(async () => {
+        // TODO: Handle cancellation
+      });
+    }
   }
 }
