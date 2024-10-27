@@ -32,10 +32,10 @@ npx nx g storybook-configuration --project=ui
 
 - Create some UI components with Storybook stories:
 ```sh
-npx nx g @nx/react:component --project=ui --path=libs/ui/src/lib/buttons/button/Button
-npx nx g @nx/react:component --project=ui --path=libs/ui/src/lib/buttons/theme/ThemeButton
-npx nx g @nx/react:component --project=ui --path=libs/ui/src/lib/header/Header
-npx nx g @nx/react:component --project=ui --path=libs/ui/src/lib/footer/Footer
+npx nx g @nx/react:component --project=ui --path=libs/frontend/ui/src/lib/buttons/button/Button
+npx nx g @nx/react:component --project=ui --path=libs/frontend/ui/src/lib/buttons/theme/ThemeButton
+npx nx g @nx/react:component --project=ui --path=libs/frontend/ui/src/lib/header/Header
+npx nx g @nx/react:component --project=ui --path=libs/frontend/ui/src/lib/footer/Footer
 npx nx g @nx/react:stories --project=ui
 ```
 
@@ -45,7 +45,7 @@ npx nx g setup-tailwind --project=ui
 npm add -D @tailwindcss/aspect-ratio @tailwindcss/forms @tailwindcss/line-clamp @tailwindcss/typography
 ```
 
-- Update the `libs/ui/project.json` to export the `tailwind.config` file as a preset:
+- Update the `libs/frontend/ui/project.json` to export the `tailwind.config` file as a preset:
 ```json
 "build": {
     "executor": "nx:run-commands",
@@ -56,7 +56,7 @@ npm add -D @tailwindcss/aspect-ratio @tailwindcss/forms @tailwindcss/line-clamp 
         "command": "nx run ui:build:lib"
         },
         {
-        "command": "npx tsc -p libs/ui/tsconfig.tailwind.json"
+        "command": "npx tsc -p libs/frontend/ui/tsconfig.tailwind.json"
         }
     ],
     "parallel": false
@@ -68,7 +68,7 @@ npm add -D @tailwindcss/aspect-ratio @tailwindcss/forms @tailwindcss/line-clamp 
 
 - Import the `TailwindCSS` preset from the app:
 ```ts
-import uiTailwindConfig from '../../libs/ui/tailwind.config.ts';
+import uiTailwindConfig from '../../libs/frontend/ui/tailwind.config.ts';
 
 export default {
   ...

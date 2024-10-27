@@ -1,5 +1,5 @@
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import uiTailwindConfig from '../../libs/ui/tailwind.config.ts';
+import uiTailwindConfig from '../../libs/frontend/ui/tailwind.config.ts';
 import { createGlobPatternsForDependencies } from '@nx/react/tailwind';
 import type { Config } from 'tailwindcss';
 

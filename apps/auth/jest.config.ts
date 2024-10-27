@@ -1,10 +1,19 @@
-export default {
+import type { Config } from '@jest/types';
+
+const config: Config.InitialOptions = {
   displayName: 'auth',
   preset: '../../jest.preset.js',
-  testEnvironment: 'node',
+  globals: {
+    'ts-jest': {
+      tsconfig: '<rootDir>/tsconfig.spec.json',
+    },
+  },
+  coverageDirectory: '../../coverage/apps/auth',
   transform: {
-    '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
+    '^.+\\.[tj]s$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/apps/auth',
+  testEnvironment: 'node',
 };
+
+export default config;

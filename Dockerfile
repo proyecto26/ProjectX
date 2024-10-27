@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base image
-FROM node:20
+FROM node:20.10.0
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -10,6 +10,6 @@ COPY . .
 # Install the application dependencies
 RUN npm install
 
-# Install Nx globally and copy the rest of the monorepo files
-RUN npm install -g nx
+RUN npm install @rollup/rollup-linux-arm64-gnu -g
 
+RUN npm run prisma:generate

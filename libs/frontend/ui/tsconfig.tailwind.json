@@ -4,7 +4,8 @@
     "outDir": "../../dist",
     "esModuleInterop": true,
     "target": "es2019",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["node"]
   },
   "include": ["tailwind.config.ts"]
 }

@@ -57,11 +57,13 @@ brew install docker-compose
 npm install -g nx
 ```
 
-### Installation 📚
+### Documentation 📚
 
 - FrontEnd:
 Commands used to create the project structure [here](./docs/frontend/README.md).
 
+- BackEnd:
+Commands used to create the services (NestJS, Temporal, etc) [here](./docs/backend/README.md).
 
 ## Usage
 
@@ -71,14 +73,68 @@ Instructions to use Nx CLI [here](./docs/NX_README.md).
 
 For more information on using Nx, refer to the [Nx documentation](https://nx.dev/getting-started/intro).
 
+### Project Structure Overview
+
+#### Root Directory
+
+- **package.json**: Contains the dependencies and scripts for the entire monorepo.
+- **nx.json**: Configuration for Nx, which manages the monorepo structure and build processes.
+- **tsconfig.base.json**: Base TypeScript configuration shared across the project.
+
+#### Apps
+
+- **apps/auth**: 
+  - **Purpose**: Handles user authentication and data retrieval.
+  - **Key Features**: Login, registration, and user profile management.
+
+- **apps/order**: 
+  - **Purpose**: Manages order processing, checkout, and payment handling.
+  - **Key Features**: Cart management, order tracking, and payment integration.
+
+- **apps/web**: 
+  - **Purpose**: The main web application interface.
+  - **Key Features**: User interaction with the system.
+  - **Configuration**: 
+    - **tsconfig.json**: TypeScript configuration specific to the web app.
+
+#### Libs
+
+- **libs/backend/core**: 
+  - **Purpose**: Contains business logic and common utilities.
+  - **Key Features**: Shared functions and services used across backend applications.
+
+- **libs/backend/db**: 
+  - **Purpose**: Manages database access using Prisma and the Repository pattern.
+  - **Key Features**: Database schema definitions and data access layers.
+  - **Documentation**: 
+    - **README.md**: Provides details on database setup and usage.
+
+- **libs/backend/email**: 
+  - **Purpose**: Handles email template creation and sending.
+  - **Key Features**: Uses MJML for templates and provides email sending services.
+
+- **libs/models**: 
+  - **Purpose**: Defines DTOs and common types.
+  - **Key Features**: Ensures consistency across web and backend services.
+
+- **libs/frontend/ui**: 
+  - **Purpose**: Contains UI components and themes.
+  - **Key Features**: Built with React and TailwindCSS, includes Storybook for component visualization.
+  - **Configuration**: 
+    - **package.json**: Dependencies and scripts for the UI library.
+    - **tsconfig.json**: TypeScript configuration for the UI library.
+
+#### Additional paths
+
+- **prompts**: Contains initial project prompts or guidelines to be used with your AI tools (Cursor, etc).
+
 ### Run the web app
 
 ```sh
-npm run build
 npm run dev:web
 ```
 
-### Run the ui lib
+### Run the ui lib (See all the UI components)
 
 ```sh
 npm run storybook
@@ -86,7 +142,7 @@ npm run storybook
 
 ### Run services with Docker Compose
 
-- Build the image locally:
+- Build the images:
 ```sh
 docker-compose build --no-cache
 ```
@@ -96,7 +152,7 @@ docker-compose build --no-cache
 docker-compose up -d
 ```
 
-- To clear the images: 
+- Delete the services: 
 ```sh
 docker-compose down --volumes
 ```
@@ -105,9 +161,37 @@ docker-compose down --volumes
 
 ```sh
 npx nx show projects
+npx nx graph
 ```
+
+View the Database diagram [here](./libs/backend/db/README.md).
 
 Do you want to change the path of a project to decide your own organization? No problem:
 ```sh
 npx nx g @nx/workspace:move --project core libs/backend/common
 ```
+
+## Docker
+
+- Images:
+  * https://registry.hub.docker.com/r/postgis/postgis/
+  * https://registry.hub.docker.com/r/temporalio/auto-setup
+  * https://registry.hub.docker.com/r/temporalio/admin-tools
+  * https://registry.hub.docker.com/r/temporalio/ui
+
+You can see all the images needed to run this project in development in the [docker-compose.yml](./docker-compose.yml) file.
+
+## Supporting 🍻
+I believe in Unicorns 🦄
+Support [me](http://www.paypal.me/jdnichollsc/2), if you do too.
+
+Donate **Ethereum**, **ADA**, **BNB**, **SHIBA**, **USDT/USDC**, **DOGE**, etc:
+
+> Wallet address: jdnichollsc.eth
+
+Please let us know your contributions! 🙏
+
+## Happy coding 💯
+Made with ❤️
+
+<img width="150px" src="https://avatars0.githubusercontent.com/u/28855608?s=200&v=4" align="right">

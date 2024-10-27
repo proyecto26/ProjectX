@@ -91,11 +91,9 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./apps:/app/apps
-      - ./libs:/app/libs
+      - .:/app
     command: >
-      bash -c "npx nx reset &&
-      npm run dev:auth"
+      bash -c "npm run dev:auth"
     ports:
       - "${AUTH_PORT:-8081}:8081"
     depends_on:
@@ -111,11 +109,9 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./apps:/app/apps
-      - ./libs:/app/libs
+      - .:/app
     command: >
-      bash -c "npx nx reset &&
-      npm run dev:order"
+      bash -c "npm run dev:order"
     ports:
       - "${ORDER_PORT:-8082}:8082"
     depends_on:

@@ -1,8 +1,25 @@
+# Node modules and build artifacts
 node_modules
 dist
+build
+.cache
+
+# Nx cache and temporary files
+.nx
+tmp
+
+# Version control and configuration files
 .git
 .gitignore
 Dockerfile
 .dockerignore
+
+# Logs and error files
 npm-debug.log
 yarn-error.log
+
+# Editor and OS-specific files
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
