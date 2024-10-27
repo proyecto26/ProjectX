@@ -3,7 +3,7 @@
 <p align="center">
   <img width="100px" src="https://nx.dev/favicon/favicon.svg">
   <img width="100px" src="https://remix.run/favicon-192.png">
-  <img width="400px" src="https://s3.amazonaws.com/media-p.slid.es/uploads/128659/images/11641364/cityjs.png">
+  <img width="300px" src="https://s3.amazonaws.com/media-p.slid.es/uploads/128659/images/11641364/cityjs.png">
   <img width="100px" src="https://nestjs.com/logo-small-gradient.76616405.svg">
   <img width="100px" src="https://s3.amazonaws.com/media-p.slid.es/uploads/128659/images/11123439/pasted-from-clipboard.png">
 </p>
