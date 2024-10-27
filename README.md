@@ -75,6 +75,13 @@ For more information on using Nx, refer to the [Nx documentation](https://nx.dev
 
 ### Project Structure Overview
 
+<img width="1643" alt="image" src="https://github.com/user-attachments/assets/82e99efc-640d-4ba4-a485-c92c0184f473">
+
+
+<details>
+  <summary><b>Markmap format 🍬</b></summary>
+
+```markmap
 #### Root Directory
 
 - **package.json**: Contains the dependencies and scripts for the entire monorepo.
@@ -127,6 +134,8 @@ For more information on using Nx, refer to the [Nx documentation](https://nx.dev
 #### Additional paths
 
 - **prompts**: Contains initial project prompts or guidelines to be used with your AI tools (Cursor, etc).
+```
+</details>
 
 ### Run the web app
 
