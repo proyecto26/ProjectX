@@ -12,11 +12,57 @@
       "options": {
         "commands": [
           {
-            "command": "npx tsc -p libs/frontend/ui/tsconfig.tailwind.json"
+            "command": "nx run ui:build:lib"
+          },
+          {
+            "command": "npx tsc -p libs/frontend/ui/tsconfig.tailwind.json --module ESNext && mv dist/libs/frontend/ui/tailwind.config.js dist/libs/frontend/ui/tailwind.config.mjs"
+          },
+          {
+            "command": "npx tsc -p libs/frontend/ui/tsconfig.tailwind.json --module CommonJS && mv dist/libs/frontend/ui/tailwind.config.js dist/libs/frontend/ui/tailwind.config.js"
           }
         ],
         "parallel": false
       }
     },
+    "build:lib": {
+      "options": {
+        "cwd": "libs/frontend/ui",
+        "command": "vite build"
+      },
+      "cache": true,
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production",
+        {
+          "externalDependencies": [
+            "vite"
+          ]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/libs/frontend/ui"
+      ],
+      "metadata": {
+        "technologies": [
+          "vite"
+        ],
+        "description": "Run Vite build",
+        "help": {
+          "command": "npx vite build --help",
+          "example": {
+            "options": {
+              "sourcemap": true,
+              "manifest": "manifest.json"
+            }
+          }
+        }
+      },
+      "executor": "nx:run-commands",
+      "configurations": {},
+      "parallelism": true
+    }
   }
 }

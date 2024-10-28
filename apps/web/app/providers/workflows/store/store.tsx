@@ -3,6 +3,7 @@ import React, {
   createContext,
   PropsWithChildren,
   ComponentType,
+  useContext,
 } from 'react';
 
 import { initialState, reducer } from './reducer';
@@ -53,13 +54,13 @@ export function withStoreProvider<T>(
 }
 
 export function useStore() {
-  return React.useContext(GlobalContext);
+  return useContext(GlobalContext);
 }
 
 export function useStoreState() {
-  return React.useContext(GlobalContext)?.[0];
+  return useContext(GlobalContext)?.[0];
 }
 
 export function useStoreDispatch() {
-  return React.useContext(GlobalContext)?.[1];
+  return useContext(GlobalContext)?.[1];
 }

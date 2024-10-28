@@ -1,6 +1,6 @@
+import { Button } from '@projectx/ui';
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { User, Phone, MapPin } from 'lucide-react';
-import Button from '@projectx/ui/src/lib/buttons/button/Button';
 
 interface ProfileData {
   firstName: string;

@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [
     react(),
     nxViteTsPaths(),
-    nxCopyAssetsPlugin(['*.md']),
+    nxCopyAssetsPlugin(['*.md', 'tailwind.config.ts', 'styles/**/*']),
     dts({
       entryRoot: 'src',
       tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
@@ -32,9 +32,9 @@ export default defineConfig({
       transformMixedEsModules: true,
     },
     lib: {
+      name: 'ui',
       // Could also be a dictionary or array of multiple entry points.
       entry: 'src/index.ts',
-      name: 'ui',
       fileName: 'index',
       // Change this to the formats you want to support.
       // Don't forget to update your package.json as well.
@@ -42,7 +42,13 @@ export default defineConfig({
     },
     rollupOptions: {
       // External packages that should not be bundled into your library.
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
+      external: [
+        'react',
+        'react-dom',
+        'react-router-dom',
+        'react/jsx-runtime',
+        'tailwindcss',
+      ],
     },
   },
 });

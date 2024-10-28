@@ -123,8 +123,8 @@ function App({ csrfToken, theme, user, accessToken }: AppProps) {
   );
 }
 
-const AppWithProviders = withStoreProvider(withAuthProvider(
-  withQueryClientProvider(withCartProvider(App))
+const AppWithProviders = withQueryClientProvider(withStoreProvider(
+  withAuthProvider(withCartProvider(App))
 ));
 /**
  * This is the root component of the app. It is used to wrap the app with the providers.

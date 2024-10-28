@@ -1,6 +1,6 @@
 import { ShoppingCartIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 import { useCart } from 'react-use-cart';
 
 import Button from '../buttons/button/Button';
@@ -53,7 +53,7 @@ export function ShoppingCartDrawer() {
         )}
       </Button>
 
-      {isDrawerOpen && ReactDOM.createPortal(
+      {isDrawerOpen && createPortal(
         <div className="fixed right-0 top-0 z-[100] w-full max-w-md">
           <ShoppingCartContent
             key="shopping-cart-content"

@@ -1,6 +1,9 @@
+@import '../../../libs/frontend/ui/styles/index.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {

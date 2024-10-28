@@ -62,7 +62,7 @@ not only for communication between services **(Microservices Orchestration)** bu
 brew install node
 brew install git
 brew install docker-compose
-npm install -g nx
+npm add --global nx@latest
 ```
 
 ### Documentation 📚
@@ -186,6 +186,13 @@ View the Database diagram [here](./libs/backend/db/README.md).
 Do you want to change the path of a project to decide your own organization? No problem:
 ```sh
 npx nx g @nx/workspace:move --project core libs/backend/common
+```
+
+## Update project
+
+```sh
+npx nx migrate latest
+npx nx migrate --run-migrations
 ```
 
 ## Docker

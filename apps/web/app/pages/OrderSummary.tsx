@@ -56,6 +56,9 @@ const products = [
                       <img
                         alt={product.imageAlt}
                         src={product.imageSrc}
+                        style={{
+                          viewTransitionName: `product-${product.id}`,
+                        }}
                         className="h-24 w-24 flex-none rounded-md bg-gray-100 dark:bg-gray-700 object-cover object-center"
                       />
                       <div className="flex-auto space-y-1">

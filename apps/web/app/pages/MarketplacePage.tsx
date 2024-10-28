@@ -38,7 +38,16 @@ export const MarketplacePage: React.FC = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <figure><img src={product.image} alt={product.name} className="w-full h-48 object-cover" /></figure>
+            <figure>
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-48 object-cover"
+                style={{
+                  viewTransitionName: `product-${product.id}`,
+                }}
+              />
+            </figure>
             <div className="card-body">
               <h2 className="card-title font-semibold">${product.price.toFixed(2)}</h2>
               <p className="text-lg ">{product.name}</p>

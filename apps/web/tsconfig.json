@@ -17,7 +17,6 @@
     "paths": {
       "~/*": ["app/*"],
       "@projectx/ui": ["../../libs/frontend/ui/src/index.ts"],
-      "@projectx/ui/*": ["../../libs/frontend/ui/*"],
       "@projectx/email": ["../../libs/backend/email/src/index.ts"],
       "@projectx/ui/tailwind-config": ["../../libs/frontend/ui/tailwind.config.ts"],
       "@projectx/models": ["../../libs/models/src/index.ts"],

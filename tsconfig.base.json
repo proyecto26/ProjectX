@@ -8,11 +8,12 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es2017",
     "module": "esnext",
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "incremental": true,
     "baseUrl": ".",
     "paths": {
       "@projectx/core": ["libs/backend/core/src/index.ts"],

@@ -1,2 +1,6 @@
 @import './base.css';
 @import './dark.css';
+
+@view-transition: {
+    navigation: auto;
+}

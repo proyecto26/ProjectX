@@ -41,7 +41,7 @@ export function LoginPage() {
   };
 
   useEffect(() => {
-    if (fetcher.data?.ok) {
+    if (fetcher?.data?.ok) {
       setLoading(false);
       setLoginState('code');
     }
