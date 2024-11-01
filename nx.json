@@ -1,10 +1,7 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*",
-      "sharedGlobals"
-    ],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
       "default",
       "!{projectRoot}/.eslintrc.json",
@@ -18,9 +15,7 @@
       "!{projectRoot}/src/test-setup.[jt]s",
       "!{projectRoot}/test-setup.[jt]s"
     ],
-    "sharedGlobals": [
-      "{workspaceRoot}/.github/workflows/ci.yml"
-    ]
+    "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
   },
   "neverConnectToCloud": true,
   "plugins": [
@@ -79,22 +74,14 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": [
-        "apps/auth-e2e/**/*",
-        "apps/order-e2e/**/*"
-      ]
+      "exclude": ["apps/auth-e2e/**/*", "apps/order-e2e/**/*"]
     }
   ],
   "targetDefaults": {
     "@nx/remix:build": {
       "cache": false,
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     },
     "build-storybook": {
       "cache": true

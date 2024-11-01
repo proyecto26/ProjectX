@@ -23,6 +23,8 @@ services:
       retries: 5
     labels:
       - "com.*project-name.service=database"
+    expose:
+      - "${POSTGRES_PORT:-5432}"
 
   temporal:
     image: temporalio/auto-setup:1.24.3.0
@@ -87,36 +89,55 @@ services:
   auth:
     container_name: auth
     env_file: .env
+    environment:
+      - NX_DISABLE_DB=true
+    depends_on:
+      db:
+        condition: service_healthy
+      temporal:
+        condition: service_started
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
       - .:/app
+      - /app/libs/frontend
+      - /app/node_modules
     command: >
-      bash -c "npm run dev:auth"
+      bash -c "npm run prisma:generate && npm run prisma:migrate &&
+      npx nx reset && npm run dev:auth"
     ports:
       - "${AUTH_PORT:-8081}:8081"
-    depends_on:
-      - temporal
-      - db
+      - 9229:9229
     expose:
-      - 8081
+      - 9229
+    network_mode: host
 
   order:
     container_name: order
     env_file: .env
+    environment:
+      - NX_DISABLE_DB=true
+    depends_on:
+      db:
+        condition: service_healthy
+      temporal:
+        condition: service_started
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
       - .:/app
+      - /app/libs/frontend
+      - /app/node_modules
     command: >
-      bash -c "npm run dev:order"
+      bash -c "npm run prisma:generate && npm run prisma:migrate && npx nx reset && npm run dev:order"
     ports:
       - "${ORDER_PORT:-8082}:8082"
-    depends_on:
-      - temporal
-      - db
+      - 9230:9230
+    expose:
+      - 9230
+    network_mode: host
 
 networks:
   default:

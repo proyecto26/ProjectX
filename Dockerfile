@@ -7,9 +7,8 @@ WORKDIR /app
 # Copy the application files
 COPY . .
 
+RUN npm add --global nx@latest
+
 # Install the application dependencies
 RUN npm install
 
-RUN npm install @rollup/rollup-linux-arm64-gnu -g
-
-RUN npm run prisma:generate

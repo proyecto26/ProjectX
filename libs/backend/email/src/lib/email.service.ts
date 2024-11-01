@@ -23,10 +23,14 @@ export class EmailService {
     if (!apiKey || !fromEmail || !fromName) {
       throw new InternalServerErrorException('Email configuration is missing');
     }
-    this.logger.log('Email configuration is loaded');
-    SendGrid.setApiKey(apiKey);
     this.fromEmail = fromEmail;
     this.fromName = fromName;
+    try {
+      SendGrid.setApiKey(apiKey);
+    } catch {
+      throw new InternalServerErrorException('SendGrid API key is invalid');
+    }
+    this.logger.log('Email configuration is loaded');
   }
 
   async sendEmail(mail: SendGrid.MailDataRequired, template: EmailTemplates) {

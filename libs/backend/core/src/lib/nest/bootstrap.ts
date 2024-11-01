@@ -33,8 +33,6 @@ export async function bootstrapApp<T extends NestExpressApplication>(
 
   app.setGlobalPrefix(apiPrefix);
 
-  logger.log(`Starting worker on port ${port}`);
-
   // PARSE HTTP REQUESTS
   app.use(urlencoded({ extended: true }));
   app.use(json({ limit: '10mb' }));
@@ -48,22 +46,32 @@ export async function bootstrapApp<T extends NestExpressApplication>(
 
   // SECURITY
   setupAppSecurity(app);
+  logger.log('Security is enabled');
 
   // Local development
   if (env === Environment.Development) {
     app.enableShutdownHooks();
+    logger.log('Shutdown hooks are enabled');
   }
 
   // Register the proxy's IP address (load balancer or reverse proxy)
   app.set('trust proxy', function (ip: string) {
     return TRUSTED_IPS.includes(ip);
   });
+  logger.log('Trusted IPs are set');
 
   // Enable Swagger UI
   if (env !== Environment.Production) {
     setupAppSwagger(app);
+    logger.log('Swagger is enabled');
   }
 
-  await app.listen(port);
-  logger.log(`🚀 Application is running on port ${port}`);
+  try {
+    logger.log(`Starting app on port ${port}`);
+    await app.listen(port);
+    logger.log(`🚀 Application is running on port ${port}`);
+  } catch (error) {
+    logger.error('Failed to start application', error);
+    throw error;
+  }
 }

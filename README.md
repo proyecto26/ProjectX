@@ -10,7 +10,7 @@
 
 ## Notable Temporal Links
 
-- [Get started with Temporal and TypeScript]()
+- [Get started with Temporal and TypeScript](https://github.com/temporalio/sdk-typescript)
 
 ### Public Courses
 

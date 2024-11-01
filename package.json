@@ -17,8 +17,9 @@
     "storybook": "nx run ui:storybook",
     "storybook:build": "nx run ui:build-storybook",
     "storybook:serve": "nx run ui:serve-storybook",
-    "prisma:migrate": "npx prisma migrate dev --schema=./libs/backend/db/prisma/schema.prisma",
-    "prisma:generate": "npx prisma generate  --schema=./libs/backend/db/prisma/schema.prisma"
+    "prisma:generate": "npx prisma generate  --schema=./libs/backend/db/prisma/schema.prisma",
+    "prisma:migrate": "npx prisma migrate deploy --schema=./libs/backend/db/prisma/schema.prisma",
+    "prisma:migrate:dev": "npx prisma migrate dev --schema=./libs/backend/db/prisma/schema.prisma"
   },
   "private": true,
   "devDependencies": {
@@ -161,9 +162,5 @@
     "use-dehydrated-state": "0.1.0",
     "usehooks-ts": "3.1.0",
     "uuid": "10.0.0"
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-arm64-gnu": "4.24.0",
-    "@rollup/rollup-linux-x64-gnu": "4.9.5"
   }
 }

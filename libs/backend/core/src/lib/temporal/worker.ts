@@ -23,7 +23,7 @@ export async function createWorkerOptions(
   const workerLogger = pinoLogger.child({ label: 'worker' });
 
   Runtime.install({
-    logger: new DefaultLogger('DEBUG', (entry) => {
+    logger: new DefaultLogger(logLevel, (entry) => {
       workerLogger.debug({
         message: entry.message,
         timestamp: entry.timestampNanos,
