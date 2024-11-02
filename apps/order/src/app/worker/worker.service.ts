@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createWorkerOptions } from '@projectx/core';
+import { createWorkerOptions } from '@projectx/workflows';
 import { Worker } from '@temporalio/worker';
 import path from 'path';
 

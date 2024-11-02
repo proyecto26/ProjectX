@@ -25,6 +25,5 @@ yarn-error.log
 Thumbs.db
 
 # Ignore repo files
-package-lock.json
 libs/frontend
 apps/web

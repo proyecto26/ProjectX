@@ -56,11 +56,12 @@ export async function loginUserWorkflow(data: LoginWorkflowData): Promise<void> 
   );
 
   try {
-    // Send login email
+    // Send login email with a generated hashed code
     const hashedCode = await sendLoginEmail(data.email);
     state.code = hashedCode;
     state.codeStatus = LoginWorkflowCodeStatus.SENT;
 
+    // Wait for user to verify code (human interaction)
     if (await condition(() => !!state.user, '10m')) {
       state.status = LoginWorkflowStatus.SUCCESS;
       log.info(`User logged in, user: ${state.user}`);

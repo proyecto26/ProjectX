@@ -68,10 +68,10 @@ export async function bootstrapApp<T extends NestExpressApplication>(
 
   try {
     logger.log(`Starting app on port ${port}`);
-    await app.listen(port);
+    await app.listen(port, '0.0.0.0');
     logger.log(`🚀 Application is running on port ${port}`);
   } catch (error) {
-    logger.error('Failed to start application', error);
+    logger.error(`Failed to start application, error: ${error}`);
     throw error;
   }
 }

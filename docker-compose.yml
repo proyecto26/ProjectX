@@ -2,11 +2,33 @@ version: '3.6'
 
 x-project-name: &project-name ${COMPOSE_PROJECT_NAME:-projectx}
 
+# Define common service settings to reduce duplication
+x-service-common: &service-common
+  env_file: .env
+  networks:
+    - default
+  depends_on:
+    db:
+      condition: service_healthy
+    temporal:
+      condition: service_started
+  environment:
+    - NX_DISABLE_DB=true
+  build:
+    context: .
+    dockerfile: Dockerfile
+  volumes:
+    - .:/app
+    - /app/libs/frontend
+    - /app/node_modules
+
 services:
   db:
     image: postgis/postgis:17-3.5
     container_name: ${COMPOSE_PROJECT_NAME:-projectx}-db
     restart: always
+    networks:
+      - default
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -87,61 +109,37 @@ services:
 
   # PROJECTX SERVICES
   auth:
+    <<: *service-common
     container_name: auth
-    env_file: .env
-    environment:
-      - NX_DISABLE_DB=true
-    depends_on:
-      db:
-        condition: service_healthy
-      temporal:
-        condition: service_started
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - .:/app
-      - /app/libs/frontend
-      - /app/node_modules
     command: >
-      bash -c "npm run prisma:generate && npm run prisma:migrate &&
-      npx nx reset && npm run dev:auth"
+      bash -c "
+      npm run prisma:generate &&
+      npm run prisma:migrate &&
+      npx nx reset &&
+      npm run dev:auth
+      "
     ports:
-      - "${AUTH_PORT:-8081}:8081"
+      - "${AUTH_PORT:-9095}:${AUTH_PORT:-9095}"
       - 9229:9229
-    expose:
-      - 9229
-    network_mode: host
 
   order:
+    <<: *service-common
     container_name: order
-    env_file: .env
-    environment:
-      - NX_DISABLE_DB=true
-    depends_on:
-      db:
-        condition: service_healthy
-      temporal:
-        condition: service_started
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - .:/app
-      - /app/libs/frontend
-      - /app/node_modules
     command: >
-      bash -c "npm run prisma:generate && npm run prisma:migrate && npx nx reset && npm run dev:order"
+      bash -c "
+      npm run prisma:generate &&
+      npm run prisma:migrate &&
+      npx nx reset &&
+      npm run dev:order
+      "
     ports:
-      - "${ORDER_PORT:-8082}:8082"
+      - "${ORDER_PORT:-9096}:${ORDER_PORT:-9096}"
       - 9230:9230
-    expose:
-      - 9230
-    network_mode: host
 
 networks:
   default:
     name: ${COMPOSE_PROJECT_NAME:-projectx}-network
+    driver: bridge
 
 volumes:
   postgres_data:

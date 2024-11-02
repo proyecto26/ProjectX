@@ -5,7 +5,6 @@ import { LoggerModule } from 'nestjs-pino';
 
 import { createLoggerOptions } from './logger';
 import { HealthModule } from './health';
-import { ClientService } from './temporal';
 
 @Module({
   imports: [
@@ -24,8 +23,5 @@ import { ClientService } from './temporal';
       },
     }),
   ],
-  controllers: [],
-  providers: [ClientService],
-  exports: [ClientService],
 })
 export class CoreModule {}

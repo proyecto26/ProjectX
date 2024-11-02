@@ -73,6 +73,12 @@ npm add @nestjs/axios axios
 npm add -D @golevelup/ts-jest
 ```
 
+- Create a lib for workflows utils:
+```sh
+npx nx g @nx/nest:lib libs/backend/workflows
+```
+
+
 - Install Payment third party provider
 ```sh
 npm add mercadopago

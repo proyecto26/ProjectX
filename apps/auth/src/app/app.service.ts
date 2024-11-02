@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ClientService } from '@projectx/core';
-import { AuthLoginDto } from '@projectx/models';
-import { loginUserWorkflow } from '../workflows';
 import { ConfigService } from '@nestjs/config';
+import { AuthLoginDto } from '@projectx/models';
+import { ClientService } from '@projectx/workflows';
+
+import { loginUserWorkflow } from '../workflows';
 
 @Injectable()
 export class AppService {

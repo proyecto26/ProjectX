@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CoreModule, validateConfiguration } from '@projectx/core';
 import { DbModule } from '@projectx/db';
 import { EmailModule } from '@projectx/email';
+import { WorkflowsModule } from '@projectx/workflows';
 
 import { EnvironmentVariables } from '../config/env.config';
 import appConfig from '../config/app.config';
@@ -14,6 +15,7 @@ import { WorkerModule } from './worker/worker.module';
 
 @Module({
   imports: [
+    WorkerModule,
     DbModule,
     CoreModule,
     ConfigModule.forRoot({
@@ -26,7 +28,7 @@ import { WorkerModule } from './worker/worker.module';
       validate: (config) => validateConfiguration(config, EnvironmentVariables),
     }),
     EmailModule,
-    WorkerModule,
+    WorkflowsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

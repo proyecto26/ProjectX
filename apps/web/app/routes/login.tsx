@@ -30,7 +30,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
   }
 
-  return json({ error: null, ok: true });
+  return json({ error: 'Invalid intent', ok: false });
 };
 
 export default function Index() {

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { compareValue, hashValue } from '@projectx/core';
 import { EmailService } from '@projectx/email';
 import { UserDto } from '@projectx/models';
@@ -11,6 +11,7 @@ function generateRandomSixDigitNumber(): number {
 
 @Injectable()
 export class ActivitiesService {
+  readonly logger = new Logger(ActivitiesService.name);
   constructor(
     private readonly emailService: EmailService,
     private readonly userService: UserService,
@@ -21,6 +22,7 @@ export class ActivitiesService {
   }
 
   async sendLoginEmail(email: string) {
+    this.logger.log(`sendLoginEmail(${email})`);
     const code = generateRandomSixDigitNumber();
     const hashedCode = await hashValue(code.toString());
     await this.emailService.sendLoginEmail({
