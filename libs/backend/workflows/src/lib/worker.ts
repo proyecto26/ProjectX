@@ -1,4 +1,5 @@
 import { ConfigService } from '@nestjs/config';
+import { createLoggerOptions } from '@projectx/core';
 import {
   bundleWorkflowCode,
   DefaultLogger,
@@ -7,8 +8,6 @@ import {
   WorkerOptions,
 } from '@temporalio/worker';
 import pino from 'pino';
-
-import { createLoggerOptions } from '../logger';
 
 export async function createWorkerOptions(
   config: ConfigService,

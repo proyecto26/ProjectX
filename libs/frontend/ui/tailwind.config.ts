@@ -1,4 +1,3 @@
-import { createGlobPatternsForDependencies } from '@nx/react/tailwind';
 import type { Config } from 'tailwindcss';
 import { join } from 'path';
 import defaultTheme from 'tailwindcss/defaultTheme';
@@ -23,7 +22,6 @@ export default {
       __dirname,
       '{src,pages,components,app}/**/*!(*.stories|*.spec).{ts,tsx,html}'
     ),
-    ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {
     extend: {
