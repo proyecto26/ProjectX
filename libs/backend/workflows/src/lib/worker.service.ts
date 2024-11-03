@@ -11,11 +11,14 @@ import { Worker } from '@temporalio/worker';
 
 import { createWorkerOptions } from './worker';
 import { delay } from './utils';
+import { WORKER_OPTIONS_TOKEN } from './constants';
 
 export interface WorkerServiceOptions<T> {
   activitiesService: T;
   workflowsPath: string;
 }
+
+export const RESTRICTED_PROPERTIES = ['caller', 'callee', 'arguments'];
 
 @Injectable()
 export class WorkerService<T extends Record<string, unknown>>
@@ -25,12 +28,11 @@ export class WorkerService<T extends Record<string, unknown>>
   private worker?: Worker;
   constructor(
     private readonly configService: ConfigService,
-    @Inject('WORKER_OPTIONS')
+    @Inject(WORKER_OPTIONS_TOKEN)
     private readonly workerOptions: WorkerServiceOptions<T>
   ) {}
 
   async onModuleInit() {
-    await delay(2000); // Delay the worker initialization to allow the server to start
     this.initializeWorkerWithRetry();
   }
 
@@ -42,24 +44,20 @@ export class WorkerService<T extends Record<string, unknown>>
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
         this.logger.debug(`🚀 Attempt ${attempt} to start Temporal worker...`);
-        const activities: Record<string, Function> = {};
         const activitiesServiceInstance = this.workerOptions.activitiesService;
-        for (const key of Object.getOwnPropertyNames(
-          Object.getPrototypeOf(activitiesServiceInstance)
-        )) {
-          if (['caller', 'callee', 'arguments'].includes(key)) {
-            continue;
-          }
-          const property = activitiesServiceInstance[key];
-
-          // Verifica si la propiedad es un método
-          if (typeof property === 'function') {
-            // Vincula el método al contexto de this.activitiesService
-            activities[key] = property.bind(
-              this.workerOptions.activitiesService
-            );
-          }
-        }
+        
+        const activities = Object.getOwnPropertyNames(Object.getPrototypeOf(activitiesServiceInstance))
+          .reduce((acc, key) => {
+            const property = activitiesServiceInstance[key];
+            // Verify if the property is a function and not restricted
+            if (!RESTRICTED_PROPERTIES.includes(key) && typeof property === 'function') {
+              // Bind the context of the service to the function
+              acc[key] = property.bind(
+                this.workerOptions.activitiesService
+              );
+            }
+            return acc;
+          }, {} as Record<string, Function>);
 
         const workerOptions = await createWorkerOptions(
           this.configService,
