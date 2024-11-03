@@ -43,7 +43,9 @@ export function ShoppingCartContent({
 
   return (
     <div
-      className={classnames('drawer drawer-end', isOpen ? 'drawer-open' : '')}
+      role="dialog"
+      aria-modal="true"
+      className={classnames('drawer drawer-end fixed right-0 top-0 z-[100] w-full max-w-md', isOpen ? 'drawer-open' : '')}
     >
       <input
         id={inputId}

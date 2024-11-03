@@ -29,6 +29,7 @@ export const mediaSrc = replaceNewLinesWithSpaces(`
 export const imgSrc = replaceNewLinesWithSpaces(`
   ${defaultSrc}
   https://*.unsplash.com
+  https://placehold.co
 `);
 
 export const contentSecurityPolicy = replaceNewLinesWithSpaces(`
