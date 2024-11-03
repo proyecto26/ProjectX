@@ -39,8 +39,11 @@ not only for communication between services **(Microservices Orchestration)** bu
 ### Use Cases
 
 •	**Order Processing Systems:** Managing the lifecycle of orders from placement to fulfillment, including inventory checks, payment processing, and shipping.
+
 •	**User Onboarding:** Coordinating steps involved in onboarding new users, such as account creation, email verification, and initial setup tasks.
+
 •	**Data Pipelines:** Orchestrating data ingestion, transformation, and storage processes with reliability and scalability.
+
 •	**Batch Processing:** Handling large-scale batch jobs with retry mechanisms and progress monitoring.
 
 ## Setting Up
@@ -67,10 +70,10 @@ npm add --global nx@latest
 
 ### Documentation 📚
 
-- FrontEnd:
-Commands used to create the project structure [here](./docs/frontend/README.md).
+- **FrontEnd:**
+Commands used to create the project structure (Nx, RemixJS, etc) [here](./docs/frontend/README.md).
 
-- BackEnd:
+- **BackEnd:**
 Commands used to create the services (NestJS, Temporal, etc) [here](./docs/backend/README.md).
 
 ## Usage
