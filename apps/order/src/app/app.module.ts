@@ -4,6 +4,7 @@ import { CoreModule, validateConfiguration } from '@projectx/core';
 import { DbModule } from '@projectx/db';
 import { EmailModule } from '@projectx/email';
 import { WorkflowsModule } from '@projectx/workflows';
+import path from 'path';
 
 import { EnvironmentVariables } from '../config/env.config';
 import appConfig from '../config/app.config';
@@ -11,11 +12,11 @@ import temporalConfig from '../config/temporal.config';
 import swaggerConfig from '../config/swagger.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { WorkerModule } from './worker/worker.module';
+import { ActivitiesService } from './activities/activities.service';
+import { ActivitiesModule } from './activities/activities.module';
 
 @Module({
   imports: [
-    WorkerModule,
     DbModule,
     CoreModule,
     ConfigModule.forRoot({
@@ -28,7 +29,14 @@ import { WorkerModule } from './worker/worker.module';
       validate: (config) => validateConfiguration(config, EnvironmentVariables),
     }),
     EmailModule,
-    WorkflowsModule,
+    WorkflowsModule.registerAsync({
+      imports: [ActivitiesModule],
+      useFactory: async (activitiesService: ActivitiesService) => ({
+        activitiesService,
+        workflowsPath: path.join(__dirname, '/workflows'),
+      }),
+      inject: [ActivitiesService],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

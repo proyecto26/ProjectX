@@ -1,19 +1,32 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+import {
+  Inject,
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createWorkerOptions } from '@projectx/workflows';
 import { Worker } from '@temporalio/worker';
-import path from 'path';
 
-import { ActivitiesService } from '../activities/activities.service';
-import { delay } from '@projectx/core';
+import { createWorkerOptions } from './worker';
+import { delay } from './utils';
+
+export interface WorkerServiceOptions<T> {
+  activitiesService: T;
+  workflowsPath: string;
+}
 
 @Injectable()
-export class WorkerService implements OnModuleInit {
-  private worker: Worker;
+export class WorkerService<T extends Record<string, unknown>>
+  implements OnModuleInit, OnModuleDestroy
+{
   readonly logger = new Logger(WorkerService.name);
+  private worker?: Worker;
   constructor(
     private readonly configService: ConfigService,
-    private readonly activitiesService: ActivitiesService
+    @Inject('WORKER_OPTIONS')
+    private readonly workerOptions: WorkerServiceOptions<T>
   ) {}
 
   async onModuleInit() {
@@ -22,32 +35,35 @@ export class WorkerService implements OnModuleInit {
   }
 
   async onModuleDestroy() {
-    if (this.worker) {
-      this.worker.shutdown();
-    }
+    this.worker?.shutdown();
   }
 
   private async initializeWorkerWithRetry(retries = 5, delayMs = 10000) {
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
         this.logger.debug(`🚀 Attempt ${attempt} to start Temporal worker...`);
-        const activities = {};
+        const activities: Record<string, Function> = {};
+        const activitiesServiceInstance = this.workerOptions.activitiesService;
         for (const key of Object.getOwnPropertyNames(
-          Object.getPrototypeOf(this.activitiesService)
+          Object.getPrototypeOf(activitiesServiceInstance)
         )) {
-          const property = this.activitiesService[key];
+          if (['caller', 'callee', 'arguments'].includes(key)) {
+            continue;
+          }
+          const property = activitiesServiceInstance[key];
 
           // Verifica si la propiedad es un método
           if (typeof property === 'function') {
             // Vincula el método al contexto de this.activitiesService
-            activities[key] = property.bind(this.activitiesService);
+            activities[key] = property.bind(
+              this.workerOptions.activitiesService
+            );
           }
         }
 
-        const workflowsPath = path.join(__dirname, '/workflows');
         const workerOptions = await createWorkerOptions(
           this.configService,
-          workflowsPath
+          this.workerOptions.workflowsPath
         );
 
         const worker = await Worker.create({
@@ -60,7 +76,9 @@ export class WorkerService implements OnModuleInit {
         this.logger.debug('🏃 Temporal worker is running!');
         return; // Exit the function if the worker starts successfully
       } catch (error) {
-        this.logger.error(`Attempt ${attempt} failed: ${error.message}`);
+        this.logger.error(
+          `Attempt ${attempt} failed: ${(error as Error).message}`
+        );
         if (attempt < retries) {
           this.logger.debug(`Retrying in ${delayMs / 1000} seconds...`);
           await delay(delayMs);

@@ -1,17 +1,22 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { delay } from '@projectx/core';
 import { Client, Connection } from '@temporalio/client';
 
+import { delay } from './utils';
+
 @Injectable()
-export class ClientService implements OnModuleInit {
-  public client: Client | undefined;
+export class ClientService implements OnModuleInit, OnModuleDestroy {
   readonly logger = new Logger(ClientService.name);
+  public client?: Client;
 
   constructor(private readonly configService: ConfigService) {}
 
   async onModuleInit() {
     this.initializeClientWithRetry()
+  }
+
+  async onModuleDestroy() {
+    this.client?.connection.close();
   }
 
   private async initializeClientWithRetry(retries = 10, delayMs = 5000) {
@@ -47,12 +52,6 @@ export class ClientService implements OnModuleInit {
           throw error; // Rethrow the error after all retries have failed
         }
       }
-    }
-  }
-
-  async onModuleDestroy() {
-    if (this.client) {
-      this.client.connection.close();
     }
   }
 }

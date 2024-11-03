@@ -14,7 +14,7 @@ export class ActivitiesService {
   readonly logger = new Logger(ActivitiesService.name);
   constructor(
     private readonly emailService: EmailService,
-    private readonly userService: UserService,
+    private readonly userService: UserService
   ) {}
 
   async getHelloMessage() {
@@ -22,13 +22,16 @@ export class ActivitiesService {
   }
 
   async sendLoginEmail(email: string) {
-    this.logger.log(`sendLoginEmail(${email})`);
     const code = generateRandomSixDigitNumber();
+    this.logger.log(`sendLoginEmail(${email}) - code generated: ${code}`);
     const hashedCode = await hashValue(code.toString());
-    await this.emailService.sendLoginEmail({
-      token: hashedCode,
-      userName: email.split('@')[0],
-    }, email);
+    await this.emailService.sendLoginEmail(
+      {
+        token: hashedCode,
+        userName: email.split('@')[0],
+      },
+      email
+    );
 
     return hashedCode;
   }
