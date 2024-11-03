@@ -1,4 +1,4 @@
-# Temporal Workshop for CityJS
+# ProjectX
 
 <p align="center">
   <img width="100px" src="https://nx.dev/favicon/favicon.svg">
