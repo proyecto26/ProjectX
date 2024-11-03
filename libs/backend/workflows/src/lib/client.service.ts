@@ -1,4 +1,9 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client, Connection } from '@temporalio/client';
 
@@ -12,7 +17,7 @@ export class ClientService implements OnModuleInit, OnModuleDestroy {
   constructor(private readonly configService: ConfigService) {}
 
   async onModuleInit() {
-    this.initializeClientWithRetry()
+    this.initializeClientWithRetry();
   }
 
   async onModuleDestroy() {
@@ -24,7 +29,8 @@ export class ClientService implements OnModuleInit, OnModuleDestroy {
       try {
         this.logger.debug(`🚀 Attempt ${attempt} to start Temporal client...`);
         const temporalHost = this.configService.get<string>('temporal.host');
-        const temporalNamespace = this.configService.get<string>('temporal.namespace');
+        const temporalNamespace =
+          this.configService.get<string>('temporal.namespace');
 
         const connection = await Connection.connect({
           address: temporalHost,
