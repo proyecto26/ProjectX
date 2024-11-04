@@ -28,7 +28,7 @@ import { HealthModule } from './health';
       useFactory: async (configService: ConfigService) => ({
         global: true,
         secret: configService.get('app.jwtSecret'),
-        signOptions: { expiresIn: '12 days', algorithm: 'RS256' },
+        signOptions: { expiresIn: '12 days' },
       }),
       inject: [ConfigService],
     }),

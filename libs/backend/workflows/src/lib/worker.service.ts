@@ -52,7 +52,7 @@ export class WorkerService<T extends Record<string, unknown>>
     const workerLogger = pinoLogger.child<string>({ label: 'worker' });
 
     Runtime.install({
-      logger: new DefaultLogger(logLevel, (entry) => {
+      logger: new DefaultLogger('INFO', (entry) => {
         workerLogger[logLevel]({
           message: entry.message,
           timestamp: entry.timestampNanos,
