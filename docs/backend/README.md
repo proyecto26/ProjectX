@@ -35,7 +35,7 @@ npx nx g @nx/nest:lib libs/backend/email
 npm add @sendgrid/mail mjml
 ```
 
-- Create a lib for backend utils (hashing functions, nestjs, logger and temporal core, etc):
+- Create a lib for backend utils (hashing functions, nestjs, logger and temporal utils, etc):
 ```sh
 npx nx g @nx/nest:lib libs/backend/core
 npm add -D @types/bcrypt

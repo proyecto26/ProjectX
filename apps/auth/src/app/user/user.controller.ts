@@ -7,7 +7,6 @@ import {
   NotFoundException,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
@@ -16,12 +15,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { AuthUser, User } from '@projectx/core';
+import { AuthUser, JwtAuthGuard, User } from '@projectx/core';
 import { UserDto, UserStatus } from '@projectx/models';
 
 @ApiBearerAuth()
 @ApiTags('User')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

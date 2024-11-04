@@ -7,7 +7,9 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Worker } from '@temporalio/worker';
+import { createLoggerOptions } from '@projectx/core';
+import { DefaultLogger, Runtime, Worker } from '@temporalio/worker';
+import pino from 'pino';
 
 import { createWorkerOptions } from './worker';
 import { delay } from './utils';
@@ -41,6 +43,24 @@ export class WorkerService<T extends Record<string, unknown>>
   }
 
   private async initializeWorkerWithRetry(retries = 5, delayMs = 10000) {
+    const logLevel = this.configService.get('app.logLevel') || 'info';
+    const apiPrefix = this.configService.get('app.apiPrefix');
+    const environment = this.configService.get('app.environment');
+    const loggerOptions = createLoggerOptions(logLevel, apiPrefix, environment);
+    const pinoLogger = pino(loggerOptions);
+    // Create loggers with different labels for the separate components
+    const workerLogger = pinoLogger.child<string>({ label: 'worker' });
+
+    Runtime.install({
+      logger: new DefaultLogger(logLevel, (entry) => {
+        workerLogger[logLevel]({
+          message: entry.message,
+          timestamp: entry.timestampNanos,
+          ...entry.meta,
+        });
+      }),
+    });
+    
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
         this.logger.debug(`🚀 Attempt ${attempt} to start Temporal worker...`);

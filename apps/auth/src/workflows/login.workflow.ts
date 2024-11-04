@@ -1,4 +1,11 @@
-import { condition, proxyActivities, setHandler, log, isCancellation, CancellationScope } from '@temporalio/workflow';
+import {
+  condition,
+  proxyActivities,
+  setHandler,
+  log,
+  isCancellation,
+  CancellationScope,
+} from '@temporalio/workflow';
 
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import {
@@ -10,7 +17,7 @@ import {
   LoginWorkflowStatus,
   verifyLoginCodeUpdate,
 } from '../../../../libs/backend/core/src/lib/user/user.workflow';
-import type { ActivitiesService } from '../app/activities/activities.service';
+import type { ActivitiesService } from '../main';
 
 const { sendLoginEmail } = proxyActivities<ActivitiesService>({
   startToCloseTimeout: '5m',
@@ -19,9 +26,7 @@ const { sendLoginEmail } = proxyActivities<ActivitiesService>({
     maximumInterval: '10s',
     maximumAttempts: 10,
     backoffCoefficient: 2,
-    nonRetryableErrorTypes: [
-      LoginWorkflowNonRetryableErrors.UNKNOWN_ERROR
-    ],
+    nonRetryableErrorTypes: [LoginWorkflowNonRetryableErrors.UNKNOWN_ERROR],
   },
 });
 
@@ -31,15 +36,14 @@ const { verifyLoginCode } = proxyActivities<ActivitiesService>({
     initialInterval: '2s',
     maximumInterval: '10s',
     maximumAttempts: 10,
-    nonRetryableErrorTypes: [
-      LoginWorkflowNonRetryableErrors.UNKNOWN_ERROR
-    ],
+    nonRetryableErrorTypes: [LoginWorkflowNonRetryableErrors.UNKNOWN_ERROR],
     backoffCoefficient: 2,
   },
 });
 
-export async function loginUserWorkflow(data: LoginWorkflowData): Promise<void> {
-
+export async function loginUserWorkflow(
+  data: LoginWorkflowData
+): Promise<void> {
   const state: LoginWorkflowState = {
     codeStatus: LoginWorkflowCodeStatus.PENDING,
     status: LoginWorkflowStatus.PENDING,
@@ -50,9 +54,12 @@ export async function loginUserWorkflow(data: LoginWorkflowData): Promise<void> 
     verifyLoginCodeUpdate,
     async (code) => {
       const user = await verifyLoginCode(data.email, code, state.code);
+      if (user) {
+        state.user = user;
+      }
       return { user };
     },
-    { description: 'Validate login code' },
+    { description: 'Validate login code' }
   );
 
   try {
@@ -70,11 +77,12 @@ export async function loginUserWorkflow(data: LoginWorkflowData): Promise<void> 
       log.error(`User login failed, email: ${data.email}`);
     }
   } catch (error) {
+    state.status = LoginWorkflowStatus.FAILED;
     log.error(`Login workflow failed, email: ${data.email}, error: ${error}`);
 
     if (isCancellation(error)) {
       return await CancellationScope.nonCancellable(async () => {
-        // TODO: Handle cancellation
+        // TODO: Handle workflow cancellation
       });
     }
   }
