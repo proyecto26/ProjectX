@@ -10,7 +10,7 @@
 
 > **ProjectX** is a comprehensive full-stack template designed to simplify the development of scalable and resilient applications using **React** and **Temporal**. By integrating Temporal’s advanced workflow orchestration with React’s dynamic frontend framework, ProjectX enables developers to build applications with durable executions and seamless communication between services.
 
-## Notable Temporal Links
+## Notable Links 🤓
 
 - [Get started with Temporal and TypeScript](https://github.com/temporalio/sdk-typescript)
 
@@ -23,7 +23,7 @@
 - [Securing Temporal Applications with TypeScript](https://temporal.talentlms.com/catalog/info/id:211)
 - [Introduction to Temporal Cloud](https://temporal.talentlms.com/catalog/info/id:144)
 
-## Why Temporal?
+## Why Temporal? 🤔
 
 ### Challenges of Maintaining State in Distributed Systems
 
@@ -49,7 +49,7 @@ Additionally, workflows support scheduled and time-based executions with configu
 
 •	**Batch Processing:** Handling large-scale batch jobs with retry mechanisms and progress monitoring.
 
-## Setting Up
+## Setting Up 🛠️
 
 ### Requirements 🧰
 
@@ -74,12 +74,12 @@ npm add --global nx@latest
 ### Documentation 📚
 
 - **FrontEnd:**
-Commands used to create the project structure (Nx, RemixJS, etc) [here](./docs/frontend/README.md).
+Commands used to create the project and frontend structure (Nx, RemixJS, etc) [here](./docs/frontend/README.md).
 
 - **BackEnd:**
 Commands used to create the services (NestJS, Temporal, etc) [here](./docs/backend/README.md).
 
-## Usage
+## Usage 🏃
 
 ### Monorepo
 
@@ -180,7 +180,7 @@ docker-compose up -d
 docker-compose down --volumes
 ```
 
-## Explore the project
+## Explore the project 👀
 
 ```sh
 npx nx show projects
@@ -194,14 +194,14 @@ Do you want to change the path of a project to decide your own organization? No 
 npx nx g @nx/workspace:move --project core libs/backend/common
 ```
 
-## Update project
+## Update project ⚡
 
 ```sh
 npx nx migrate latest
 npx nx migrate --run-migrations
 ```
 
-## Docker
+## Docker 🚢
 
 - Images:
   * https://registry.hub.docker.com/r/postgis/postgis/
