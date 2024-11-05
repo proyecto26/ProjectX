@@ -19,11 +19,11 @@ export class ActivitiesService {
 
   async sendLoginEmail(email: string) {
     const code = generateRandomSixDigitNumber();
-    const textCode = code.toString();
+    const textCode = code.toString().padStart(6, '0');
     this.logger.log(`sendLoginEmail(${email}) - code generated: ${textCode}`);
     await this.emailService.sendLoginEmail(
       {
-        token: textCode.padStart(6, '0'),
+        token: textCode,
         userName: email.split('@')[0],
       },
       email
@@ -34,7 +34,7 @@ export class ActivitiesService {
 
   async verifyLoginCode(email: string, code: number, hashedCode: string) {
     let user: UserDto | undefined = undefined;
-    const isValid = await compareValue(code.toString(), hashedCode);
+    const isValid = await compareValue(code.toString().padStart(6, '0'), hashedCode);
     if (isValid) {
       user = await this.userService.getOrCreate(email);
     }

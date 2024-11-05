@@ -1,23 +1,28 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import type { LoaderFunction, MetaFunction } from '@remix-run/node';
 
-import { getAccessTokenOrRedirect } from "~/cookies/auth.server";
-import { AdminPage } from "~/pages/Admin";
-import PageLayout from "~/pages/PageLayout";
+import { getAccessTokenOrRedirect } from '~/cookies/auth.server';
+import { AdminPage } from '~/pages/Admin';
+import PageLayout from '~/pages/PageLayout';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Marketplace - Your E-commerce Store" },
-    { name: "description", content: "Browse our wide selection of products in our online marketplace." },
+    { title: 'ProjectX - Admin Dashboard' },
+    {
+      name: 'description',
+      content:
+        'Display the admin dashboard to manage your orders, notifications, and other settings.',
+    },
   ];
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   await getAccessTokenOrRedirect(request);
+  return null;
 };
 
 export default function Index() {
   return (
-    <PageLayout title="ProjectX">
+    <PageLayout title="Admin">
       <AdminPage />
     </PageLayout>
   );

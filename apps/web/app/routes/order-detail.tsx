@@ -5,7 +5,14 @@ import { OrderPage } from '~/pages/Order';
 import PageLayout from '~/pages/PageLayout';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Marketplace - Your E-commerce Store' }, { name: 'description', content: 'Browse our wide selection of products in our online marketplace.' }];
+  return [
+    { title: 'ProjectX - Order Detail' },
+    {
+      name: 'description',
+      content:
+        'View the details of your order and manage your order settings.',
+    },
+  ];
 };
 
 export const loader: LoaderFunction = async ({ request }) => {

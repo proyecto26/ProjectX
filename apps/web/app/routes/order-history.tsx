@@ -1,13 +1,13 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import type { LoaderFunction, MetaFunction } from '@remix-run/node';
 
-import { OrderHistory } from "~/pages/OrderHistory";
-import { getAccessTokenOrRedirect } from "~/cookies/auth.server";
-import PageLayout from "~/pages/PageLayout";
+import { OrderHistory } from '~/pages/OrderHistory';
+import { getAccessTokenOrRedirect } from '~/cookies/auth.server';
+import PageLayout from '~/pages/PageLayout';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Marketplace - Your E-commerce Store" },
-    { name: "description", content: "Browse our wide selection of products in our online marketplace." },
+    { title: 'ProjectX - Order History' },
+    { name: 'description', content: 'View your order history.' },
   ];
 };
 

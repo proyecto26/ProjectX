@@ -1,12 +1,16 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from '@remix-run/node';
 
-import { MarketplacePage } from "~/pages/MarketplacePage";
-import PageLayout from "~/pages/PageLayout";
+import { MarketplacePage } from '~/pages/MarketplacePage';
+import PageLayout from '~/pages/PageLayout';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Marketplace - Your E-commerce Store" },
-    { name: "description", content: "Browse our wide selection of products in our online marketplace." },
+    { title: 'ProjectX - Marketplace' },
+    {
+      name: 'description',
+      content:
+        'Browse our wide selection of products in our online marketplace.',
+    },
   ];
 };
 

@@ -54,25 +54,29 @@ export function LoginPage() {
       setLoading(false);
       if (fetcher.data.intent === FormIntents.LOGIN) {
         setLoginState('code');
-      } else if (fetcher.data.intent === FormIntents.VERIFY_CODE) {
-        alert('Logged in successfully');
       }
+    } else if (fetcher?.data?.error) {
+      setLoading(false);
     }
   }, [fetcher.data]);
 
-
-  const handleCodeSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onVerifyCode = async (code = formData.code) => {
     setLoading(true);
     fetcher.submit(
       {
         csrf,
         email: formData.email,
-        code: formData.code,
+        code,
         intent: FormIntents.VERIFY_CODE,
       },
       { method: 'post', action: '/login' },
     );
+  }
+
+
+  const handleCodeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    onVerifyCode();
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,7 +86,18 @@ export function LoginPage() {
 
   const handleCodeChange = (code: string) => {
     setFormData((prev) => ({ ...prev, code }));
+    if (code.length === 6) {
+      onVerifyCode(code);
+    }
   };
+
+  const onPaste = (e: React.ClipboardEvent<HTMLElement>) => {
+    e.preventDefault();
+    const code = e.clipboardData.getData('text');
+    if (code.length === 6) {
+      handleCodeChange(code);
+    }
+  }
 
   return (
     <div className="flex-grow flex items-center justify-center p-4">
@@ -116,6 +131,7 @@ export function LoginPage() {
                   value={formData.code}
                   inputType="number"
                   numInputs={6}
+                  onPaste={onPaste}
                   renderInput={(props) => (
                     <input {...props}
                       className={classnames(props.className, "flex-1 p-0 h-14 text-2xl", INPUT_CLASS_NAMES)}
