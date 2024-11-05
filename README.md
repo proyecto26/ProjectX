@@ -209,7 +209,7 @@ npx nx migrate --run-migrations
   * https://registry.hub.docker.com/r/temporalio/admin-tools
   * https://registry.hub.docker.com/r/temporalio/ui
 
-You can see all the images needed to run this project in development in the [docker-compose.yml](./docker-compose.yml) file.
+All the images needed to run this project in development are listed in the [docker-compose.yml](./docker-compose.yml) file.
 
 ## Supporting 🍻
 I believe in Unicorns 🦄
