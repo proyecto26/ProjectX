@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
 import { Environment } from '@projectx/models';
 import { LoggerModule } from 'nestjs-pino';
 
 import { createLoggerOptions } from './logger';
 import { HealthModule } from './health';
+import { AuthModule } from './auth';
 
 @Module({
   imports: [
@@ -23,16 +23,8 @@ import { HealthModule } from './health';
         };
       },
     }),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        global: true,
-        secret: configService.get('app.jwtSecret'),
-        signOptions: { expiresIn: '12 days' },
-      }),
-      inject: [ConfigService],
-    }),
+    AuthModule,
   ],
-  exports: [JwtModule],
+  exports: [AuthModule],
 })
 export class CoreModule {}

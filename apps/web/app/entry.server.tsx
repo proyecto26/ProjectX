@@ -6,7 +6,7 @@ import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
 
 import { getEnv } from '~/config/env.server';
-import { securityHeaders } from '~/config/security';
+import { securityHeaders } from '~/config/security.server';
 
 global.ENV = getEnv();
 installGlobals();

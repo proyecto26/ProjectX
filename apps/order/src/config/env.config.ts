@@ -1,12 +1,26 @@
 import { Environment } from '@projectx/models';
-import { IsEnum, IsNumber, Max, Min } from 'class-validator';
+import {
+  IsDefined,
+  IsEnum,
+  IsNotEmpty,
+  IsInt,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 
 export class EnvironmentVariables {
   @IsEnum(Environment)
+  @IsDefined()
   NODE_ENV: Environment;
 
-  @IsNumber({ allowNaN: false })
+  @IsInt()
   @Min(0)
   @Max(65535)
+  @IsDefined()
   ORDER_PORT: number;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_SECRET: string;
 }

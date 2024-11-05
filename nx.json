@@ -15,7 +15,9 @@
       "!{projectRoot}/src/test-setup.[jt]s",
       "!{projectRoot}/test-setup.[jt]s"
     ],
-    "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
+    "sharedGlobals": [
+      "{workspaceRoot}/.github/workflows/ci.yml"
+    ]
   },
   "neverConnectToCloud": true,
   "plugins": [
@@ -79,7 +81,7 @@
   ],
   "targetDefaults": {
     "@nx/remix:build": {
-      "cache": false,
+      "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
     },

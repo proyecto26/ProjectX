@@ -1,7 +1,10 @@
+import { Environment } from '@projectx/models';
 import { replaceNewLinesWithSpaces } from '@projectx/ui';
 
+import { environment } from './app.config.server';
+
 const localDomains =
-  process.env.NODE_ENV === 'development'
+  environment === Environment.Development
     ? '127.0.0.1:* localhost:* ws://localhost:*'
     : '';
 const appDomains = 'https://*.projectx.com';
@@ -30,6 +33,7 @@ export const imgSrc = replaceNewLinesWithSpaces(`
   ${defaultSrc}
   https://*.unsplash.com
   https://placehold.co
+  https://gravatar.com
 `);
 
 export const contentSecurityPolicy = replaceNewLinesWithSpaces(`

@@ -24,8 +24,7 @@ const { sendLoginEmail } = proxyActivities<ActivitiesService>({
   retry: {
     initialInterval: '2s',
     maximumInterval: '10s',
-    maximumAttempts: 10,
-    backoffCoefficient: 2,
+    backoffCoefficient: 1.5,
     nonRetryableErrorTypes: [LoginWorkflowNonRetryableErrors.UNKNOWN_ERROR],
   },
 });
@@ -36,8 +35,8 @@ const { verifyLoginCode } = proxyActivities<ActivitiesService>({
     initialInterval: '2s',
     maximumInterval: '10s',
     maximumAttempts: 10,
-    nonRetryableErrorTypes: [LoginWorkflowNonRetryableErrors.UNKNOWN_ERROR],
     backoffCoefficient: 2,
+    nonRetryableErrorTypes: [LoginWorkflowNonRetryableErrors.UNKNOWN_ERROR],
   },
 });
 

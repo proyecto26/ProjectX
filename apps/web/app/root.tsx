@@ -53,12 +53,12 @@ export const meta: MetaFunction = () => [
 ];
 
 type LoaderData = {
-  csrfToken: string;
   theme: string;
-  ENV: ReturnType<typeof getEnv>;
-  isAuthenticated: boolean;
   user?: UserDto;
+  csrfToken: string;
   accessToken?: string;
+  isAuthenticated: boolean;
+  ENV: ReturnType<typeof getEnv>;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -68,7 +68,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     : THEME.LIGHT;
   const { getAuthUser, getAuthAccessToken } = await getAuthSession(request);
   const accessToken = getAuthAccessToken();
-  const user = getAuthUser()
+  const user = getAuthUser();
   return json<LoaderData>(
     {
       theme,
@@ -87,9 +87,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export type AppProps = PropsWithChildren<
-  Pick<LoaderData, 'csrfToken' | 'theme' | 'user' | 'accessToken'>
+  Omit<LoaderData, 'isAuthenticated'>
 >;
-function App({ csrfToken, theme, user, accessToken }: AppProps) {
+function App({ csrfToken, theme, user, accessToken, ENV }: AppProps) {
   useWorkflows({ accessToken, email: user?.email });
   return (
     <AuthenticityTokenProvider token={csrfToken}>

@@ -3,7 +3,7 @@ import { createCookieSessionStorage, redirect } from '@remix-run/node';
 import { plainToInstance } from 'class-transformer';
 import _ from 'lodash';
 
-import { sessionSecret } from '~/config/app.config';
+import { sessionSecret } from '~/config/app.config.server';
 
 const authStorage = createCookieSessionStorage({
   cookie: {

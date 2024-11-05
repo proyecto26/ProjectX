@@ -6,14 +6,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { verifyLoginCodeUpdate } from '@projectx/core';
-import { AuthLoginDto, AuthVerifyDto } from '@projectx/models';
+import { AuthService, verifyLoginCodeUpdate } from '@projectx/core';
+import { AuthLoginDto, AuthResponseDto, AuthVerifyDto } from '@projectx/models';
 import {
   ClientService,
   getWorkflowDescription,
   isWorkflowRunning,
 } from '@projectx/workflows';
+import { plainToInstance } from 'class-transformer';
 
 import { loginUserWorkflow } from '../workflows';
 import { WorkflowExecutionAlreadyStartedError } from '@temporalio/common';
@@ -25,7 +25,7 @@ export class AppService {
   constructor(
     private readonly configService: ConfigService,
     private readonly clientService: ClientService,
-    private readonly jwtService: JwtService
+    private readonly authService: AuthService,
   ) {}
 
   getWorkflowIdByEmail(email: string) {
@@ -82,13 +82,9 @@ export class AppService {
       throw new UnauthorizedException();
     }
 
-    return {
+    return plainToInstance(AuthResponseDto, {
       user: result.user,
-      accessToken: await this.jwtService.signAsync({
-        sub: result.user.id,
-        email: data.email,
-        username: result.user.username,
-      }),
-    };
+      accessToken: await this.authService.createAccessToken(result.user),
+    });
   }
 }

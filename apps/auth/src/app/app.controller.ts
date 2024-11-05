@@ -1,11 +1,5 @@
-import { AuthLoginDto, AuthVerifyDto } from '@projectx/models';
-import {
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Body,
-  Post,
-} from '@nestjs/common';
+import { AuthLoginDto, AuthResponseDto, AuthVerifyDto } from '@projectx/models';
+import { Controller, HttpCode, HttpStatus, Body, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -43,6 +37,7 @@ export class AppController {
   })
   @ApiOkResponse({
     description: 'The user was verified successfully',
+    type: AuthResponseDto,
   })
   @ApiBadRequestResponse({
     description: 'There was an error verifying the user',

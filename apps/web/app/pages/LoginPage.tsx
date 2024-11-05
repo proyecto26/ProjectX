@@ -17,24 +17,33 @@ const INPUT_CLASS_NAMES = `
   rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500
 `
 
+enum FormIntents {
+  LOGIN = 'login',
+  VERIFY_CODE = 'verify-code',
+}
+
+type SubmitResponse = {
+  ok: boolean;
+  intent: FormIntents;
+  error?: string;
+}
+
 export function LoginPage() {
   const csrf = useAuthenticityToken();
-  const fetcher = useFetcher<{ ok: boolean }>();
+  const fetcher = useFetcher<SubmitResponse>();
   const [loginState, setLoginState] = useState<LoginState>('email');
   const [formData, setFormData] = useState<FormData>({ email: '', code: '' });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
 
     fetcher.submit(
       {
         csrf,
         email: formData.email,
-        intent: 'login',
+        intent: FormIntents.LOGIN,
       },
       { method: 'post', action: '/login' },
     );
@@ -43,7 +52,11 @@ export function LoginPage() {
   useEffect(() => {
     if (fetcher?.data?.ok) {
       setLoading(false);
-      setLoginState('code');
+      if (fetcher.data.intent === FormIntents.LOGIN) {
+        setLoginState('code');
+      } else if (fetcher.data.intent === FormIntents.VERIFY_CODE) {
+        alert('Logged in successfully');
+      }
     }
   }, [fetcher.data]);
 
@@ -51,11 +64,15 @@ export function LoginPage() {
   const handleCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
-    // Placeholder for code submission logic
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setLoading(false);
-    setError('Invalid code. Please try again.');
+    fetcher.submit(
+      {
+        csrf,
+        email: formData.email,
+        code: formData.code,
+        intent: FormIntents.VERIFY_CODE,
+      },
+      { method: 'post', action: '/login' },
+    );
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,9 +132,9 @@ export function LoginPage() {
             </button>
           </form>
         )}
-        {error && (
+        {fetcher.data?.error && (
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 text-sm text-red-600 dark:text-red-400">
-            {error}
+            {fetcher.data.error}
           </motion.p>
         )}
       </motion.div>

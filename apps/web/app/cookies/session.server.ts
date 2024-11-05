@@ -1,7 +1,7 @@
 import { createCookie, createCookieSessionStorage } from '@remix-run/node';
 import { CSRF } from "remix-utils/csrf/server";
 
-import { sessionSecret } from "~/config/app.config";
+import { sessionSecret } from "~/config/app.config.server";
 
 const globalSession = createCookieSessionStorage({
   cookie: {

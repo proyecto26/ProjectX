@@ -6,7 +6,7 @@ import { UserDto } from '@projectx/models';
 import { UserService } from '../user/user.service';
 
 function generateRandomSixDigitNumber(): number {
-  return Math.floor(100000 + Math.random() * 900000);
+  return Math.floor(Math.random() * 1000000);
 }
 
 @Injectable()
@@ -17,23 +17,19 @@ export class ActivitiesService {
     private readonly userService: UserService
   ) {}
 
-  async getHelloMessage() {
-    return 'Hello World';
-  }
-
   async sendLoginEmail(email: string) {
     const code = generateRandomSixDigitNumber();
-    this.logger.log(`sendLoginEmail(${email}) - code generated: ${code}`);
-    const hashedCode = await hashValue(code.toString());
+    const textCode = code.toString();
+    this.logger.log(`sendLoginEmail(${email}) - code generated: ${textCode}`);
     await this.emailService.sendLoginEmail(
       {
-        token: hashedCode,
+        token: textCode.padStart(6, '0'),
         userName: email.split('@')[0],
       },
       email
     );
-
-    return hashedCode;
+    
+    return await hashValue(textCode);
   }
 
   async verifyLoginCode(email: string, code: number, hashedCode: string) {

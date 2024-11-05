@@ -1,3 +1,3 @@
 {
-    "nxConsole.nxWorkspacePath": ""
+    "nxConsole.nxWorkspacePath": "${workspaceFolder}/nx.json"
 }

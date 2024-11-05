@@ -1,32 +1,59 @@
-import { ActionFunctionArgs, json } from '@remix-run/node';
+import { AuthResponseDto } from '@projectx/models';
+import { ActionFunctionArgs, json, redirect } from '@remix-run/node';
 import axios from 'axios';
-import { authAPIUrl } from '~/config/app.config';
-import { csrf } from '~/cookies/session.server';
+import _ from 'lodash';
 
+import { authAPIUrl } from '~/config/app.config.server';
+import { csrf } from '~/cookies/session.server';
+import { logger } from '~/services/logger.server';
 import { LoginPage } from '~/pages/LoginPage';
 import PageLayout from '~/pages/PageLayout';
+import { getAuthSession } from '~/cookies/auth.server';
 
 enum FormIntents {
   LOGIN = 'login',
   VERIFY_CODE = 'verify-code',
 }
 
+const AUTH_API = `${authAPIUrl}/auth`;
+
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.clone().formData();
   await csrf.validate(formData, request.headers);
   const email = formData.get('email');
   const intent = formData.get('intent');
-  if (!intent || !Object.values(FormIntents).includes(intent as FormIntents)) {
-    return json({ error: 'Invalid intent', ok: false });
-  }
   if (intent === FormIntents.LOGIN) {
     try {
-      await axios.post(`${authAPIUrl}/login`, {
+      await axios.post(`${AUTH_API}/login`, {
         email,
       });
-      return json({ ok: true });
-    } catch {
+      return json({ ok: true, intent });
+    } catch (error) {
+      logger.error(error);
       return json({ error: 'Failed to send login email', ok: false });
+    }
+  } else if (intent === FormIntents.VERIFY_CODE) {
+    const code = formData.get('code');
+    if (!_.isInteger(Number(code))) {
+      return json({ error: 'Invalid code', ok: false });
+    }
+    try {
+      const { data } = await axios.post<AuthResponseDto>(`${AUTH_API}/verify-code`, {
+        email,
+        code: Number(code),
+      });
+      const { setAuthUser, setAuthAccessToken, commitSession } = await getAuthSession(request);
+      setAuthUser(data.user);
+      setAuthAccessToken(data.accessToken);
+      return redirect('/marketplace', {
+        status: 302,
+        headers: {
+          'Set-Cookie': await commitSession(),
+        },
+      });
+    } catch (error) {
+      logger.error(error);
+      return json({ error: 'Invalid code', ok: false });
     }
   }
 

@@ -53,7 +53,7 @@ export class WorkerService<T extends Record<string, unknown>>
 
     Runtime.install({
       logger: new DefaultLogger(logLevel, (entry) => {
-        workerLogger.info({
+        workerLogger.debug({
           message: entry.message,
           timestamp: entry.timestampNanos,
           ...entry.meta,
