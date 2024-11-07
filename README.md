@@ -1,11 +1,11 @@
 # ProjectX
 
 <p align="center">
-  <img width="100px" alt="Nx for Monorepo" src="https://nx.dev/favicon/favicon.svg">
-  <img width="100px" alt="Remix for Website" src="https://remix.run/favicon-192.png">
+  <img width="100px" alt="Nx for Monorepo" src="https://avatars.githubusercontent.com/u/23692104?s=200&v=4">
+  <img width="100px" alt="Remix for Website" src="https://avatars.githubusercontent.com/u/64235328?s=200&v=4">
   <img width="300px" alt="ProjectX logo" src="https://github.com/user-attachments/assets/eecd8520-1e78-4ec7-8a12-55b62e5771c6">
-  <img width="100px" alt="NestJS for Services" src="https://nestjs.com/logo-small-gradient.76616405.svg">
-  <img width="100px" alt="Temporal for Durable Executions" src="https://s3.amazonaws.com/media-p.slid.es/uploads/128659/images/11123439/pasted-from-clipboard.png">
+  <img width="100px" alt="NestJS for Services" src="https://avatars.githubusercontent.com/u/28507035?s=200&v=4">
+  <img width="100px" alt="Temporal for Durable Executions" src="https://avatars.githubusercontent.com/u/56493103?s=200&v=4">
 </p>
 
 > **ProjectX** is a comprehensive full-stack template designed to simplify the development of scalable and resilient applications using **React** and **Temporal**. By integrating Temporal’s advanced workflow orchestration with React’s dynamic frontend framework, ProjectX enables developers to build applications with durable executions and seamless communication between services.
