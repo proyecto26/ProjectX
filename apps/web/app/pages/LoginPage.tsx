@@ -122,7 +122,7 @@ export function LoginPage() {
           <form onSubmit={handleCodeSubmit} className="space-y-4">
             <div>
               <label htmlFor="code" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Enter 6-digit Code
+                Check your email for a code
               </label>
               <div className="py-4 flex items-center justify-center w-full">
                 <OtpInput
@@ -139,6 +139,9 @@ export function LoginPage() {
                   )}
                 />
               </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                We've sent a 6-character code to {formData.email}. The code expires shortly, so please enter it soon.
+              </p>
             </div>
             <button type="submit" className={`w-full px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={loading}>
               {loading ? 'Verifying...' : 'Verify Code'}

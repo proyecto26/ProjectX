@@ -90,6 +90,7 @@ export type AppProps = PropsWithChildren<
   Omit<LoaderData, 'isAuthenticated'>
 >;
 function App({ csrfToken, theme, user, accessToken, ENV }: AppProps) {
+  // Connect Temporal workflows
   useWorkflows({ accessToken, email: user?.email });
   return (
     <AuthenticityTokenProvider token={csrfToken}>

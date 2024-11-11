@@ -5,6 +5,7 @@ import {
   log,
   isCancellation,
   CancellationScope,
+  allHandlersFinished,
 } from '@temporalio/workflow';
 
 // eslint-disable-next-line @nx/enforce-module-boundaries
@@ -77,12 +78,16 @@ export async function loginUserWorkflow(
     }
   } catch (error) {
     state.status = LoginWorkflowStatus.FAILED;
-    log.error(`Login workflow failed, email: ${data.email}, error: ${error}`);
-
-    if (isCancellation(error)) {
-      return await CancellationScope.nonCancellable(async () => {
+    if (!isCancellation(error)) {
+      log.error(`Login workflow failed, email: ${data.email}, error: ${error}`);
+    } else {
+      log.warn(`Login workflow cancelled, email: ${data.email}`);
+      await CancellationScope.nonCancellable(async () => {
         // TODO: Handle workflow cancellation
       });
     }
+  } finally {
+    // Wait for all handlers to finish before completing the workflow
+    await condition(allHandlersFinished);
   }
 }
