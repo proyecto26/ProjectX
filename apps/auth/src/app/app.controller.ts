@@ -15,6 +15,11 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  /**
+   * Endpoint to initiate the login process by sending a verification email.
+   * @param body AuthLoginDto containing the user's email.
+   * @returns A message indicating the email was sent.
+   */
   @ApiOperation({
     summary: 'Login with email',
     description: 'This endpoint allow a user to login with email',
@@ -28,9 +33,14 @@ export class AppController {
   @Post('login')
   @HttpCode(HttpStatus.CREATED)
   login(@Body() body: AuthLoginDto) {
-    return this.appService.sendLoginEmail(body);
+    return this.appService.login(body);
   }
 
+  /**
+   * Endpoint to verify the login code and authenticate the user.
+   * @param body AuthVerifyDto containing the user's email and verification code.
+   * @returns AuthResponseDto containing the access token and user information.
+   */
   @ApiOperation({
     summary: 'Verify login code',
     description: 'This endpoint allow a user to verify the login code',

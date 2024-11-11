@@ -1,10 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthService, verifyLoginCodeUpdate } from '@projectx/core';
 import { AuthLoginDto, AuthResponseDto, AuthVerifyDto } from '@projectx/models';
@@ -13,10 +7,10 @@ import {
   getWorkflowDescription,
   isWorkflowRunning,
 } from '@projectx/workflows';
+import { WorkflowExecutionAlreadyStartedError } from '@temporalio/common';
 import { plainToInstance } from 'class-transformer';
 
 import { loginUserWorkflow } from '../workflows';
-import { WorkflowExecutionAlreadyStartedError } from '@temporalio/common';
 
 @Injectable()
 export class AppService {
@@ -25,34 +19,42 @@ export class AppService {
   constructor(
     private readonly configService: ConfigService,
     private readonly clientService: ClientService,
-    private readonly authService: AuthService,
+    private readonly authService: AuthService
   ) {}
 
   getWorkflowIdByEmail(email: string) {
     return `login-${email}`;
   }
 
-  async sendLoginEmail(data: AuthLoginDto) {
-    this.logger.log(`sendLoginEmail(${data.email}) - sending email`);
+  /**
+   * Initiates the login process by sending a verification email.
+   * @param body AuthLoginDto containing the user's email.
+   * @returns A message indicating the email was sent.
+   */
+  async login(body: AuthLoginDto) {
+    this.logger.log(`sendLoginEmail(${body.email}) - sending email`);
     const taskQueue = this.configService.get<string>('temporal.taskQueue');
     try {
       await this.clientService.client?.workflow.start(loginUserWorkflow, {
-        args: [data],
+        args: [body],
         taskQueue,
-        workflowId: this.getWorkflowIdByEmail(data.email),
+        workflowId: this.getWorkflowIdByEmail(body.email),
         searchAttributes: {
-          Email: [data.email],
+          Email: [body.email],
         },
       });
+      return { message: 'Login email sent successfully' };
     } catch (error) {
       if (error instanceof WorkflowExecutionAlreadyStartedError) {
         this.logger.log(
-          `sendLoginEmail(${data.email}) - workflow already started`
+          `sendLoginEmail(${body.email}) - workflow already started`
         );
+        return { message: 'Login email already sent' };
       } else {
         throw new HttpException(
           `Error starting workflow`,
-          HttpStatus.INTERNAL_SERVER_ERROR, {
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          {
             cause: error,
           }
         );
@@ -60,9 +62,14 @@ export class AppService {
     }
   }
 
-  async verifyLoginCode(data: AuthVerifyDto) {
-    this.logger.log(`verifyLoginCode(${data.email}) - code: ${data.code}`);
-    const workflowId = this.getWorkflowIdByEmail(data.email);
+  /**
+   * Verifies the login code and returns an access token.
+   * @param body AuthVerifyDto containing the user's email and verification code.
+   * @returns AuthResponseDto containing the access token and user information.
+   */
+  async verifyLoginCode(body: AuthVerifyDto) {
+    this.logger.log(`verifyLoginCode(${body.email}) - code: ${body.code}`);
+    const workflowId = this.getWorkflowIdByEmail(body.email);
 
     const description = await getWorkflowDescription(
       this.clientService.client?.workflow,
@@ -76,10 +83,13 @@ export class AppService {
 
     const handle = this.clientService.client?.workflow.getHandle(workflowId);
     const result = await handle.executeUpdate(verifyLoginCodeUpdate, {
-      args: [data.code],
+      args: [body.code],
     });
     if (!result?.user) {
-      throw new UnauthorizedException();
+      throw new HttpException(
+        'Invalid verification code',
+        HttpStatus.UNAUTHORIZED
+      );
     }
 
     return plainToInstance(AuthResponseDto, {
