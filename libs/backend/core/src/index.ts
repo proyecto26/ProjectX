@@ -5,3 +5,4 @@ export * from './lib/configuration';
 export * from './lib/nest';
 export * from './lib/user';
 export * from './lib/auth';
+export * from './lib/workflows';

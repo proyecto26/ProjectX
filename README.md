@@ -187,7 +187,8 @@ npx nx show projects
 npx nx graph
 ```
 
-View the Database diagram [here](./libs/backend/db/README.md).
+> [!TIP]
+> View the Database diagram [here](./libs/backend/db/README.md).
 
 Do you want to change the path of a project to decide your own organization? No problem:
 ```sh

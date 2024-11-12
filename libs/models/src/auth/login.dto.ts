@@ -3,7 +3,7 @@ import { Expose, Transform } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
-  IsNumber,
+  IsInt,
   IsString,
   Max,
   MaxLength,
@@ -29,6 +29,6 @@ export class AuthVerifyDto extends AuthLoginDto {
   @Expose()
   @Min(0)
   @Max(999999)
-  @IsNumber()
+  @IsInt()
   code!: number;
 }

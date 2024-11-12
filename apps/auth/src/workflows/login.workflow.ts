@@ -6,6 +6,7 @@ import {
   isCancellation,
   CancellationScope,
   allHandlersFinished,
+  ApplicationFailure,
 } from '@temporalio/workflow';
 
 // eslint-disable-next-line @nx/enforce-module-boundaries
@@ -17,11 +18,11 @@ import {
   LoginWorkflowState,
   LoginWorkflowStatus,
   verifyLoginCodeUpdate,
-} from '../../../../libs/backend/core/src/lib/user/user.workflow';
+} from '../../../../libs/backend/core/src/lib/user/workflow.utils';
 import type { ActivitiesService } from '../main';
 
 const { sendLoginEmail } = proxyActivities<ActivitiesService>({
-  startToCloseTimeout: '5m',
+  startToCloseTimeout: '5 seconds',
   retry: {
     initialInterval: '2s',
     maximumInterval: '10s',
@@ -31,7 +32,7 @@ const { sendLoginEmail } = proxyActivities<ActivitiesService>({
 });
 
 const { verifyLoginCode } = proxyActivities<ActivitiesService>({
-  startToCloseTimeout: '5m',
+  startToCloseTimeout: '5 seconds',
   retry: {
     initialInterval: '2s',
     maximumInterval: '10s',
@@ -69,14 +70,27 @@ export async function loginUserWorkflow(
     state.codeStatus = LoginWorkflowCodeStatus.SENT;
 
     // Wait for user to verify code (human interaction)
-    if (await condition(() => !!state.user, '10m')) {
+    await condition(() => !!state.user, '10m');
+    // Wait for all handlers to finish before checking the state
+    await condition(allHandlersFinished);
+    if (state.user) {
       state.status = LoginWorkflowStatus.SUCCESS;
       log.info(`User logged in, user: ${state.user}`);
     } else {
       state.status = LoginWorkflowStatus.FAILED;
-      log.error(`User login failed, email: ${data.email}`);
+      log.error(`User login code expired, email: ${data.email}`);
+      throw ApplicationFailure.nonRetryable(
+        'User login code expired',
+        LoginWorkflowNonRetryableErrors.LOGIN_CODE_EXPIRED,
+      );
     }
+    return;
   } catch (error) {
+    // If the error is an application failure, throw it
+    if (error instanceof ApplicationFailure) {
+      throw error;
+    }
+    // Otherwise, update the state and log the error
     state.status = LoginWorkflowStatus.FAILED;
     if (!isCancellation(error)) {
       log.error(`Login workflow failed, email: ${data.email}, error: ${error}`);
@@ -86,8 +100,5 @@ export async function loginUserWorkflow(
         // TODO: Handle workflow cancellation
       });
     }
-  } finally {
-    // Wait for all handlers to finish before completing the workflow
-    await condition(allHandlersFinished);
   }
 }

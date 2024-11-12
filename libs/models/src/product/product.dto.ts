@@ -4,6 +4,7 @@ import {
   IsDate,
   IsDefined,
   IsEnum,
+  IsInt,
   IsNumber,
   IsOptional,
   IsString,
@@ -26,7 +27,7 @@ export class ProductDto {
 
   @ApiProperty({ description: 'Unique identifier for the product' })
   @IsDefined()
-  @IsNumber()
+  @IsInt()
   @Expose()
   id!: number;
 
@@ -34,7 +35,7 @@ export class ProductDto {
     description: 'Unique identifier for the user who designed the product',
   })
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   @Expose()
   createdBy?: number;
 
