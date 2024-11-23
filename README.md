@@ -22,6 +22,7 @@
 - [Interacting with Workflows with TypeScript](https://temporal.talentlms.com/catalog/info/id:207)
 - [Securing Temporal Applications with TypeScript](https://temporal.talentlms.com/catalog/info/id:211)
 - [Introduction to Temporal Cloud](https://temporal.talentlms.com/catalog/info/id:144)
+- [Crafting an Error Handling Strategy with TypeScript](https://temporal.talentlms.com/catalog/info/id:244)
 
 ## Why Temporal? 🤔
 
