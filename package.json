@@ -11,6 +11,7 @@
     "dev:web": "nx run web:dev --verbose",
     "dev:auth": "nx run auth:serve --inspect --host=0.0.0.0 --port=9229 --watch",
     "dev:order": "nx run order:serve --inspect --host=0.0.0.0 --port=9230 --watch",
+    "dev:product": "nx run product:serve --inspect --host=0.0.0.0 --port=9231 --watch",
     "test": "nx test",
     "lint": "nx lint",
     "e2e": "nx e2e",

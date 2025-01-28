@@ -17,7 +17,7 @@
       "envFile": "${workspaceFolder}/.env"
     },
     {
-      "name": "Auth Service",
+      "name": "Debug Auth Service",
       "type": "node",
       "request": "attach",
       "port": 9229,
@@ -42,7 +42,7 @@
       }
     },
     {
-      "name": "Order Service",
+      "name": "Debug Order Service",
       "type": "node",
       "request": "attach",
       "port": 9230,
@@ -52,6 +52,31 @@
       "localRoot": "${workspaceFolder}",
       "outFiles": [
         "${workspaceFolder}/dist/apps/order/**/*.js",
+        "${workspaceFolder}/dist/libs/**/*.js"
+      ],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ],
+      "skipFiles": ["<node_internals>/**"],
+      "trace": true,
+      "sourceMapPathOverrides": {
+        "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+        "webpack:///./*": "${workspaceFolder}/*",
+        "webpack:///*": "*"
+      }
+    },
+    {
+      "name": "Debug Product Service",
+      "type": "node",
+      "request": "attach",
+      "port": 9231,
+      "restart": true,
+      "sourceMaps": true,
+      "remoteRoot": "/app",
+      "localRoot": "${workspaceFolder}",
+      "outFiles": [
+        "${workspaceFolder}/dist/apps/product/**/*.js",
         "${workspaceFolder}/dist/libs/**/*.js"
       ],
       "resolveSourceMapLocations": [

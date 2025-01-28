@@ -144,6 +144,21 @@ services:
     ports:
       - "${ORDER_PORT:-8082}:${ORDER_PORT:-8082}"
       - "9230:9230"
+
+  product:
+    <<: *service-common
+    container_name: product
+    command: >
+      bash -c "
+      npm run prisma:generate &&
+      npm run prisma:migrate &&
+      npx nx reset &&
+      npm run dev:product
+      "
+    ports:
+      - "${PRODUCT_PORT:-8083}:${PRODUCT_PORT:-8083}"
+      - "9231:9231"
+
   ngrok-order:
     image: ngrok/ngrok:latest
     command:
