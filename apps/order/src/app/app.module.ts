@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CoreModule, validateConfiguration } from '@projectx/core';
 import { DbModule } from '@projectx/db';
 import { EmailModule } from '@projectx/email';
+import { PaymentModule } from '@projectx/payment';
 import { WorkflowsModule } from '@projectx/workflows';
 import path from 'path';
 
@@ -37,6 +38,7 @@ import { ActivitiesModule } from './activities/activities.module';
       }),
       inject: [ActivitiesService],
     }),
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

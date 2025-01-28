@@ -2,6 +2,10 @@ import { defineSignal, defineUpdate } from '@temporalio/workflow';
 
 export * from './state';
 
+export enum WorkflowTypes {
+  Order = 'Order',
+}
+
 export type WorkflowParentData = {
   workflowId: string;
   runId: string;

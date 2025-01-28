@@ -119,6 +119,7 @@ CREATE TABLE "manufacturer_price" (
 -- CreateTable
 CREATE TABLE "order" (
     "id" SERIAL NOT NULL,
+    "reference_id" VARCHAR(36) NOT NULL,
     "user_id" INTEGER NOT NULL,
     "total_price" DECIMAL(10,2) NOT NULL,
     "status" "OrderStatus" NOT NULL,
@@ -218,6 +219,12 @@ CREATE UNIQUE INDEX "review_order_item_id_key" ON "review"("order_item_id");
 
 -- CreateIndex
 CREATE INDEX "ix_review_order_item_id" ON "review"("order_item_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "order_reference_id_key" ON "order"("reference_id");
+
+-- CreateIndex
+CREATE INDEX "ix_order_reference_id" ON "order"("reference_id");
 
 -- AddForeignKey
 ALTER TABLE "user_role" ADD CONSTRAINT "fk_user_role_user_id" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE CASCADE;

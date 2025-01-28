@@ -26,6 +26,7 @@ const { sendLoginEmail } = proxyActivities<ActivitiesService>({
   retry: {
     initialInterval: '2s',
     maximumInterval: '10s',
+    maximumAttempts: 10,
     backoffCoefficient: 1.5,
     nonRetryableErrorTypes: [LoginWorkflowNonRetryableErrors.UNKNOWN_ERROR],
   },
@@ -70,7 +71,7 @@ export async function loginUserWorkflow(
     state.codeStatus = LoginWorkflowCodeStatus.SENT;
 
     // Wait for user to verify code (human interaction)
-    await condition(() => !!state.user, '10m');
+    if (await condition(() => !!state.user, '10m'))
     // Wait for all handlers to finish before checking the state
     await condition(allHandlersFinished);
     if (state.user) {

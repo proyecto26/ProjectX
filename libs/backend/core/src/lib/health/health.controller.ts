@@ -6,8 +6,10 @@ import {
   PrismaHealthIndicator,
 } from '@nestjs/terminus';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { PrismaClient } from '@prisma/client';
 import { PrismaService } from '@projectx/db';
+
+const MEMORY_HEAP_LIMIT = 512 * 1024 * 1024; // 512MB
+const MEMORY_RSS_LIMIT = 512 * 1024 * 1024; // 512MB
 
 @ApiTags('Health')
 @Controller('health')
@@ -37,10 +39,9 @@ export class HealthController {
   @HttpCode(HttpStatus.OK)
   check() {
     return this.health.check([
-      async () =>
-        this.prismaHealth.pingCheck('db', this.prismaService as PrismaClient),
-      async () => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024),
-      async () => this.memory.checkRSS('memory_rss', 150 * 1024 * 1024),
+      async () => this.prismaHealth.pingCheck('db', this.prismaService),
+      async () => this.memory.checkHeap('memory_heap', MEMORY_HEAP_LIMIT),
+      async () => this.memory.checkRSS('memory_rss', MEMORY_RSS_LIMIT),
     ]);
   }
 }

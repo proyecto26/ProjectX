@@ -31,6 +31,15 @@ export class OrderDto {
   @Expose()
   id!: number;
 
+  @ApiProperty({ 
+    description: 'Unique reference identifier for tracking the order',
+    example: '123e4567-e89b-12d3-a456-426614174000'
+  })
+  @IsDefined()
+  @IsString()
+  @Expose()
+  referenceId!: string;
+
   @ApiProperty({
     description: 'Unique identifier for the user who created the order',
   })
@@ -72,4 +81,26 @@ export class OrderDto {
   @Expose()
   @Transform(({ value }) => transformToDate(value))
   updatedAt!: Date;
+}
+
+export class OrderStatusResponseDto {
+  @ApiProperty({
+    description: 'The current status of the order',
+    example: 'PENDING',
+  })
+  status!: string;
+
+  @ApiProperty({
+    description: 'The reference ID of the order',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsString()
+  referenceId!: string;
+
+  @ApiProperty({
+    description: 'The internal order ID',
+    example: 123,
+  })
+  @IsInt()
+  orderId!: number;
 }

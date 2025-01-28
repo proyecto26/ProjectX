@@ -10,6 +10,8 @@ export enum WorkflowSearchAttributes {
   OrderId = 'OrderId',
 }
 
+export const WORKFLOW_TTL = 1000 * 60 * 60 * 24; // 24 hours
+
 export const getWorkflowDescription = (
   client: WorkflowClient,
   workflowId: string
@@ -32,12 +34,17 @@ export const isWorkflowFailed = (description: WorkflowExecutionDescription) =>
 
 async function getWorkflowExecution(
   client: WorkflowClient,
-  identifier: number,
   type: string,
-  identifierType: WorkflowSearchAttributes
+  identifierType: WorkflowSearchAttributes,
+  identifier: number,
+  isRunning = true,
 ) {
   const workflow = await client.workflowService.listWorkflowExecutions({
-    query: `WorkflowType = "${type}" AND ${identifierType} = ${identifier} AND ExecutionStatus="Running"`,
+    query: [
+      `WorkflowType = "${type}"`,
+      `${identifierType} = ${identifier}`,
+      isRunning ? `ExecutionStatus="Running"` : null,
+    ].filter(Boolean).join(' AND '),
     namespace: client.options.namespace,
   });
   if (workflow.executions.length > 0) {
@@ -53,9 +60,9 @@ export async function getWorkflowExecutionByEmail(
 ) {
   return getWorkflowExecution(
     client,
-    email,
     type,
-    WorkflowSearchAttributes.Email
+    WorkflowSearchAttributes.Email,
+    email,
   );
 }
 
@@ -66,8 +73,21 @@ export async function getWorkflowExecutionByUserId(
 ) {
   return getWorkflowExecution(
     client,
-    userId,
     type,
-    WorkflowSearchAttributes.UserId
+    WorkflowSearchAttributes.UserId,
+    userId,
+  );
+}
+
+export async function getWorkflowExecutionByOrderId(
+  client: WorkflowClient,
+  orderId: number,
+  type: string
+) {
+  return getWorkflowExecution(
+    client,
+    type,
+    WorkflowSearchAttributes.OrderId,
+    orderId,
   );
 }

@@ -23,4 +23,16 @@ export class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   JWT_SECRET: string;
+
+  @IsString()
+  @IsNotEmpty()
+  STRIPE_SECRET_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  STRIPE_WEBHOOK_SECRET: string;
+
+  @IsString()
+  @IsNotEmpty()
+  SENDGRID_API_KEY: string;
 }

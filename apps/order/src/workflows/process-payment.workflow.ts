@@ -12,10 +12,9 @@ import {
   OrderProcessPaymentState,
   OrderProcessPaymentStatus,
   paymentWebHookEventSignal,
-} from '../../../../libs/backend/core/src/lib/order';
-import {
-  cancelWorkflowSignal,
-} from '../../../../libs/backend/core/src/lib/workflows';
+  PaymentWebhookEvent,
+} from '../../../../libs/backend/core/src/lib/order/workflow.utils';
+import { cancelWorkflowSignal } from '../../../../libs/backend/core/src/lib/workflows';
 
 export const finalPaymentStatuses = [
   OrderProcessPaymentStatus.SUCCESS,
@@ -25,24 +24,24 @@ export const finalPaymentStatuses = [
 ];
 
 const initiatedWebhookEvents = [
-  // Stripe
   'payment_intent.created',
   'payment_intent.processing',
   'payment_method.attached',
-]
+];
+
 const confirmedWebhookEvents = [
-  // Stripe
   'checkout.session.completed',
   'checkout.session.async_payment_succeeded',
   'payment_intent.succeeded',
 ];
+
 const failedWebhookEvents = [
-  // Stripe
   'payment_intent.payment_failed',
+  'payment_intent.canceled',
 ];
 
 export async function processPayment(
-  data: OrderWorkflowData,
+  data: OrderWorkflowData
 ): Promise<OrderProcessPaymentState> {
   const state: OrderProcessPaymentState = {
     status: OrderProcessPaymentStatus.PENDING,
@@ -58,23 +57,26 @@ export async function processPayment(
     log.warn('Cancelling payment');
     state.status = OrderProcessPaymentStatus.CANCELLED;
   });
-  setHandler(
-    paymentWebHookEventSignal,
-    async (webhookEvent) => {
-      if (initiatedWebhookEvents.includes(webhookEvent.type)) {
-        state.status = OrderProcessPaymentStatus.INITIATED;
-      } else if (confirmedWebhookEvents.includes(webhookEvent.type)) {
-        state.status = OrderProcessPaymentStatus.SUCCESS;
-      } else if (failedWebhookEvents.includes(webhookEvent.type)) {
-        state.status = OrderProcessPaymentStatus.FAILURE;
-      }
-    },
-  );
+  setHandler(paymentWebHookEventSignal, async (event: PaymentWebhookEvent) => {
+    log.info('Received payment webhook event', { type: event.type });
 
+    if (initiatedWebhookEvents.includes(event.type)) {
+      state.status = OrderProcessPaymentStatus.INITIATED;
+    } else if (confirmedWebhookEvents.includes(event.type)) {
+      state.status = OrderProcessPaymentStatus.SUCCESS;
+    } else if (failedWebhookEvents.includes(event.type)) {
+      state.status = OrderProcessPaymentStatus.FAILURE;
+    }
+
+    log.info('Updated payment status', { status: state.status });
+  });
+
+  // Wait for payment to complete or timeout
   await condition(
     () => finalPaymentStatuses.includes(state.status),
     PROCESS_PAYMENT_TIMEOUT
   );
+
   // Wait for all handlers to finish before workflow completion
   await condition(allHandlersFinished);
 

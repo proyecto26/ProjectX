@@ -31,7 +31,9 @@ export async function bootstrapApp<T extends NestExpressApplication>(
   const port = configService.get('app.port');
   const apiPrefix = configService.get('app.apiPrefix');
 
-  app.setGlobalPrefix(apiPrefix);
+  app.setGlobalPrefix(apiPrefix, {
+    exclude: ['/health'],
+  });
 
   // PARSE HTTP REQUESTS
   app.use(urlencoded({ extended: true }));
