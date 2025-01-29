@@ -17,6 +17,7 @@ export const meta: MetaFunction = () => {
 
 export const loader: LoaderFunction = async ({ request }) => {
   await getAccessTokenOrRedirect(request);
+  return {};
 };
 
 export default function Index() {

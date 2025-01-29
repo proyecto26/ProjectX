@@ -13,6 +13,7 @@
 ## Notable Links 🤓
 
 - [Get started with Temporal and TypeScript](https://github.com/temporalio/sdk-typescript)
+- [Workflow Messages - TypeScript SDK](https://docs.temporal.io/develop/typescript/message-passing)
 
 ### Public Courses
 
@@ -208,6 +209,17 @@ docker-compose up -d
 # Remove services and volumes
 docker-compose down --volumes
 ```
+
+## Payment Providers
+
+- Stripe:
+  - [Webhooks](https://docs.stripe.com/webhooks?lang=node)
+  - [Stripe Webhook integration](https://docs.stripe.com/api/webhook_endpoints)
+  - [Stripe Checkout](https://docs.stripe.com/payments/checkout)
+  - [Webhooks Dashboard](https://dashboard.stripe.com/test/workbench/webhooks)
+  - [Automatic fulfillment Orders](https://docs.stripe.com/checkout/fulfillment)
+  - [Interactive webhook endpoint builder](https://docs.stripe.com/webhooks/quickstart)
+  - [Trigger webhook events with the Stripe CLI](https://docs.stripe.com/stripe-cli/triggers)
 
 ## Supporting 🍻
 I believe in Unicorns 🦄

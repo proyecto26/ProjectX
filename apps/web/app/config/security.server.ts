@@ -34,6 +34,7 @@ export const imgSrc = replaceNewLinesWithSpaces(`
   https://*.unsplash.com
   https://placehold.co
   https://gravatar.com
+  https://*.githubusercontent.com
 `);
 
 export const contentSecurityPolicy = replaceNewLinesWithSpaces(`

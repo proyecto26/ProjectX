@@ -97,7 +97,12 @@ CREATE TABLE "product" (
     "created_by" INTEGER NOT NULL,
     "name" VARCHAR(100) NOT NULL,
     "description" TEXT,
-    "estimatedPrice" DECIMAL(10,2) NOT NULL,
+    "sku" VARCHAR(50) NOT NULL,
+    "image_url" TEXT,
+    "estimated_price" DECIMAL(10,2) NOT NULL,
+    "download_urls" TEXT[],
+    "tags" TEXT[],
+    "category" VARCHAR(100),
     "status" "ProductStatus" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -225,6 +230,15 @@ CREATE UNIQUE INDEX "order_reference_id_key" ON "order"("reference_id");
 
 -- CreateIndex
 CREATE INDEX "ix_order_reference_id" ON "order"("reference_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "product_sku_key" ON "product"("sku");
+
+-- CreateIndex
+CREATE INDEX "ix_product_sku" ON "product"("sku");
+
+-- CreateIndex
+CREATE INDEX "ix_product_category" ON "product"("category");
 
 -- AddForeignKey
 ALTER TABLE "user_role" ADD CONSTRAINT "fk_user_role_user_id" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE CASCADE;

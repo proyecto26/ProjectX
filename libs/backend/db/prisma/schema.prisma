@@ -113,19 +113,26 @@ model Manufacturer {
 }
 
 model Product {
-  id            Int       @id @default(autoincrement())
-  createdBy     Int       @map("created_by")
-  name          String    @db.VarChar(100)
-  description   String?   @db.Text
-  estimatedPrice Decimal  @db.Decimal(10, 2)
-  status        ProductStatus
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+  id             Int       @id @default(autoincrement())
+  createdBy      Int       @map("created_by")
+  name           String    @db.VarChar(100)
+  description    String?   @db.Text
+  sku            String    @unique @db.VarChar(50)
+  imageUrl       String?   @map("image_url") @db.Text
+  estimatedPrice Decimal   @map("estimated_price") @db.Decimal(10, 2)
+  downloadUrls   String[]  @map("download_urls")
+  tags           String[]
+  category       String?   @db.VarChar(100)
+  status         ProductStatus
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
 
-  user          User      @relation("UserProducts", fields: [createdBy], references: [id], onUpdate: Cascade, onDelete: NoAction, map: "fk_product_user_id")
-  orderItems    OrderItem[] @relation("ProductOrderItems")
+  user               User                @relation("UserProducts", fields: [createdBy], references: [id], onUpdate: Cascade, onDelete: NoAction, map: "fk_product_user_id")
+  orderItems         OrderItem[]         @relation("ProductOrderItems")
   manufacturerPrices ManufacturerPrice[] @relation("ProductManufacturerPrices")
 
+  @@index([sku], map: "ix_product_sku")
+  @@index([category], map: "ix_product_category")
   @@map("product")
 }
 

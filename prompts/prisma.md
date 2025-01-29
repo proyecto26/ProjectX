@@ -1,4 +1,5 @@
-- I need you to review the following Prisma models from a Node.js project using PostgreSQL.
+I need you to review the Prisma models from the "libs/backend/db/prisma/schema.prisma" path of this monorepo, the library is a NestJS project using PostgreSQL.
+
 - Analyze them to identify potential improvements, such as missing or incorrect field types (e.g., using Numeric for currency), optimization of indexes for common queries, adding necessary constraints (like unique or foreign keys), and suggesting improvements for database performance.
 - Also, look for missing fields, potential errors in relations, and whether fields like createdAt and updatedAt are correctly mapped for time tracking. 
 - Ensure that relation fields are correctly defined using @relation, with both fields and references specified. Review relationships between models (one-to-many, many-to-many, etc.) to ensure integrity.

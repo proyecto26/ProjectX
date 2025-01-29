@@ -162,6 +162,7 @@ export class AppService {
       // Signal the workflow
       await handle.signal(paymentWebHookEventSignal, webhookEvent);
 
+      // Return true to indicate the webhook was received
       return { received: true };
     } catch (err) {
       this.logger.error('Webhook Error:', err.message);

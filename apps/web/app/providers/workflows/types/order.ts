@@ -18,6 +18,7 @@ export interface OrderStartResponse {
 export interface OrderStatusResponse {
   referenceId: string;
   status: OrderStatus;
+  clientSecret?: string;
   productId?: unknown;
   userId?: unknown;
   userEmail?: string;

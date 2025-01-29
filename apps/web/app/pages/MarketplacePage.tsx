@@ -1,28 +1,25 @@
+import type { ProductDto } from '@projectx/models';
+import { Button } from '@projectx/ui';
+
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '@projectx/ui';
 import { useCart } from 'react-use-cart';
 
-const products = [
-  { id: 1, name: 'Wireless Earbuds', price: 79.99, image: 'https://placehold.co/200x200?text=Earbuds' },
-  { id: 2, name: 'Smart Watch', price: 199.99, image: 'https://placehold.co/200x200?text=Watch' },
-  { id: 3, name: 'Laptop', price: 999.99, image: 'https://placehold.co/200x200?text=Laptop' },
-  { id: 4, name: 'Smartphone', price: 699.99, image: 'https://placehold.co/200x200?text=Phone' },
-  { id: 5, name: 'Bluetooth Speaker', price: 59.99, image: 'https://placehold.co/200x200?text=Speaker' },
-  { id: 6, name: 'Gaming Console', price: 399.99, image: 'https://placehold.co/200x200?text=Console' },
-];
+export type MarketplacePageProps = {
+  products: ProductDto[];
+}
 
-export const MarketplacePage: React.FC = () => {
+export const MarketplacePage: React.FC<MarketplacePageProps> = ({ products }) => {
   const { addItem } = useCart();
 
-  const handleAddToCart = (product: typeof products[0]) => {
+  const handleAddToCart = (product: ProductDto) => {
     addItem({
       id: String(product.id),
       name: product.name,
-      price: product.price,
+      price: product.estimatedPrice,
       currency: 'USD',
-      image: product.image,
-      // quantity: 1,
+      image: product.imageUrl,
+      quantity: 1,
       // You can add more properties if needed
     });
   };
@@ -40,7 +37,7 @@ export const MarketplacePage: React.FC = () => {
           >
             <figure>
               <img
-                src={product.image}
+                src={product.imageUrl}
                 alt={product.name}
                 className="w-full h-48 object-cover"
                 style={{
@@ -49,7 +46,7 @@ export const MarketplacePage: React.FC = () => {
               />
             </figure>
             <div className="card-body">
-              <h2 className="card-title font-semibold">${product.price.toFixed(2)}</h2>
+              <h2 className="card-title font-semibold">${product.estimatedPrice.toFixed(2)}</h2>
               <p className="text-lg ">{product.name}</p>
               <div className="card-actions justify-end">
               <Button className="btn btn-sm" variant="primary" onClick={() => handleAddToCart(product)}>

@@ -81,7 +81,7 @@ export const useOrderWorkflow = ({ accessToken, workflows }: WorkflowProps) => {
                   }
                   return Promise.reject('Order status is loading');
                 } catch (error) {
-                  if (error.message === EXPIRED_STATUS_CODE) {
+                  if (error instanceof Error && error.message === EXPIRED_STATUS_CODE) {
                     handleClear({ workflow });
                   }
                   throw error;

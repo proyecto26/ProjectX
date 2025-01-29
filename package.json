@@ -20,7 +20,8 @@
     "storybook:serve": "nx run ui:serve-storybook",
     "prisma:generate": "npx prisma generate  --schema=./libs/backend/db/prisma/schema.prisma",
     "prisma:migrate": "npx prisma migrate deploy --schema=./libs/backend/db/prisma/schema.prisma",
-    "prisma:migrate:dev": "npx prisma migrate dev --schema=./libs/backend/db/prisma/schema.prisma"
+    "prisma:migrate:dev": "npx prisma migrate dev --schema=./libs/backend/db/prisma/schema.prisma",
+    "prisma:seed": "npx prisma db seed --schema=./libs/backend/db/prisma/schema.prisma"
   },
   "private": true,
   "devDependencies": {
@@ -170,5 +171,8 @@
     "use-dehydrated-state": "0.1.0",
     "usehooks-ts": "3.1.0",
     "uuid": "11.0.3"
+  },
+  "prisma": {
+    "seed": "ts-node libs/backend/db/prisma/seed.ts"
   }
 }

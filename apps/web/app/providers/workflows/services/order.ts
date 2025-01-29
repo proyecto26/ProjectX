@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
-import { ORDER_API_URL } from '~/constants';
 import { OrderStartResponse, OrderStatusResponse } from '../types';
 
 export async function startOrder(
@@ -10,7 +9,7 @@ export async function startOrder(
   accessToken?: string,
 ): Promise<OrderStartResponse> {
   const response = await axios.post<OrderStartResponse>(
-    ORDER_API_URL,
+    window.ENV.ORDER_API_URL,
     {
       referenceId,
       productId,
@@ -29,7 +28,7 @@ export async function getOrderStatus(
   accessToken?: string,
 ): Promise<OrderStatusResponse> {
   const response = await axios.get<OrderStatusResponse>(
-    `${ORDER_API_URL}/${referenceId}`,
+    `${window.ENV.ORDER_API_URL}/${referenceId}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -43,7 +42,7 @@ export async function cancelOrder(
   referenceId: string,
   accessToken?: string,
 ): Promise<void> {
-  await axios.delete(`${ORDER_API_URL}/${referenceId}`, {
+  await axios.delete(`${window.ENV.ORDER_API_URL}/${referenceId}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

@@ -3,6 +3,7 @@ import type {
   MetaFunction,
   LinksFunction,
   LoaderFunction,
+  LoaderFunctionArgs,
 } from '@remix-run/node';
 import {
   isRouteErrorResponse,
@@ -18,6 +19,7 @@ import {
 } from '@remix-run/react';
 import { PropsWithChildren } from 'react';
 import { AuthenticityTokenProvider } from 'remix-utils/csrf/react';
+import { cssBundleHref } from '@remix-run/css-bundle';
 
 import { getEnv } from '~/config/env.server';
 import { csrf } from '~/cookies/session.server';
@@ -31,6 +33,7 @@ import {
 } from '~/providers';
 import { getAuthSession } from '~/cookies/auth.server';
 import { THEME } from './constants';
+import { authAPIUrl, environment, orderAPIUrl, productAPIUrl } from './config/app.config.server';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: twStyles },
@@ -44,6 +47,7 @@ export const links: LinksFunction = () => [
     rel: 'stylesheet',
     href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
   },
+  ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
 ];
 
 export const meta: MetaFunction = () => [
@@ -61,7 +65,7 @@ type LoaderData = {
   ENV: ReturnType<typeof getEnv>;
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request }: LoaderFunctionArgs) => {
   const [csrfToken, cookieHeader] = await csrf.commitToken();
   const theme = request.headers.get('Cookie')?.includes('theme=dark')
     ? THEME.DARK
@@ -73,7 +77,12 @@ export const loader: LoaderFunction = async ({ request }) => {
     {
       theme,
       csrfToken,
-      ENV: getEnv(),
+      ENV: {
+        NODE_ENV: environment,
+        AUTH_API_URL: authAPIUrl,
+        ORDER_API_URL: orderAPIUrl,
+        PRODUCT_API_URL: productAPIUrl,
+      },
       isAuthenticated: !!accessToken,
       user,
       accessToken,
