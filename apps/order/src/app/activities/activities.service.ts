@@ -12,4 +12,8 @@ export class ActivitiesService {
   async createOrder(data: OrderWorkflowData) {
     return await this.orderService.createOrder(data);
   }
+
+  async reportPaymentFailed(orderId: number) {
+    return this.orderService.reportPaymentFailed(orderId);
+  }
 }

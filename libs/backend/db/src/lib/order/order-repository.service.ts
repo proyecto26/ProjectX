@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateOrderDto } from '@projectx/models';
-import { Prisma, OrderStatus } from '@prisma/client';
+import { Prisma, OrderStatus, Order } from '@prisma/client';
 
 import { PrismaService } from '../prisma.service';
 
@@ -61,6 +61,14 @@ export class OrderRepositoryService {
       });
 
       return order;
+    });
+  }
+
+  async updateOrderStatus(orderId: number, status: OrderStatus): Promise<Order> {
+    this.logger.verbose(`updateOrderStatus(${orderId}) - status: ${status}`);
+    return this.prisma.order.update({
+      where: { id: orderId },
+      data: { status },
     });
   }
 }

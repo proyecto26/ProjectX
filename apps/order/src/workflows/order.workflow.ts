@@ -23,8 +23,8 @@ import { cancelWorkflowSignal } from '../../../../libs/backend/core/src/lib/work
 import type { OrderStatusResponseDto } from '../../../../libs/models/src/order/order.dto';
 import type { ActivitiesService } from '../main';
 
-const { createOrder: createOrderActivity } = proxyActivities<ActivitiesService>(
-  {
+const { createOrder: createOrderActivity, reportPaymentFailed } =
+  proxyActivities<ActivitiesService>({
     startToCloseTimeout: '5 seconds',
     retry: {
       initialInterval: '2s',
@@ -33,8 +33,7 @@ const { createOrder: createOrderActivity } = proxyActivities<ActivitiesService>(
       backoffCoefficient: 1.5,
       nonRetryableErrorTypes: [OrderWorkflowNonRetryableErrors.UNKNOWN_ERROR],
     },
-  }
-);
+  });
 import { processPayment } from './process-payment.workflow';
 
 export enum OrderStatus {
@@ -97,8 +96,9 @@ export async function createOrder(
     });
     const processPaymentResult = await processPaymentWorkflow.result();
     if (processPaymentResult.status !== OrderProcessPaymentStatus.SUCCESS) {
+      // Report payment failure before throwing the error
+      await reportPaymentFailed(state.orderId);
       state.status = OrderStatus.Failed;
-      // TODO: Send email to the user
       throw ApplicationFailure.nonRetryable(
         OrderWorkflowNonRetryableErrors.UNKNOWN_ERROR,
         'Payment failed'

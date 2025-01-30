@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useCart } from 'react-use-cart';
 import invariant from 'tiny-invariant';
 
@@ -41,14 +41,17 @@ export default function Checkout() {
     (workflow) => workflow.referenceId === referenceId
   );
   // Trigger actions to manage the workflow
-  const { handleRun } = useWorkflowActions<OrderWorkflow>({
+  const { handleRun, handleClear } = useWorkflowActions<OrderWorkflow>({
     workflowType: WorkflowTypes.ORDER,
   });
+  const workflowInitiatedRef = useRef(false);
   const [clientSecret, setClientSecret] = useState('');
+  const [error, setError] = useState<Error>();
 
   // Trigger the creation of the order workflow
   useEffect(() => {
-    if (!currentCheckoutWorkflow && !clientSecret && items.length > 0) {
+    if (!workflowInitiatedRef.current && !currentCheckoutWorkflow && items.length > 0) {
+      workflowInitiatedRef.current = true;
       handleRun({
         workflow: {
           referenceId,
@@ -67,15 +70,24 @@ export default function Checkout() {
           },
         },
       });
+      // Clear the cart after the workflow is triggered
       emptyCart();
     }
-  }, [currentCheckoutWorkflow, clientSecret, items]);
+  }, [currentCheckoutWorkflow, items]);
 
   useEffect(() => {
     if (!clientSecret && currentCheckoutWorkflow?.data?.response?.clientSecret) {
       setClientSecret(currentCheckoutWorkflow.data.response.clientSecret);
     }
   }, [currentCheckoutWorkflow?.data?.response?.clientSecret, clientSecret]);
+
+  // Manage errors with the current workflow
+  useEffect(() => {
+    if (currentCheckoutWorkflow?.error) {
+      setError(currentCheckoutWorkflow.error);
+      handleClear({ workflow: currentCheckoutWorkflow });
+    }
+  }, [currentCheckoutWorkflow?.error]);
 
   return (
     <PageLayout title="Checkout">
