@@ -140,7 +140,7 @@ CREATE TABLE "order_item" (
     "id" SERIAL NOT NULL,
     "order_id" INTEGER NOT NULL,
     "product_id" INTEGER NOT NULL,
-    "manufacturer_id" INTEGER NOT NULL,
+    "manufacturer_id" INTEGER,
     "quantity" INTEGER NOT NULL,
     "price_at_purchase" DECIMAL(10,2) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

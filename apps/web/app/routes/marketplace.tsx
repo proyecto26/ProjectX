@@ -1,6 +1,5 @@
 import { ProductDto } from '@projectx/models';
 import type { MetaFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import axios from 'axios';
 
@@ -27,14 +26,14 @@ export const loader = async () => {
         timeout: 5000,
       }
     )
-    return json({
+    return {
       products: response.data,
-    });
+    };
   } catch (error) {
     console.error(error);
-    return json({
+    return {
       products: [],
-    });
+    };
   }
 }
 

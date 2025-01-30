@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { AuthPayload } from '@projectx/models';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { AuthUser } from '../user';
 
 /**
  * JwtStrategy is passport JWT strategy.
@@ -30,9 +31,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
    */
   async validate(payload: AuthPayload) {
     return {
-      userId: Number(payload.sub),
+      id: Number(payload.sub),
       email: payload.email,
       username: payload.username,
-    };
+    } as AuthUser;
   }
 }

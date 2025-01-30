@@ -71,7 +71,8 @@ export async function loginUserWorkflow(
     state.codeStatus = LoginWorkflowCodeStatus.SENT;
 
     // Wait for user to verify code (human interaction)
-    if (await condition(() => !!state.user, '10m'))
+    await condition(() => !!state.user, '10m')
+    
     // Wait for all handlers to finish before checking the state
     await condition(allHandlersFinished);
     if (state.user) {

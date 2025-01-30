@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import Stripe from 'stripe';
 import { ConfigService } from '@nestjs/config';
 
@@ -6,6 +6,7 @@ import { PaymentConfig } from '../../config';
 
 @Injectable()
 export class StripeService {
+  private readonly logger = new Logger(StripeService.name);
   private stripe: Stripe;
 
   constructor(private configService: ConfigService) {
@@ -23,21 +24,38 @@ export class StripeService {
   }
 
   async createPaymentIntent(amount: number, currency = 'usd', metadata: Record<string, string>): Promise<Stripe.PaymentIntent> {
-    return this.stripe.paymentIntents.create({
-      amount,
-      currency,
-      metadata,
-    });
+    try {
+      return await this.stripe.paymentIntents.create({
+        amount,
+        currency,
+        metadata,
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+    } catch (error) {
+      this.logger.error(`Error creating payment intent: ${error}`);
+      throw new InternalServerErrorException('Error creating payment intent', {
+        cause: error,
+      });
+    }
   }
 
   async updatePaymentIntent(
     paymentIntentId: string,
     data: Stripe.PaymentIntentUpdateParams
   ): Promise<Stripe.PaymentIntent> {
-    return this.stripe.paymentIntents.update(paymentIntentId, data);
+    try {
+      return await this.stripe.paymentIntents.update(paymentIntentId, data);
+    } catch (error) {
+      this.logger.error(`Error updating payment intent: ${error}`);
+      throw new InternalServerErrorException('Error updating payment intent', {
+        cause: error,
+      });
+    }
   }
 
-  async constructWebhookEvent(payload: string | Buffer, signature: string): Promise<Stripe.Event> {
+  constructWebhookEvent(payload: string | Buffer, signature: string): Stripe.Event {
     const config = this.configService.get<PaymentConfig>('payment');
     if (!config) {
       throw new InternalServerErrorException('Payment configuration is not loaded');
@@ -46,11 +64,19 @@ export class StripeService {
     if (!stripeWebhookSecret) {
       throw new InternalServerErrorException('STRIPE_WEBHOOK_SECRET is not configured');
     }
-    return this.stripe.webhooks.constructEvent(
-      payload,
-      signature,
-      stripeWebhookSecret
-    );
+    try {
+      const event = this.stripe.webhooks.constructEvent(
+        payload,
+        signature,
+        stripeWebhookSecret
+      );
+      return event;
+    } catch (error) {
+      this.logger.error(`Error constructing webhook event: ${error}`);
+      throw new InternalServerErrorException('Error constructing webhook event', {
+        cause: error,
+      });
+    }
   }
 
   handleWebhookEvent(event: Stripe.Event) {

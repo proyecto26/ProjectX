@@ -1,4 +1,4 @@
-import { UserDto } from '@projectx/models';
+import type { UserDto } from '@projectx/models';
 import type {
   MetaFunction,
   LinksFunction,
@@ -19,7 +19,7 @@ import {
 } from '@remix-run/react';
 import { PropsWithChildren } from 'react';
 import { AuthenticityTokenProvider } from 'remix-utils/csrf/react';
-import { cssBundleHref } from '@remix-run/css-bundle';
+import { ToastContainer } from 'react-toastify';
 
 import { getEnv } from '~/config/env.server';
 import { csrf } from '~/cookies/session.server';
@@ -33,7 +33,6 @@ import {
 } from '~/providers';
 import { getAuthSession } from '~/cookies/auth.server';
 import { THEME } from './constants';
-import { authAPIUrl, environment, orderAPIUrl, productAPIUrl } from './config/app.config.server';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: twStyles },
@@ -47,7 +46,6 @@ export const links: LinksFunction = () => [
     rel: 'stylesheet',
     href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
   },
-  ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
 ];
 
 export const meta: MetaFunction = () => [
@@ -75,17 +73,12 @@ export const loader: LoaderFunction = async ({ request }: LoaderFunctionArgs) =>
   const user = getAuthUser();
   return json<LoaderData>(
     {
+      user,
       theme,
       csrfToken,
-      ENV: {
-        NODE_ENV: environment,
-        AUTH_API_URL: authAPIUrl,
-        ORDER_API_URL: orderAPIUrl,
-        PRODUCT_API_URL: productAPIUrl,
-      },
-      isAuthenticated: !!accessToken,
-      user,
       accessToken,
+      ENV: getEnv(),
+      isAuthenticated: !!accessToken,
     },
     {
       headers: {
@@ -99,8 +92,9 @@ export type AppProps = PropsWithChildren<
   Omit<LoaderData, 'isAuthenticated'>
 >;
 function App({ csrfToken, theme, user, accessToken, ENV }: AppProps) {
-  // Connect Temporal workflows
+  // Connect Temporal workflows to your app
   useWorkflows({ accessToken, email: user?.email });
+
   return (
     <AuthenticityTokenProvider token={csrfToken}>
       <html lang="en" data-theme={theme}>
@@ -115,6 +109,7 @@ function App({ csrfToken, theme, user, accessToken, ENV }: AppProps) {
           <Links />
         </head>
         <body>
+          <ToastContainer />
           <script
             suppressHydrationWarning
             dangerouslySetInnerHTML={{

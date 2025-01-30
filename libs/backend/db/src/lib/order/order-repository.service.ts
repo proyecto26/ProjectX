@@ -26,13 +26,15 @@ export class OrderRepositoryService {
           estimatedPrice: true,
         },
       });
-
+      // Map of productId to price at purchase
+      const pricesMap = {} as Record<number, number>;
       // Calculate total price using Prisma.Decimal
       const totalPrice = createOrderDto.items.reduce((acc, item) => {
         const product = products.find((p) => p.id === item.productId);
         if (!product) {
           throw new Error(`Product ${item.productId} not found`);
         }
+        pricesMap[item.productId] = product.estimatedPrice.toNumber();
         return acc + product.estimatedPrice.toNumber() * item.quantity;
       }, 0);
 
@@ -45,14 +47,10 @@ export class OrderRepositoryService {
           shippingAddress: createOrderDto.shippingAddress,
           items: {
             create: createOrderDto.items.map(item => {
-              const product = products.find(p => p.id === item.productId);
-              if (!product) {
-                throw new Error(`Product ${item.productId} not found`);
-              }
               return {
                 productId: item.productId,
                 quantity: item.quantity,
-                priceAtPurchase: product.estimatedPrice,
+                priceAtPurchase: pricesMap[item.productId],
               };
             }),
           },

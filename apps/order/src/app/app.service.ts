@@ -14,14 +14,16 @@ import {
   PaymentWebhookEvent,
   AuthUser,
   createOrderUpdate,
+  getOrderStateQuery,
+  cancelWorkflowSignal,
 } from '@projectx/core';
 import {
   WorkflowExecutionAlreadyStartedError,
   WorkflowIdConflictPolicy,
 } from '@temporalio/common';
+import { WithStartWorkflowOperation } from '@temporalio/client';
 
 import { createOrder } from '../workflows/order.workflow';
-import { WithStartWorkflowOperation } from '@temporalio/client';
 
 @Injectable()
 export class AppService {
@@ -114,8 +116,15 @@ export class AppService {
     }
 
     const handle = this.clientService.client?.workflow.getHandle(workflowId);
-    const state = await handle.query('getOrderState');
+    const state = await handle.query(getOrderStateQuery);
     return state;
+  }
+
+  async cancelOrder(referenceId: string) {
+    this.logger.log(`cancelOrder(${referenceId}) - cancelling order`);
+    const workflowId = this.getWorkflowIdByReferenceId(referenceId);
+    const handle = this.clientService.client?.workflow.getHandle(workflowId);
+    await handle.signal(cancelWorkflowSignal);
   }
 
   async handleWebhook(payload: Buffer, signature: string) {

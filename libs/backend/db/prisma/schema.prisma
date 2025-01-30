@@ -173,7 +173,7 @@ model OrderItem {
   id              Int       @id @default(autoincrement()) @db.Integer
   orderId         Int       @map("order_id") @db.Integer
   productId       Int       @map("product_id") @db.Integer
-  manufacturerId  Int?       @map("manufacturer_id") @db.Integer
+  manufacturerId  Int?      @map("manufacturer_id") @db.Integer
   quantity        Int       @db.Integer
   priceAtPurchase Decimal   @map("price_at_purchase") @db.Decimal(10, 2)
   createdAt       DateTime  @default(now()) @map("created_at")

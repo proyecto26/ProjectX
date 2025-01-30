@@ -1,5 +1,5 @@
 import { AuthResponseDto } from '@projectx/models';
-import { ActionFunctionArgs, json, redirect } from '@remix-run/node';
+import { ActionFunctionArgs, redirect } from '@remix-run/node';
 import axios from 'axios';
 import _ from 'lodash';
 
@@ -27,15 +27,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       await axios.post(`${AUTH_API}/login`, {
         email,
       });
-      return json({ ok: true, intent });
+      return { ok: true, intent };
     } catch (error) {
       logger.error(error);
-      return json({ error: 'Failed to send login email', ok: false });
+      return { error: 'Failed to send login email', ok: false };
     }
   } else if (intent === FormIntents.VERIFY_CODE) {
     const code = formData.get('code');
     if (!_.isInteger(Number(code))) {
-      return json({ error: 'Invalid code', ok: false });
+      return { error: 'Invalid code', ok: false };
     }
     try {
       const { data } = await axios.post<AuthResponseDto>(`${AUTH_API}/verify-code`, {
@@ -53,11 +53,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       });
     } catch (error) {
       logger.error(error);
-      return json({ error: 'Invalid code', ok: false });
+      return { error: 'Invalid code', ok: false };
     }
   }
 
-  return json({ error: 'Invalid intent', ok: false });
+  return { error: 'Invalid intent', ok: false };
 };
 
 export default function Index() {

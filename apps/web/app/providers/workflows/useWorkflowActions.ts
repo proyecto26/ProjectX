@@ -77,7 +77,7 @@ export const useWorkflowActions = <T extends Workflow<unknown>>({
           ...workflow,
         },
         // Use a new referenceId if provided
-        referenceId: referenceId ?? workflow.referenceId,
+        referenceId: (referenceId ?? workflow.referenceId) || '',
       });
     },
     [dispatch, workflowType],

@@ -11,6 +11,7 @@ export enum WorkflowStep {
 }
 
 export interface Workflow<T> {
+  // The email is used to filter the workflows by the current user
   email?: string;
   // The referenceId is used to identify the workflow in the backend
   referenceId: string;

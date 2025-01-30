@@ -12,11 +12,8 @@ function getInitialState(): StoreState {
   return savedState
     ? JSON.parse(savedState)
     : {
-        isWalletDialogOpen: false,
-        isWalletInProgress: false,
-        workflows: {},
-        checkoutNftAddress: undefined,
-      };
+        workflows: {} as StoreState['workflows'],
+      } as StoreState;
 }
 
 export const initialState = getInitialState();
@@ -29,17 +26,14 @@ export const reducer = (
   action: StoreAction,
 ): StoreState => {
   const nextState = produce(state, (draftState) => {
+    draftState.workflows = draftState.workflows || getInitialState().workflows;
     switch (action.type) {
       case StoreActions.RunWorkflow:
-        draftState.workflows =
-          draftState.workflows || getInitialState().workflows;
         draftState.workflows[action.workflowType] =
           draftState.workflows[action.workflowType] || [];
         draftState.workflows[action.workflowType].push(action.payload);
         break;
       case StoreActions.ClearWorkflow:
-        draftState.workflows =
-          draftState.workflows || getInitialState().workflows;
         const workflowsToClear =
           draftState.workflows[action.workflowType] || [];
         draftState.workflows[action.workflowType] = workflowsToClear.filter(
@@ -47,8 +41,6 @@ export const reducer = (
         );
         break;
       case StoreActions.UpdateWorkflow:
-        draftState.workflows =
-          draftState.workflows || getInitialState().workflows;
         const workflowsToUpdate =
           draftState.workflows[action.workflowType] || [];
         // Clear the workflows using the current referenceId
@@ -59,8 +51,6 @@ export const reducer = (
         draftState.workflows[action.workflowType].push(action.payload);
         break;
       case StoreActions.UpsertWorkflow:
-        draftState.workflows =
-          draftState.workflows || getInitialState().workflows;
         draftState.workflows[action.workflowType] =
           draftState.workflows[action.workflowType] || [];
         const workflowIndex = draftState.workflows[

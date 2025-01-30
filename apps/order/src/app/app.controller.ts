@@ -10,6 +10,7 @@ import {
   Param,
   HttpStatus,
   HttpCode,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -19,7 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthenticatedUser, AuthUser, JwtAuthGuard } from '@projectx/core';
-import { CreateOrderDto } from '@projectx/models';
+import { CreateOrderDto, OrderStatusResponseDto } from '@projectx/models';
 import { Request } from 'express';
 
 import { AppService } from './app.service';
@@ -56,11 +57,22 @@ export class AppController {
   })
   @ApiOkResponse({
     description: 'Returns the status of the order workflow',
+    type: OrderStatusResponseDto,
   })
   @HttpCode(HttpStatus.OK)
   @Get(':referenceId')
   async getOrderStatus(@Param('referenceId') referenceId: string) {
     return this.appService.getOrderStatus(referenceId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Cancel an order',
+  })
+  @Delete(':referenceId')
+  async cancelOrder(@Param('referenceId') referenceId: string) {
+    return this.appService.cancelOrder(referenceId);
   }
 
   @Post('/webhook')

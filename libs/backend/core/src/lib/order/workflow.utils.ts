@@ -1,4 +1,4 @@
-import { CreateOrderDto } from '@projectx/models';
+import type { CreateOrderDto, OrderStatusResponseDto } from '@projectx/models';
 import { defineQuery, defineSignal, defineUpdate } from '@temporalio/workflow';
 
 import { AuthUser } from '../user';
@@ -11,22 +11,6 @@ export type OrderWorkflowData = {
 
 export const getWorkflowIdByPaymentOrder = (referenceId: string) => {
   return `payment-${referenceId}`;
-};
-
-export enum OrderWorkflowStatus {
-  PENDING = 'Pending',
-  INITIALIZED = 'Initialized',
-  PROCESSING_PAYMENT = 'ProcessingPayment',
-  PAYMENT_COMPLETED = 'PaymentCompleted',
-  COMPLETED = 'Completed',
-  FAILED = 'Failed',
-}
-
-export type OrderWorkflowState = {
-  status: OrderWorkflowStatus;
-  orderId?: number;
-  referenceId: string;
-  clientSecret?: string;
 };
 
 export enum OrderProcessPaymentStatus {
@@ -44,6 +28,7 @@ export type OrderProcessPaymentState = {
 
 export enum OrderWorkflowNonRetryableErrors {
   UNKNOWN_ERROR = 'UNKNOWN_ERROR_NON_RETRY',
+  CANCELLED = 'CANCELLED',
 }
 
 /**
@@ -69,7 +54,7 @@ export type PaymentWebhookEvent = {
 export const PROCESS_PAYMENT_TIMEOUT = '20 minutes';
 
 // DEFINE QUERIES
-export const getOrderStateQuery = defineQuery<OrderWorkflowState>('getOrderState');
+export const getOrderStateQuery = defineQuery<OrderStatusResponseDto>('getOrderState');
 
 // DEFINE SIGNALS
 /**
@@ -81,5 +66,5 @@ export const paymentWebHookEventSignal = defineSignal<[PaymentWebhookEvent]>('pa
 
 // DEFINE UPDATES
 export const createOrderUpdate = defineUpdate<
-  OrderWorkflowState
+  OrderStatusResponseDto
 >('createOrderUpdate');

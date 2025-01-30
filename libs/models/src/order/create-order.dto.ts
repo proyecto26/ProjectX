@@ -10,7 +10,7 @@ import {
 
 import { OrderDto } from './order.dto';
 
-class OrderItemDto {
+export class OrderItemDto {
   @ApiProperty({ description: 'Product ID' })
   @IsDefined()
   @IsInt()

@@ -12,10 +12,12 @@ const trustedDomains = [appDomains, localDomains].filter(Boolean).join(' ');
 
 export const defaultSrc = replaceNewLinesWithSpaces(`
   ${trustedDomains}
+  https://*.stripe.com
 `);
 
 export const scriptSrc = replaceNewLinesWithSpaces(`
   ${defaultSrc}
+  
 `);
 
 export const frameSrc = replaceNewLinesWithSpaces(`
