@@ -3,7 +3,7 @@ import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@
 
 import { AuthUser } from './user.interface';
 
-export const User = createParamDecorator<keyof AuthUser, ExecutionContext>(
+export const AuthenticatedUser = createParamDecorator<keyof AuthUser, ExecutionContext>(
   (data: keyof AuthUser, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     const user = request.user as AuthUser;

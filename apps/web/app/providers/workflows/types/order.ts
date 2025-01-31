@@ -1,45 +1,29 @@
+import type { CreateOrderDto, OrderStatusResponseDto } from "@projectx/models";
 import { Workflow } from "./workflow";
 
 export enum OrderStatus {
-  PENDING = 'Pending',
-  FAILED = 'Failed',
-  EXPIRED = 'Expired',
-  PROCESSED = 'Processed',
-  COMPLETED = 'Completed',
-  CANCELLED = 'Cancelled',
-  INITIATED = 'Initiated',
-  UNKOWN_FAILURE = 'UnkownFailure',
-}
-
-export interface OrderStartResponse {
-  referenceId: string;
-}
-
-export interface OrderStatusResponse {
-  referenceId: string;
-  status: OrderStatus;
-  productId?: unknown;
-  userId?: unknown;
-  userEmail?: string;
-  price?: number;
-  orderStatus?: OrderStatus;
+  Pending = 'Pending',
+  Confirmed = 'Confirmed',
+  Shipped = 'Shipped',
+  Delivered = 'Delivered',
+  Cancelled = 'Cancelled',
+  Failed = 'Failed',
 }
 
 export const OrderSuccessStatus = [
-  OrderStatus.COMPLETED,
-  OrderStatus.PROCESSED,
+  OrderStatus.Confirmed,
+  OrderStatus.Shipped,
+  OrderStatus.Delivered,
 ];
 
 export const OrderFailureStatus = [
-  OrderStatus.FAILED,
-  OrderStatus.CANCELLED,
-  OrderStatus.UNKOWN_FAILURE,
+  OrderStatus.Failed,
+  OrderStatus.Cancelled,
 ];
 
 
-export type OrderWorkflowData = {
-  productId: unknown;
-  response?: unknown;
+export type OrderWorkflowData = CreateOrderDto & {
+  response?: OrderStatusResponseDto;
 };
 
 export type OrderWorkflow = Workflow<OrderWorkflowData>;

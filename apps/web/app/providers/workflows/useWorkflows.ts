@@ -1,28 +1,21 @@
-import { useMemo } from 'react';
-
 import { useOrderWorkflow } from './internal/useOrderWorkflow';
-import { StoreState, useStoreState } from './store';
-import { OrderWorkflow, Workflow, WorkflowType, WorkflowTypes } from './types';
+import { useStoreState } from './store';
+import { OrderWorkflow, WorkflowTypes } from './types';
+import { useWorkflowsByType } from './utils';
 
 export type WorkflowProps = {
-  accessToken?: string;
+  accessToken: string;
   email?: string;
 };
 
-export const useWorkflowsByType = <T extends Workflow<unknown>>(
-  store: StoreState,
-  workflowType: WorkflowType,
-  email?: string,
-) => {
-  return useMemo(() => {
-    return ((store?.workflows[workflowType] as T[]) || []).filter(
-      (w) => !w.email || `${w.email}` === `${email}`,
-    );
-  }, [store?.workflows[workflowType], email]);
-};
-
+/**
+ * Connect the backend workflows to the frontend
+ */
 export const useWorkflows = ({ accessToken, email }: WorkflowProps) => {
+  // The store has all the existing workflows and the actions to update them
   const store = useStoreState();
+
+  // Connect the workflow to manage the order transactions
   useOrderWorkflow({
     accessToken,
     workflows: useWorkflowsByType<OrderWorkflow>(
@@ -31,4 +24,6 @@ export const useWorkflows = ({ accessToken, email }: WorkflowProps) => {
       email,
     ),
   });
+
+  // Connect other workflows here...
 };

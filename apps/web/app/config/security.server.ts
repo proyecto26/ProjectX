@@ -12,10 +12,12 @@ const trustedDomains = [appDomains, localDomains].filter(Boolean).join(' ');
 
 export const defaultSrc = replaceNewLinesWithSpaces(`
   ${trustedDomains}
+  https://*.stripe.com
 `);
 
 export const scriptSrc = replaceNewLinesWithSpaces(`
   ${defaultSrc}
+  
 `);
 
 export const frameSrc = replaceNewLinesWithSpaces(`
@@ -34,6 +36,8 @@ export const imgSrc = replaceNewLinesWithSpaces(`
   https://*.unsplash.com
   https://placehold.co
   https://gravatar.com
+  https://*.githubusercontent.com\
+  https://tailwindui.com
 `);
 
 export const contentSecurityPolicy = replaceNewLinesWithSpaces(`

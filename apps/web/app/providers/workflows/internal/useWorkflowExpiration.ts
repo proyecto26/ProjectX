@@ -6,6 +6,11 @@ export type WorkflowExpirationProps = {
   workflowType: WorkflowType;
 };
 
+/**
+ * Manage the expiration of the workflows.
+ * If the expiration time is reached, the workflow is cleared
+ * If the maximum retries are reached, the workflow is marked as failed
+ */
 export const useWorkflowExpiration = ({
   workflowType,
 }: WorkflowExpirationProps) => {

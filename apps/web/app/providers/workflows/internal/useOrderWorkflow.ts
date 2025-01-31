@@ -1,30 +1,28 @@
 import { useLocation } from '@remix-run/react';
 import { UseQueryOptions, useQueries } from '@tanstack/react-query';
-import _ from 'lodash';
 import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
 
-import { EXPIRED_STATUS_CODE } from '../constants';
-import { cancelOrder, getOrderStatus, startOrder } from '../services/order';
+import { EXPIRED_STATUS_CODE, NOT_FOUND_STATUS_CODE } from '../constants';
+import { cancelOrder, createOrder, getOrderStatus } from '../services/order';
 import { useWorkflowActions } from '../useWorkflowActions';
-import { useWorkflowExpiration } from './useWorkflowExpiration';
 import {
   OrderFailureStatus,
   OrderStatus,
-  OrderStatusResponse,
   OrderSuccessStatus,
   OrderWorkflow,
   WorkflowStep,
   WorkflowTypes,
 } from '../types';
+import { useWorkflowExpiration } from './useWorkflowExpiration';
 
 export type WorkflowProps = {
-  accessToken?: string;
+  accessToken: string;
   workflows: Array<OrderWorkflow>;
 };
 
-const VALID_HTTP_STATUS_ERRORS = ['404', '409', '422', '503'];
 const END_STATUS = [...OrderSuccessStatus, ...OrderFailureStatus];
-const QUERY_KEY = 'checkout-workflow';
+const QUERY_KEY = 'order-workflow';
 const WORKFLOW_TYPE = WorkflowTypes.ORDER;
 
 export const useOrderWorkflow = ({ accessToken, workflows }: WorkflowProps) => {
@@ -42,37 +40,53 @@ export const useOrderWorkflow = ({ accessToken, workflows }: WorkflowProps) => {
     workflowType: WORKFLOW_TYPE,
   });
 
-  const handleRequestError = (workflow: OrderWorkflow, error: Error) => {
-    if (!VALID_HTTP_STATUS_ERRORS.includes(error.message)) {
-      handleError({ workflow, error });
-      return null;
-    }
-    throw error;
-  };
-
+  // Run the pending workflows
   return useQueries({
     queries: workflows
       .filter((w) => !w.error)
       .map((workflow) => {
-        return {
+        return <UseQueryOptions>{
           cacheTime: 0,
           refetchIntervalInBackground: true,
           refetchOnWindowFocus: true,
+          enabled: !!accessToken,
           queryKey: [
             QUERY_KEY,
             workflow.step,
-            workflow.data?.productId,
+            workflow.data?.referenceId,
             workflow.isInitialized,
           ],
+          retry: true,
+          useErrorBoundary: () => false,
           queryFn: async () => {
             switch (workflow.step) {
               case WorkflowStep.STATUS:
                 try {
-                  const orderState: OrderStatusResponse = await getOrderStatus(
-                    workflow.referenceId,
-                    accessToken
+                  const orderState = await getOrderStatus(
+                    accessToken as string,
+                    workflow.referenceId
                   );
                   if (END_STATUS.includes(orderState.status)) {
+                    // Handle completed status
+                    handleUpsert({
+                      referenceId: workflow.referenceId,
+                      workflow: {
+                        data: Object.assign({}, workflow.data, orderState),
+                      },
+                    });
+                    const isOrderPage = location.pathname.includes('/checkout');
+                    if (OrderSuccessStatus.includes(orderState?.status)) {
+                      toast.success('Order completed successfully');
+                    } else if (
+                      !isOrderPage &&
+                      OrderFailureStatus.includes(orderState?.status)
+                    ) {
+                      toast.error(
+                        orderState.status === OrderStatus.Cancelled
+                          ? 'The transaction was cancelled.'
+                          : 'The transaction has failed, please try again.'
+                      );
+                    }
                     return orderState;
                   }
                   if (!workflow.isInitialized) {
@@ -81,7 +95,13 @@ export const useOrderWorkflow = ({ accessToken, workflows }: WorkflowProps) => {
                   }
                   return Promise.reject('Order status is loading');
                 } catch (error) {
-                  if (error.message === EXPIRED_STATUS_CODE) {
+                  if (
+                    error instanceof AxiosError &&
+                    error.status &&
+                    [EXPIRED_STATUS_CODE, NOT_FOUND_STATUS_CODE].includes(
+                      error.status
+                    )
+                  ) {
                     handleClear({ workflow });
                   }
                   throw error;
@@ -90,7 +110,14 @@ export const useOrderWorkflow = ({ accessToken, workflows }: WorkflowProps) => {
                 }
               case WorkflowStep.CANCEL:
                 try {
-                  await cancelOrder(workflow.referenceId, accessToken);
+                  await cancelOrder(accessToken, workflow.referenceId);
+                  handleUpsert({
+                    referenceId: workflow.referenceId,
+                    workflow: {
+                      step: WorkflowStep.STATUS,
+                      retries: 0,
+                    },
+                  });
                   return true;
                 } catch {
                   return false;
@@ -98,79 +125,39 @@ export const useOrderWorkflow = ({ accessToken, workflows }: WorkflowProps) => {
               case WorkflowStep.START:
               default:
                 try {
-                  const referenceId = await startOrder(
-                    workflow.data.productId,
-                    workflow.referenceId,
-                    accessToken
+                  const response = await createOrder(
+                    accessToken,
+                    workflow.data
                   );
-                  return referenceId;
+                  if (response) {
+                    handleUpdate({
+                      workflow: {
+                        ...workflow,
+                        step: WorkflowStep.STATUS,
+                        // Possible new referenceId decided by the server
+                        referenceId: response.referenceId,
+                        retries: 0,
+                        data: Object.assign({}, workflow.data, {
+                          response: {
+                            referenceId: response.referenceId,
+                            clientSecret: response.clientSecret,
+                            orderId: response.orderId,
+                            status: OrderStatus.Pending,
+                          },
+                        }),
+                      },
+                      // Current referenceId
+                      referenceId: workflow.referenceId,
+                    });
+                  }
+                  return response;
                 } catch (error) {
-                  return handleRequestError(workflow, error as Error);
+                  handleError({ workflow, error: error as Error });
+                  return null;
                 }
             }
           },
-          enabled: !!accessToken,
-          retry: true,
-          useErrorBoundary: () => false,
-          onSuccess: async (response: OrderStatusResponse | string) => {
-            // Choose the next step of the workflow
-            const checkoutResponse = response as OrderStatusResponse;
-            const isOrderPage = location.pathname.includes('/checkout');
-            switch (workflow.step) {
-              case WorkflowStep.STATUS:
-                if (!checkoutResponse) {
-                  return;
-                }
-                handleUpsert({
-                  referenceId: workflow.referenceId,
-                  workflow: {
-                    data: {
-                      ...workflow.data,
-                      response: checkoutResponse,
-                    },
-                  },
-                });
-                if (OrderSuccessStatus.includes(checkoutResponse?.status)) {
-                  toast.success('Order completed successfully');
-                } else if (
-                  !isOrderPage &&
-                  OrderFailureStatus.includes(checkoutResponse?.status)
-                ) {
-                  toast.error(
-                    checkoutResponse.orderStatus === OrderStatus.CANCELLED
-                      ? 'The transaction was cancelled.'
-                      : 'The transaction has failed, please try again.'
-                  );
-                }
-                break;
-              case WorkflowStep.CANCEL:
-                handleUpsert({
-                  referenceId: workflow.referenceId,
-                  workflow: {
-                    step: WorkflowStep.STATUS,
-                    retries: 0,
-                  },
-                });
-                break;
-              case WorkflowStep.START:
-              default:
-                if (_.isString(response)) {
-                  handleUpdate({
-                    workflow: {
-                      ...workflow,
-                      step: WorkflowStep.STATUS,
-                      // New referenceId
-                      referenceId: response,
-                      retries: 0,
-                    },
-                    // Current referenceId
-                    referenceId: workflow.referenceId,
-                  });
-                }
-                break;
-            }
-          },
-        } as UseQueryOptions;
+        };
       }),
   });
 };

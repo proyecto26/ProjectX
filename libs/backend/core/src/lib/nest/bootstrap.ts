@@ -31,11 +31,13 @@ export async function bootstrapApp<T extends NestExpressApplication>(
   const port = configService.get('app.port');
   const apiPrefix = configService.get('app.apiPrefix');
 
-  app.setGlobalPrefix(apiPrefix);
+  app.setGlobalPrefix(apiPrefix, {
+    exclude: ['/health'],
+  });
 
   // PARSE HTTP REQUESTS
-  app.use(urlencoded({ extended: true }));
-  app.use(json({ limit: '10mb' }));
+  app.useBodyParser('urlencoded', { limit: '50mb', extended: true });
+  app.useBodyParser('json', { limit: '10mb' });
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

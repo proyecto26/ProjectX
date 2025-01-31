@@ -78,8 +78,17 @@ npm add -D @golevelup/ts-jest
 npx nx g @nx/nest:lib libs/backend/workflows
 ```
 
+- Create product project:
+```sh
+npx nx g @nx/nest:app apps/product --frontendProject web
+```
+
+- Create a lib for payment integrations:
+```sh
+npx nx g @nx/nest:lib libs/backend/payment
+```
 
 - Install Payment third party provider
 ```sh
-npm add mercadopago
+npm add stripe
 ```

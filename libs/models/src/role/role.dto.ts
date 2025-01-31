@@ -3,6 +3,7 @@ import { Expose, Transform } from 'class-transformer';
 import {
   IsDate,
   IsDefined,
+  IsInt,
   IsOptional,
   IsString,
   MaxLength,
@@ -16,6 +17,7 @@ export class RoleDto {
   }
 
   @ApiProperty({ description: 'Unique identifier for the role' })
+  @IsInt()
   @IsDefined()
   @Expose()
   id!: number;

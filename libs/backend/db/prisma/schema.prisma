@@ -113,19 +113,26 @@ model Manufacturer {
 }
 
 model Product {
-  id            Int       @id @default(autoincrement())
-  createdBy     Int       @map("created_by")
-  name          String    @db.VarChar(100)
-  description   String?   @db.Text
-  estimatedPrice Decimal  @db.Decimal(10, 2)
-  status        ProductStatus
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+  id             Int       @id @default(autoincrement())
+  createdBy      Int       @map("created_by")
+  name           String    @db.VarChar(100)
+  description    String?   @db.Text
+  sku            String    @unique @db.VarChar(50)
+  imageUrl       String?   @map("image_url") @db.Text
+  estimatedPrice Decimal   @map("estimated_price") @db.Decimal(10, 2)
+  downloadUrls   String[]  @map("download_urls")
+  tags           String[]
+  category       String?   @db.VarChar(100)
+  status         ProductStatus
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
 
-  user          User      @relation("UserProducts", fields: [createdBy], references: [id], onUpdate: Cascade, onDelete: NoAction, map: "fk_product_user_id")
-  orderItems    OrderItem[] @relation("ProductOrderItems")
+  user               User                @relation("UserProducts", fields: [createdBy], references: [id], onUpdate: Cascade, onDelete: NoAction, map: "fk_product_user_id")
+  orderItems         OrderItem[]         @relation("ProductOrderItems")
   manufacturerPrices ManufacturerPrice[] @relation("ProductManufacturerPrices")
 
+  @@index([sku], map: "ix_product_sku")
+  @@index([category], map: "ix_product_category")
   @@map("product")
 }
 
@@ -145,6 +152,7 @@ model ManufacturerPrice {
 
 model Order {
   id          Int       @id @default(autoincrement())
+  referenceId String    @unique @map("reference_id") @db.VarChar(36)
   userId      Int       @map("user_id")
   totalPrice  Decimal   @map("total_price") @db.Decimal(10, 2)
   status      OrderStatus
@@ -158,13 +166,14 @@ model Order {
 
   @@map("order")
   @@index([userId], map: "ix_order_user_id")
+  @@index([referenceId], map: "ix_order_reference_id")
 }
 
 model OrderItem {
   id              Int       @id @default(autoincrement()) @db.Integer
   orderId         Int       @map("order_id") @db.Integer
   productId       Int       @map("product_id") @db.Integer
-  manufacturerId  Int       @map("manufacturer_id") @db.Integer
+  manufacturerId  Int?      @map("manufacturer_id") @db.Integer
   quantity        Int       @db.Integer
   priceAtPurchase Decimal   @map("price_at_purchase") @db.Decimal(10, 2)
   createdAt       DateTime  @default(now()) @map("created_at")
@@ -173,7 +182,7 @@ model OrderItem {
   review          Review?   @relation("OrderItemReview")
   order           Order     @relation("OrderItems", fields: [orderId], references: [id], onUpdate: Cascade, onDelete: NoAction, map: "fk_order_item_order_id")
   product         Product   @relation("ProductOrderItems", fields: [productId], references: [id], onUpdate: Cascade, onDelete: NoAction, map: "fk_order_item_product_id")
-  manufacturer    Manufacturer @relation("ManufacturerOrderItems", fields: [manufacturerId], references: [id], onUpdate: Cascade, onDelete: NoAction, map: "fk_order_item_manufacturer_id")
+  manufacturer    Manufacturer? @relation("ManufacturerOrderItems", fields: [manufacturerId], references: [id], onUpdate: Cascade, onDelete: NoAction, map: "fk_order_item_manufacturer_id")
 
   @@map("order_item")
 }
@@ -244,6 +253,7 @@ enum OrderStatus {
   Shipped
   Delivered
   Cancelled
+  Failed
 }
 
 enum PaymentStatus {

@@ -7,7 +7,7 @@ import { JwtAuthGuard } from './auth.guard';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthService } from './auth.service';
 
-const passportModule = PassportModule.register({ defaultStrategy: 'jwt' });
+const passportModule = PassportModule.register({});
 
 @Module({
   imports: [

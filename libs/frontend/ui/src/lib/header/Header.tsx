@@ -92,7 +92,7 @@ export function Header({
               <img
                 alt="Logo"
                 src={logoImgSrc}
-                className="h-9 w-auto rounded-full fill-slate-700 dark:fill-sky-100"
+                className="h-10 w-auto rounded-full fill-slate-700 dark:fill-sky-100"
               />
               <h1 className="text-dark-gray dark:text-dark my-4 hidden text-center text-3xl font-bold lg:block">
                 {title}

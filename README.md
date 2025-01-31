@@ -8,11 +8,12 @@
   <img width="100px" alt="Temporal for Durable Executions" src="https://avatars.githubusercontent.com/u/56493103?s=200&v=4">
 </p>
 
-> **ProjectX** is a comprehensive full-stack template designed to simplify the development of scalable and resilient applications using **React** and **Temporal**. By integrating Temporal’s advanced workflow orchestration with React’s dynamic frontend framework, ProjectX enables developers to build applications with durable executions and seamless communication between services.
+> **ProjectX** is a comprehensive full-stack template designed to simplify the development of scalable and resilient applications using **React** and **Temporal**. By integrating Temporal's advanced workflow orchestration with React's dynamic frontend framework, ProjectX enables developers to build applications with durable executions and seamless communication between services.
 
 ## Notable Links 🤓
 
 - [Get started with Temporal and TypeScript](https://github.com/temporalio/sdk-typescript)
+- [Workflow Messages - TypeScript SDK](https://docs.temporal.io/develop/typescript/message-passing)
 
 ### Public Courses
 
@@ -50,45 +51,47 @@ Additionally, workflows support scheduled and time-based executions with configu
 
 •	**Batch Processing:** Handling large-scale batch jobs with retry mechanisms and progress monitoring.
 
-## Setting Up 🛠️
+## Getting Started 🚀
 
-### Requirements 🧰
+### Prerequisites 🧰
 
+- [Docker Compose](https://docs.docker.com/compose/install)
 - [Node.js LTS Version](https://nodejs.org)
 - [Git](https://git-scm.com/downloads)
-- [Docker Compose](https://docs.docker.com/compose/install)
 - Code editor: 
   - [VSCode](https://code.visualstudio.com/)
   - [Cursor](https://www.cursor.com/)
 
-### From Linux/Mac 
+### Quick Setup 🛠️
 
-- Install Homebrew
-- Install tools using Homebrew:
-```sh
-brew install node
-brew install git
-brew install docker-compose
-npm add --global nx@latest
+1. **Clone and Setup Environment:**
+```bash
+git clone https://github.com/proyecto26/projectx.git
+cd projectx
+cp .env.example .env
+```
+
+2. **Start Development Environment:**
+```bash
+# Build and start all services (db, temporal, backend services)
+docker-compose up -d
+
+# View service logs
+docker-compose logs -f [service]
+
+# Start web application
+npm install
+npm run dev:web
 ```
 
 ### Documentation 📚
 
-- **FrontEnd:**
-Commands used to create the project and frontend structure (Nx, RemixJS, etc) [here](./docs/frontend/README.md).
+For detailed information about the project, please refer to:
+- [Architecture Overview](./docs/architecture/README.md)
+- [Frontend Guide](./docs/frontend/README.md)
+- [Backend Guide](./docs/backend/README.md)
 
-- **BackEnd:**
-Commands used to create the services (NestJS, Temporal, etc) [here](./docs/backend/README.md).
-
-## Usage 🏃
-
-### Monorepo
-
-Instructions to use Nx CLI [here](./docs/NX_README.md).
-
-For more information on using Nx, refer to the [Nx documentation](https://nx.dev/getting-started/intro).
-
-### Project Structure Overview
+## Project Structure Overview
 
 <img width="1643" alt="image" src="https://github.com/user-attachments/assets/82e99efc-640d-4ba4-a485-c92c0184f473">
 
@@ -112,6 +115,10 @@ For more information on using Nx, refer to the [Nx documentation](https://nx.dev
 - **apps/order**: 
   - **Purpose**: Manages order processing, checkout, and payment handling.
   - **Key Features**: Cart management, order tracking, and payment integration.
+
+- **apps/product**: 
+  - **Purpose**: Manages product catalog and inventory.
+  - **Key Features**: Product listing, details, and inventory management.
 
 - **apps/web**: 
   - **Purpose**: The main web application interface.
@@ -152,65 +159,76 @@ For more information on using Nx, refer to the [Nx documentation](https://nx.dev
 ```
 </details>
 
-### Run the web app
 
-```sh
-npm run dev:web
-```
 
-### Run the ui lib (See all the UI components)
 
-```sh
-npm run storybook
-```
+> [!TIP]
+> View the Database diagram [here](./libs/backend/db/README.md).
 
-### Run services with Docker Compose
 
-- Build the images:
-```sh
-docker-compose build --no-cache
-```
 
-- Run the services:
-```sh
-docker-compose up -d
-```
 
-- Delete the services: 
-```sh
-docker-compose down --volumes
-```
+## Development Tools 🔧
 
-## Explore the project 👀
-
-```sh
+### Monorepo Management
+```bash
+# View project structure
 npx nx show projects
 npx nx graph
-```
 
-View the Database diagram [here](./libs/backend/db/README.md).
-
-Do you want to change the path of a project to decide your own organization? No problem:
-```sh
+# Move project location
 npx nx g @nx/workspace:move --project core libs/backend/common
 ```
 
-## Update project ⚡
+### UI Development
+```bash
+# Run Storybook
+npm run storybook
+```
 
-```sh
+### Project Updates
+```bash
 npx nx migrate latest
 npx nx migrate --run-migrations
 ```
 
-## Docker 🚢
+## Docker Configuration 🐳
 
-- Images:
-  * https://registry.hub.docker.com/r/postgis/postgis/
-  * https://registry.hub.docker.com/r/temporalio/auto-setup
-  * https://registry.hub.docker.com/r/temporalio/admin-tools
-  * https://registry.hub.docker.com/r/temporalio/ui
+Services defined in [docker-compose.yml](./docker-compose.yml):
+- PostgreSQL with PostGIS
+- Temporal server and UI
+- Auth, Order, and Product services
 
-All the images needed to run this project in development are listed in the [docker-compose.yml](./docker-compose.yml) file.
+### Common Commands
+```bash
+# Build fresh images
+docker-compose build --no-cache
+
+# Start services
+docker-compose up -d
+
+# Remove services and volumes
+docker-compose down --volumes
+```
+
+## Payment Providers
+
+- Stripe:
+  - [Webhooks](https://docs.stripe.com/webhooks?lang=node)
+  - [Stripe Webhook integration](https://docs.stripe.com/api/webhook_endpoints)
+  - [Stripe Checkout](https://docs.stripe.com/payments/checkout)
+  - [Webhooks Dashboard](https://dashboard.stripe.com/test/workbench/webhooks)
+  - [Automatic fulfillment Orders](https://docs.stripe.com/checkout/fulfillment)
+  - [Interactive webhook endpoint builder](https://docs.stripe.com/webhooks/quickstart)
+  - [Trigger webhook events with the Stripe CLI](https://docs.stripe.com/stripe-cli/triggers)
+  - [Testing cards](https://docs.stripe.com/testing#cards)
+- Stripe commands for testing webhooks:
+```bash
+brew install stripe/stripe-cli/stripe
+stripe login --api-key ...
+stripe trigger payment_intent.succeeded
+stripe listen --forward-to localhost:8081/order/webhook
+```
 
 ## Supporting 🍻
 I believe in Unicorns 🦄

@@ -1,16 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Transform } from 'class-transformer';
 import {
+  IsArray,
   IsDate,
   IsDefined,
   IsEnum,
+  IsInt,
   IsNumber,
   IsOptional,
   IsString,
+  IsUrl,
   MaxLength,
 } from 'class-validator';
 
-import { transformToDate, trimTransform } from '../transforms';
+import {
+  transformToDate,
+  transformToNumber,
+  trimTransform,
+} from '../transforms';
 import { NoProfanity } from '../validators';
 
 export enum ProductStatus {
@@ -26,7 +33,7 @@ export class ProductDto {
 
   @ApiProperty({ description: 'Unique identifier for the product' })
   @IsDefined()
-  @IsNumber()
+  @IsInt()
   @Expose()
   id!: number;
 
@@ -34,7 +41,7 @@ export class ProductDto {
     description: 'Unique identifier for the user who designed the product',
   })
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   @Expose()
   createdBy?: number;
 
@@ -51,23 +58,69 @@ export class ProductDto {
   @IsDefined()
   @IsString()
   @Expose()
-  @MaxLength(200)
   @Transform(({ value }) => trimTransform(value))
   @NoProfanity()
-  description?: string;
+  description!: string;
+
+  @ApiProperty({
+    description:
+      'Stock Keeping Unit - Unique identifier for inventory management',
+  })
+  @IsDefined()
+  @IsString()
+  @Expose()
+  @MaxLength(50)
+  @Transform(({ value }) => trimTransform(value))
+  sku!: string;
+
+  @ApiProperty({ description: 'URL of the product image' })
+  @IsDefined()
+  @IsString()
+  @IsUrl()
+  @Expose()
+  @Transform(({ value }) => trimTransform(value))
+  imageUrl!: string;
 
   @ApiProperty({ description: 'Estimated price of the product' })
   @IsDefined()
   @IsNumber()
   @Expose()
+  @Transform(({ value }) => transformToNumber(value))
   estimatedPrice!: number;
 
-  @ApiProperty({ description: 'Status of the product' })
+  @ApiProperty({ description: 'Array of download URLs for the product files' })
+  @IsOptional()
+  @IsArray()
+  @IsUrl({}, { each: true })
+  @Expose()
+  downloadUrls?: string[];
+
+  @ApiProperty({ description: 'Array of tags associated with the product' })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Transform(({ value }) => value?.map((tag: string) => trimTransform(tag)))
+  @Expose()
+  tags?: string[];
+
+  @ApiProperty({ description: 'Product category' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  @Transform(({ value }) => trimTransform(value))
+  @Expose()
+  category?: string;
+
+  @ApiProperty({
+    description: 'Status of the product',
+    enum: ProductStatus,
+    enumName: 'ProductStatus',
+  })
   @IsEnum(ProductStatus, {
     message: 'Status must be one of the defined enum values.',
   })
   @Expose()
-  status?: ProductStatus;
+  status!: ProductStatus;
 
   @ApiProperty({ description: 'Date the product was created' })
   @IsDefined()

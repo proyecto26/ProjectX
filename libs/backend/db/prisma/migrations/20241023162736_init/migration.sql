@@ -11,7 +11,7 @@ CREATE TYPE "ManufacturerStatus" AS ENUM ('Active', 'Inactive', 'Suspended', 'Un
 CREATE TYPE "ProductStatus" AS ENUM ('Available', 'Unavailable', 'Discontinued');
 
 -- CreateEnum
-CREATE TYPE "OrderStatus" AS ENUM ('Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled');
+CREATE TYPE "OrderStatus" AS ENUM ('Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled', 'Failed');
 
 -- CreateEnum
 CREATE TYPE "PaymentStatus" AS ENUM ('Pending', 'Completed', 'Failed', 'Refunded');
@@ -97,7 +97,12 @@ CREATE TABLE "product" (
     "created_by" INTEGER NOT NULL,
     "name" VARCHAR(100) NOT NULL,
     "description" TEXT,
-    "estimatedPrice" DECIMAL(10,2) NOT NULL,
+    "sku" VARCHAR(50) NOT NULL,
+    "image_url" TEXT,
+    "estimated_price" DECIMAL(10,2) NOT NULL,
+    "download_urls" TEXT[],
+    "tags" TEXT[],
+    "category" VARCHAR(100),
     "status" "ProductStatus" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -119,6 +124,7 @@ CREATE TABLE "manufacturer_price" (
 -- CreateTable
 CREATE TABLE "order" (
     "id" SERIAL NOT NULL,
+    "reference_id" VARCHAR(36) NOT NULL,
     "user_id" INTEGER NOT NULL,
     "total_price" DECIMAL(10,2) NOT NULL,
     "status" "OrderStatus" NOT NULL,
@@ -134,7 +140,7 @@ CREATE TABLE "order_item" (
     "id" SERIAL NOT NULL,
     "order_id" INTEGER NOT NULL,
     "product_id" INTEGER NOT NULL,
-    "manufacturer_id" INTEGER NOT NULL,
+    "manufacturer_id" INTEGER,
     "quantity" INTEGER NOT NULL,
     "price_at_purchase" DECIMAL(10,2) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -218,6 +224,21 @@ CREATE UNIQUE INDEX "review_order_item_id_key" ON "review"("order_item_id");
 
 -- CreateIndex
 CREATE INDEX "ix_review_order_item_id" ON "review"("order_item_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "order_reference_id_key" ON "order"("reference_id");
+
+-- CreateIndex
+CREATE INDEX "ix_order_reference_id" ON "order"("reference_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "product_sku_key" ON "product"("sku");
+
+-- CreateIndex
+CREATE INDEX "ix_product_sku" ON "product"("sku");
+
+-- CreateIndex
+CREATE INDEX "ix_product_category" ON "product"("category");
 
 -- AddForeignKey
 ALTER TABLE "user_role" ADD CONSTRAINT "fk_user_role_user_id" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE CASCADE;

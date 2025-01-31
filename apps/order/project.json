@@ -5,10 +5,35 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/order",
+        "main": "apps/order/src/main.ts",
+        "tsConfig": "apps/order/tsconfig.app.json",
+        "assets": [
+          "apps/order/src/assets",
+          "apps/order/src/workflows"
+        ],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/order/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": ["build"],
       "options": {
         "buildTarget": "order:build",
         "runBuildTargetDependencies": false

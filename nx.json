@@ -15,9 +15,7 @@
       "!{projectRoot}/src/test-setup.[jt]s",
       "!{projectRoot}/test-setup.[jt]s"
     ],
-    "sharedGlobals": [
-      "{workspaceRoot}/.github/workflows/ci.yml"
-    ]
+    "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
   },
   "neverConnectToCloud": true,
   "plugins": [
@@ -76,7 +74,11 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/auth-e2e/**/*", "apps/order-e2e/**/*"]
+      "exclude": [
+        "apps/auth-e2e/**/*",
+        "apps/order-e2e/**/*",
+        "apps/product-e2e/**/*"
+      ]
     }
   ],
   "targetDefaults": {

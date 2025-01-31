@@ -23,23 +23,30 @@ export type LoginWorkflowState = {
   code?: string;
 };
 
-export const getLoginStateQuery = defineQuery<LoginWorkflowState | null>(
-  'getLoginStateQuery'
-);
-
-export type VerifyLoginCodeUpdateResult = {
-  user?: UserDto;
-};
-
-export const verifyLoginCodeUpdate = defineUpdate<
-  VerifyLoginCodeUpdateResult,
-  [number]
->('verifyLoginCodeUpdate');
-
 export enum LoginWorkflowRetryableErrors {
   VERIFY_LOGIN_CODE_FAILURE = 'VERIFY_LOGIN_CODE_FAILURE',
 }
 
 export enum LoginWorkflowNonRetryableErrors {
   UNKNOWN_ERROR = 'UNKNOWN_ERROR_NON_RETRY',
+  LOGIN_CODE_EXPIRED = 'LOGIN_CODE_EXPIRED',
 }
+
+// DEFINE QUERIES
+/**
+ * Get the login state
+ */
+export const getLoginStateQuery = defineQuery<LoginWorkflowState | null>(
+  'getLoginStateQuery'
+);
+
+// DEFINE UPDATES
+/**
+ * Verify the login code
+ */
+export const verifyLoginCodeUpdate = defineUpdate<
+  {
+    user?: UserDto;
+  },
+  [number]
+>('verifyLoginCodeUpdate');

@@ -1,20 +1,13 @@
+import type { CreateOrderDto, OrderStatusResponseDto, OrderCreateResponseDto } from '@projectx/models';
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 
-import { ORDER_API_URL } from '~/constants';
-import { OrderStartResponse, OrderStatusResponse } from '../types';
-
-export async function startOrder(
-  productId: unknown,
-  referenceId = uuidv4(),
-  accessToken?: string,
-): Promise<OrderStartResponse> {
-  const response = await axios.post<OrderStartResponse>(
-    ORDER_API_URL,
-    {
-      referenceId,
-      productId,
-    },
+export async function createOrder(
+  accessToken: string,
+  orderDto: CreateOrderDto,
+): Promise<OrderCreateResponseDto> {
+  const response = await axios.post<OrderCreateResponseDto>(
+    `${window.ENV.ORDER_API_URL}/order`,
+    orderDto,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -25,11 +18,11 @@ export async function startOrder(
 }
 
 export async function getOrderStatus(
+  accessToken: string,
   referenceId: string,
-  accessToken?: string,
-): Promise<OrderStatusResponse> {
-  const response = await axios.get<OrderStatusResponse>(
-    `${ORDER_API_URL}/${referenceId}`,
+): Promise<OrderStatusResponseDto> {
+  const response = await axios.get<OrderStatusResponseDto>(
+    `${window.ENV.ORDER_API_URL}/order/${referenceId}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -40,10 +33,10 @@ export async function getOrderStatus(
 }
 
 export async function cancelOrder(
+  accessToken: string,
   referenceId: string,
-  accessToken?: string,
 ): Promise<void> {
-  await axios.delete(`${ORDER_API_URL}/${referenceId}`, {
+  await axios.delete(`${window.ENV.ORDER_API_URL}/order/${referenceId}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

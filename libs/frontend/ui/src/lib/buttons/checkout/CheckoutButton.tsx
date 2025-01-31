@@ -1,29 +1,28 @@
-import React from 'react';
+import { useNavigate } from '@remix-run/react';
 import { useCart } from 'react-use-cart';
-import axios from 'axios';
+import { toast } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
+
 import Button from '../button/Button';
 
 export function CheckoutButton() {
-  const { items, emptyCart } = useCart();
-
-  const handleCheckout = async () => {
-    try {
-      const response = await axios.post('/api/create_preference', { items });
-      const { preferenceId } = response.data;
-
-      // Redirigir al usuario a la página de pago de MercadoPago
-      window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=${preferenceId}`;
-
-      // Opcional: Vaciar el carrito después de la compra
-      emptyCart();
-    } catch (error) {
-      console.error('Error durante el pago:', error);
-      alert('Hubo un problema al procesar tu pago. Por favor, intenta nuevamente.');
+  const { isEmpty } = useCart();
+  const navigate = useNavigate();
+  const handleCheckout = () => {
+    alert(isEmpty);
+    if (isEmpty) {
+      toast.error(
+        'Your cart is empty, please add items to your cart before proceeding to checkout.'
+      );
+      return;
     }
+    // Use UUID to generate a new referenceId
+    const referenceId = uuidv4();
+    navigate(`/checkout/${referenceId}`);
   };
-  
+
   return (
-    <Button onClick={handleCheckout} className="btn btn-primary">
+    <Button type="button" onClick={handleCheckout} className="btn btn-primary">
       Proceed to Checkout
     </Button>
   );

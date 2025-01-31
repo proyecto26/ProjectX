@@ -14,9 +14,10 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserService } from './user.service';
-import { AuthUser, JwtAuthGuard, User } from '@projectx/core';
+import { AuthUser, JwtAuthGuard, AuthenticatedUser } from '@projectx/core';
 import { UserDto, UserStatus } from '@projectx/models';
+
+import { UserService } from './user.service';
 
 @ApiBearerAuth()
 @ApiTags('User')
@@ -38,7 +39,7 @@ export class UserController {
   })
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getProfile(@User() userDto: AuthUser) {
+  async getProfile(@AuthenticatedUser() userDto: AuthUser) {
     const user = await this.userService.findOne(userDto);
     if (!user) {
       throw new NotFoundException('User not found');

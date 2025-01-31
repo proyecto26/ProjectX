@@ -1,8 +1,9 @@
-import { UserDto } from '@projectx/models';
+import type { UserDto } from '@projectx/models';
 import type {
   MetaFunction,
   LinksFunction,
   LoaderFunction,
+  LoaderFunctionArgs,
 } from '@remix-run/node';
 import {
   isRouteErrorResponse,
@@ -18,6 +19,7 @@ import {
 } from '@remix-run/react';
 import { PropsWithChildren } from 'react';
 import { AuthenticityTokenProvider } from 'remix-utils/csrf/react';
+import { ToastContainer } from 'react-toastify';
 
 import { getEnv } from '~/config/env.server';
 import { csrf } from '~/cookies/session.server';
@@ -61,7 +63,7 @@ type LoaderData = {
   ENV: ReturnType<typeof getEnv>;
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request }: LoaderFunctionArgs) => {
   const [csrfToken, cookieHeader] = await csrf.commitToken();
   const theme = request.headers.get('Cookie')?.includes('theme=dark')
     ? THEME.DARK
@@ -71,12 +73,12 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = getAuthUser();
   return json<LoaderData>(
     {
+      user,
       theme,
       csrfToken,
+      accessToken,
       ENV: getEnv(),
       isAuthenticated: !!accessToken,
-      user,
-      accessToken,
     },
     {
       headers: {
@@ -90,7 +92,9 @@ export type AppProps = PropsWithChildren<
   Omit<LoaderData, 'isAuthenticated'>
 >;
 function App({ csrfToken, theme, user, accessToken, ENV }: AppProps) {
+  // Connect Temporal workflows to your app
   useWorkflows({ accessToken, email: user?.email });
+
   return (
     <AuthenticityTokenProvider token={csrfToken}>
       <html lang="en" data-theme={theme}>
@@ -105,6 +109,7 @@ function App({ csrfToken, theme, user, accessToken, ENV }: AppProps) {
           <Links />
         </head>
         <body>
+          <ToastContainer />
           <script
             suppressHydrationWarning
             dangerouslySetInnerHTML={{

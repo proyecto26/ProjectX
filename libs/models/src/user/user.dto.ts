@@ -5,6 +5,7 @@ import {
   IsDefined,
   IsEmail,
   IsEnum,
+  IsInt,
   IsOptional,
   IsString,
   Matches,
@@ -31,6 +32,7 @@ export class UserDto {
   }
 
   @ApiProperty({ description: 'Unique identifier for the user' })
+  @IsInt()
   @IsDefined()
   @Expose()
   id!: number;

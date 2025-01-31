@@ -37,7 +37,7 @@ export function ShoppingCartContent({
     isEmpty,
   } = useCart();
 
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
   const shipping = 10.00; // Ejemplo de costo de envío
   const total = subtotal + shipping;
 
@@ -97,7 +97,7 @@ export function ShoppingCartContent({
                           <Button
                             className="btn btn-xs btn-outline"
                             onClick={() => {
-                              const newQuantity = item.quantity - 1;
+                              const newQuantity = (item.quantity || 1) - 1;
                               if (newQuantity > 0) {
                                 updateItemQuantity(item.id, newQuantity);
                               } else {
@@ -112,7 +112,7 @@ export function ShoppingCartContent({
                           <Button
                             className="btn btn-xs btn-outline"
                             onClick={() =>
-                              updateItemQuantity(item.id, item.quantity + 1)
+                              updateItemQuantity(item.id, (item.quantity || 1) + 1)
                             }
                             aria-label={`Increase quantity of ${item.name}`}
                           >

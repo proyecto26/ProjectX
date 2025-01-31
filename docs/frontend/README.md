@@ -105,3 +105,7 @@ npm add -D @tanstack/react-query-devtools
 
 More details here: https://tanstack.com/query/latest/docs/framework/react/guides/ssr#using-the-hydration-apis
 
+- Install Payment third party provider
+```sh
+npm install --save @stripe/react-stripe-js @stripe/stripe-js
+```

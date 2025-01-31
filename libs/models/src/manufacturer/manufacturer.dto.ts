@@ -4,7 +4,9 @@ import {
   IsDate,
   IsDefined,
   IsString,
+  IsInt,
   MaxLength,
+  IsEnum,
 } from 'class-validator';
 
 import {
@@ -26,6 +28,8 @@ export class ManufacturerDto {
   }
 
   @ApiProperty({ description: 'Unique identifier for the manufacturer' })
+  @IsInt()
+  @IsDefined()
   @Expose()
   id!: number;
 
@@ -39,16 +43,22 @@ export class ManufacturerDto {
   name!: string;
 
   @ApiProperty({ description: 'Status of the manufacturer' })
+  @IsDefined()
+  @IsEnum(ManufacturerStatus, {
+    message: 'Status must be one of the defined enum values.',
+  })
   @Expose()
   status!: ManufacturerStatus;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Date the manufacturer was created' })
+  @IsDefined()
   @IsDate()
   @Expose()
   @Transform(({ value }) => transformToDate(value))
   createdAt!: Date;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Date the manufacturer was last updated' })
+  @IsDefined()
   @IsDate()
   @Expose()
   @Transform(({ value }) => transformToDate(value))

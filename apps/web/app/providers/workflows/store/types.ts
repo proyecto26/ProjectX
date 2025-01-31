@@ -10,33 +10,29 @@ export enum StoreActions {
 }
 
 export type StoreState = {
-  isWalletDialogOpen: boolean;
-  isWalletInProgress: boolean;
   workflows: Record<WorkflowType, Array<Workflow<unknown>>>;
-  accessToken?: string;
-  checkoutNftAddress: string | undefined;
 };
 
 export type StoreAction =
   | {
-      type: StoreActions.RunWorkflow;
-      payload: Workflow<unknown>;
+  type: StoreActions.RunWorkflow;
+  payload: Workflow<unknown>;
       workflowType: WorkflowType;
-    }
+}
   | {
-      type: StoreActions.ClearWorkflow;
+  type: StoreActions.ClearWorkflow;
       referenceId: Workflow<unknown>['referenceId'];
-      workflowType: WorkflowType;
-    }
+  workflowType: WorkflowType;
+}
   | {
-      type: StoreActions.UpdateWorkflow;
-      payload: Workflow<unknown>;
+  type: StoreActions.UpdateWorkflow;
+  payload: Workflow<unknown>;
       workflowType: WorkflowType;
       referenceId: Workflow<unknown>['referenceId'];
-    }
+}
   | {
-      type: StoreActions.UpsertWorkflow;
-      payload: Partial<Workflow<unknown>>;
+  type: StoreActions.UpsertWorkflow;
+  payload: Partial<Workflow<unknown>>;
       workflowType: WorkflowType;
       referenceId: Workflow<unknown>['referenceId'];
     };
