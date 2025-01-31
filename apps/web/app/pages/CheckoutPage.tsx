@@ -1,14 +1,15 @@
 import { canUseDOM } from '@projectx/ui';
 import { Elements } from '@stripe/react-stripe-js';
 import type { Appearance } from '@stripe/stripe-js';
-import { Stripe, loadStripe } from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
 
+import { OrderWorkflow } from '~/providers/workflows/types';
 import { CheckoutForm } from './checkout/CheckoutForm';
-import { CompletePage } from './checkout/CompletePage';
 
-const STRIPE_SECRET_KEY = canUseDOM ? window?.ENV.STRIPE_PUBLISHABLE_KEY : process.env.STRIPE_PUBLISHABLE_KEY as string;
+const STRIPE_SECRET_KEY = canUseDOM
+  ? window?.ENV.STRIPE_PUBLISHABLE_KEY
+  : (process.env.STRIPE_PUBLISHABLE_KEY as string);
 
 // Make sure to call loadStripe outside of a component's render to avoid
 // recreating the Stripe object on every render.
@@ -16,7 +17,9 @@ const STRIPE_SECRET_KEY = canUseDOM ? window?.ENV.STRIPE_PUBLISHABLE_KEY : proce
 const stripePromise = loadStripe(STRIPE_SECRET_KEY);
 
 interface CheckoutPageProps {
-  clientSecret?: string;
+  error?: Error;
+  isLoading: boolean;
+  currentCheckoutWorkflow?: OrderWorkflow;
 }
 
 const appearance: Appearance = {
@@ -52,27 +55,66 @@ const appearance: Appearance = {
   },
 };
 
-export const CheckoutPage = ({ clientSecret }: CheckoutPageProps) => {
-  const [confirmed, setConfirmed] = useState(false);
-  const [stripe, setStripe] = useState<Stripe | null>(null);
+export const CheckoutPage = ({
+  error,
+  isLoading,
+  currentCheckoutWorkflow,
+}: CheckoutPageProps) => {
+  if (isLoading) {
+    // Skeleton for payment form
+    return (
+      <div className="flex flex-grow items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-base font-semibold text-purple-600 dark:text-purple-400">
+            404
+          </p>
+          <h1 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
+            Loading...
+          </h1>
+          <p className="mt-2 text-base text-gray-500 dark:text-gray-400">
+            Please wait while we load the payment form.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    // Initialize Stripe
-    stripePromise.then(setStripe);
-  }, []);
+  if (error) {
+    return (
+      <div className="flex flex-grow items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-base font-semibold text-purple-600 dark:text-purple-400">
+            404
+          </p>
+          <h1 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
+            Payment not found
+          </h1>
+          <p className="mt-2 text-base text-gray-500 dark:text-gray-400">
+            The payment session you're looking for doesn't exist or has expired.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const clientSecret = currentCheckoutWorkflow?.data?.response?.clientSecret;
 
   if (!clientSecret) {
     return (
-      <div className="flex-grow flex items-center justify-center p-4">
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.5 }} 
-          className="w-full max-w-md bg-white dark:bg-gray-800 shadow-xl rounded-lg p-8"
+      <div className="flex flex-grow items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md rounded-lg bg-white p-8 shadow-xl dark:bg-gray-800"
         >
           <div className="text-center">
-            <p className="text-base font-semibold text-purple-600 dark:text-purple-400">404</p>
-            <h1 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">Payment not found</h1>
+            <p className="text-base font-semibold text-purple-600 dark:text-purple-400">
+              404
+            </p>
+            <h1 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
+              Payment not found
+            </h1>
             <p className="mt-2 text-base text-gray-500 dark:text-gray-400">
               The payment session you're looking for doesn't exist or has expired.
             </p>
@@ -88,17 +130,19 @@ export const CheckoutPage = ({ clientSecret }: CheckoutPageProps) => {
   };
 
   return (
-    <div className="flex-grow flex items-center justify-center p-4">
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }} 
-        animate={{ opacity: 1, y: 0 }} 
-        transition={{ duration: 0.5 }} 
-        className="w-full max-w-3xl bg-white dark:bg-gray-800 shadow-xl rounded-lg p-8"
+    <div className="flex flex-grow items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-3xl rounded-lg bg-white p-8 shadow-xl dark:bg-gray-800"
       >
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Complete Payment</h2>
+        <h2 className="mb-6 text-3xl font-bold text-gray-900 dark:text-white">
+          Complete Payment
+        </h2>
         <div className="space-y-8">
           <Elements options={options} stripe={stripePromise}>
-            {confirmed ? <CompletePage /> : <CheckoutForm onConfirmed={() => setConfirmed(true)} />}
+            <CheckoutForm currentCheckoutWorkflow={currentCheckoutWorkflow} />
           </Elements>
         </div>
       </motion.div>

@@ -45,12 +45,15 @@ export default function Checkout() {
     workflowType: WorkflowTypes.ORDER,
   });
   const workflowInitiatedRef = useRef(false);
-  const [clientSecret, setClientSecret] = useState('');
   const [error, setError] = useState<Error>();
 
   // Trigger the creation of the order workflow
   useEffect(() => {
-    if (!workflowInitiatedRef.current && !currentCheckoutWorkflow && items.length > 0) {
+    if (
+      !workflowInitiatedRef.current &&
+      !currentCheckoutWorkflow &&
+      items.length > 0
+    ) {
       workflowInitiatedRef.current = true;
       handleRun({
         workflow: {
@@ -74,12 +77,6 @@ export default function Checkout() {
     }
   }, [currentCheckoutWorkflow, items]);
 
-  useEffect(() => {
-    if (!clientSecret && currentCheckoutWorkflow?.data?.response?.clientSecret) {
-      setClientSecret(currentCheckoutWorkflow.data.response.clientSecret);
-    }
-  }, [currentCheckoutWorkflow?.data?.response?.clientSecret, clientSecret]);
-
   // Manage errors with the current workflow
   useEffect(() => {
     if (currentCheckoutWorkflow?.error) {
@@ -90,7 +87,11 @@ export default function Checkout() {
 
   return (
     <PageLayout title="Checkout">
-      <CheckoutPage clientSecret={clientSecret} />
+      <CheckoutPage
+        error={error}
+        isLoading={items?.length > 0 || !currentCheckoutWorkflow}
+        currentCheckoutWorkflow={currentCheckoutWorkflow}
+      />
     </PageLayout>
   );
 }
