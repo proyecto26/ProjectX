@@ -10,10 +10,6 @@ export enum OrderStatus {
   Failed = 'Failed',
 }
 
-export interface OrderStartResponse {
-  referenceId: string;
-}
-
 export const OrderSuccessStatus = [
   OrderStatus.Confirmed,
   OrderStatus.Shipped,

@@ -220,6 +220,14 @@ docker-compose down --volumes
   - [Automatic fulfillment Orders](https://docs.stripe.com/checkout/fulfillment)
   - [Interactive webhook endpoint builder](https://docs.stripe.com/webhooks/quickstart)
   - [Trigger webhook events with the Stripe CLI](https://docs.stripe.com/stripe-cli/triggers)
+  - [Testing cards](https://docs.stripe.com/testing#cards)
+- Stripe commands for testing webhooks:
+```bash
+brew install stripe/stripe-cli/stripe
+stripe login --api-key ...
+stripe trigger payment_intent.succeeded
+stripe listen --forward-to localhost:8081/order/webhook
+```
 
 ## Supporting 🍻
 I believe in Unicorns 🦄

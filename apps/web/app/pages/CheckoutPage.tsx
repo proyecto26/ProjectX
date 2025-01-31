@@ -1,3 +1,4 @@
+import { canUseDOM } from '@projectx/ui';
 import { Elements } from '@stripe/react-stripe-js';
 import type { Appearance } from '@stripe/stripe-js';
 import { Stripe, loadStripe } from '@stripe/stripe-js';
@@ -6,12 +7,13 @@ import { useEffect, useState } from 'react';
 
 import { CheckoutForm } from './checkout/CheckoutForm';
 import { CompletePage } from './checkout/CompletePage';
-import { stripeSecretKey } from '~/config/app.config.server';
+
+const STRIPE_SECRET_KEY = canUseDOM ? window?.ENV.STRIPE_PUBLISHABLE_KEY : process.env.STRIPE_PUBLISHABLE_KEY as string;
 
 // Make sure to call loadStripe outside of a component's render to avoid
 // recreating the Stripe object on every render.
 // This is your test publishable API key.
-const stripePromise = loadStripe(stripeSecretKey);
+const stripePromise = loadStripe(STRIPE_SECRET_KEY);
 
 interface CheckoutPageProps {
   clientSecret?: string;

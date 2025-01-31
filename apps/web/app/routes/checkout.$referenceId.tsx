@@ -55,8 +55,7 @@ export default function Checkout() {
       handleRun({
         workflow: {
           referenceId,
-          maxRetries: 50,
-          expirationTimeInMilliseconds: 1000 * 60 * 60 * 24,
+          expirationTimeInMilliseconds: Date.now() + 1000 * 60 * 60 * 24,
           step: WorkflowStep.START,
           data: {
             referenceId,

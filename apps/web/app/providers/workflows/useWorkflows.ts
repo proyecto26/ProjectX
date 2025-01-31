@@ -4,7 +4,7 @@ import { OrderWorkflow, WorkflowTypes } from './types';
 import { useWorkflowsByType } from './utils';
 
 export type WorkflowProps = {
-  accessToken?: string;
+  accessToken: string;
   email?: string;
 };
 

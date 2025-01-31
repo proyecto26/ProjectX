@@ -16,4 +16,8 @@ export class ActivitiesService {
   async reportPaymentFailed(orderId: number) {
     return this.orderService.reportPaymentFailed(orderId);
   }
+
+  async reportPaymentConfirmed(orderId: number) {
+    return this.orderService.reportPaymentConfirmed(orderId);
+  }
 }

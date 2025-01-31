@@ -1,13 +1,11 @@
-import type { CreateOrderDto, OrderStatusResponseDto } from '@projectx/models';
+import type { CreateOrderDto, OrderStatusResponseDto, OrderCreateResponseDto } from '@projectx/models';
 import axios from 'axios';
-
-import { OrderStartResponse } from '../types';
 
 export async function createOrder(
   accessToken: string,
   orderDto: CreateOrderDto,
-): Promise<OrderStartResponse> {
-  const response = await axios.post<OrderStartResponse>(
+): Promise<OrderCreateResponseDto> {
+  const response = await axios.post<OrderCreateResponseDto>(
     `${window.ENV.ORDER_API_URL}/order`,
     orderDto,
     {

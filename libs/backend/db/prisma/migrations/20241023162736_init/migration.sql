@@ -11,7 +11,7 @@ CREATE TYPE "ManufacturerStatus" AS ENUM ('Active', 'Inactive', 'Suspended', 'Un
 CREATE TYPE "ProductStatus" AS ENUM ('Available', 'Unavailable', 'Discontinued');
 
 -- CreateEnum
-CREATE TYPE "OrderStatus" AS ENUM ('Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled');
+CREATE TYPE "OrderStatus" AS ENUM ('Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled', 'Failed');
 
 -- CreateEnum
 CREATE TYPE "PaymentStatus" AS ENUM ('Pending', 'Completed', 'Failed', 'Refunded');

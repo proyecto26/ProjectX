@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreateOrderDto } from '@projectx/models';
 import {
@@ -87,9 +93,9 @@ export class AppService {
           HttpStatus.CONFLICT
         );
       } else {
-        throw new HttpException(
+        this.logger.error(`createOrder(${user.email}) - Error creating order`, error);
+        throw new BadRequestException(
           'Error creating order',
-          HttpStatus.INTERNAL_SERVER_ERROR,
           {
             cause: error,
           }
@@ -111,7 +117,7 @@ export class AppService {
       throw new HttpException('No active order found', HttpStatus.NOT_FOUND);
     }
 
-    if (Date.now() - description.startTime.getMilliseconds() >= WORKFLOW_TTL) {
+    if (Date.now() - description.startTime.getTime() >= WORKFLOW_TTL) {
       throw new HttpException('Order has expired', HttpStatus.GONE);
     }
 
@@ -127,17 +133,25 @@ export class AppService {
     await handle.signal(cancelWorkflowSignal);
   }
 
-  async handleWebhook(payload: Buffer, signature: string) {
-    this.logger.log('Processing webhook event');
+  async handleWebhook(payload: string | Buffer, signature: string) {
+    if (!payload || !signature) {
+      this.logger.error(`handleWebhook(${signature}) - No payload received`);
+      throw new BadRequestException('No payload received');
+    }
+    this.logger.log(`handleWebhook(${signature}) - Processing webhook event`);
     try {
       // Verify and construct the webhook event
-      const event = await this.stripeService.constructWebhookEvent(
+      const event = this.stripeService.constructWebhookEvent(
         payload,
         signature
       );
 
       // Extract payment intent data
       const paymentIntent = this.stripeService.handleWebhookEvent(event);
+      if (!paymentIntent?.metadata) {
+        this.logger.error(`handleWebhook(${signature}) - Unhandled event type: ${event.type}`);
+        return { received: true };
+      }
       const { userId, referenceId } = paymentIntent.metadata;
 
       if (!userId || !referenceId) {
@@ -174,8 +188,10 @@ export class AppService {
       // Return true to indicate the webhook was received
       return { received: true };
     } catch (err) {
-      this.logger.error('Webhook Error:', err.message);
-      throw err;
+      this.logger.error(`handleWebhook(${signature}) - Webhook Error: ${err.message}`);
+      throw new BadRequestException('Webhook Error', {
+        cause: err,
+      });
     }
   }
 }

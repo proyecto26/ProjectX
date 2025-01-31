@@ -1,4 +1,10 @@
-import { authAPIUrl, environment, orderAPIUrl, productAPIUrl } from './app.config.server';
+import {
+  authAPIUrl,
+  environment,
+  orderAPIUrl,
+  productAPIUrl,
+  stripePublishableKey,
+} from './app.config.server';
 
 export function getEnv() {
   return {
@@ -6,6 +12,7 @@ export function getEnv() {
     AUTH_API_URL: authAPIUrl,
     ORDER_API_URL: orderAPIUrl,
     PRODUCT_API_URL: productAPIUrl,
+    STRIPE_PUBLISHABLE_KEY: stripePublishableKey,
   };
 }
 

@@ -36,8 +36,8 @@ export async function bootstrapApp<T extends NestExpressApplication>(
   });
 
   // PARSE HTTP REQUESTS
-  app.use(urlencoded({ extended: true }));
-  app.use(json({ limit: '10mb' }));
+  app.useBodyParser('urlencoded', { limit: '50mb', extended: true });
+  app.useBodyParser('json', { limit: '10mb' });
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

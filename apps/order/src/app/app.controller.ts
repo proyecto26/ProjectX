@@ -4,13 +4,13 @@ import {
   Get,
   Post,
   Headers,
-  RawBodyRequest,
-  Req,
   UseGuards,
   Param,
   HttpStatus,
   HttpCode,
   Delete,
+  Req,
+  RawBodyRequest,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -18,10 +18,11 @@ import {
   ApiOperation,
   ApiParam,
   ApiTags,
+  ApiHeader,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { AuthenticatedUser, AuthUser, JwtAuthGuard } from '@projectx/core';
 import { CreateOrderDto, OrderStatusResponseDto } from '@projectx/models';
-import { Request } from 'express';
 
 import { AppService } from './app.service';
 
@@ -75,11 +76,30 @@ export class AppController {
     return this.appService.cancelOrder(referenceId);
   }
 
+  @ApiOperation({
+    summary: 'Handle Stripe webhook events',
+    description: 'Endpoint for receiving webhook events from Stripe for payment processing',
+  })
+  @ApiHeader({
+    name: 'stripe-signature',
+    description: 'Stripe signature for webhook event verification',
+    required: true,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Webhook event processed successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid payload or signature',
+  })
+  @HttpCode(HttpStatus.OK)
   @Post('/webhook')
   async handleStripeWebhook(
     @Req() request: RawBodyRequest<Request>,
     @Headers('stripe-signature') signature: string
   ) {
+    // Validate and process the webhook
     return this.appService.handleWebhook(request.rawBody, signature);
   }
 }

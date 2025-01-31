@@ -46,4 +46,14 @@ export class OrderService {
     // TODO: Send email notification to user about payment failure
     return updatedOrder;
   }
+
+  async reportPaymentConfirmed(orderId: number) {
+    this.logger.log(`reportPaymentConfirmed(${orderId})`);
+    const updatedOrder = await this.orderRepositoryService.updateOrderStatus(
+      orderId,
+      OrderStatus.Confirmed
+    );
+    // TODO: Send email notification to user about payment confirmation
+    return updatedOrder;
+  }
 }

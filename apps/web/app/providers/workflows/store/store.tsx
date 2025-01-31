@@ -14,17 +14,13 @@ export const GlobalContext = createContext<ContextProps>(
 );
 export const StoreConsumer = GlobalContext.Consumer;
 
-export type StoreProviderProps = PropsWithChildren<{
-  accessToken?: string;
-}>;
+export type StoreProviderProps = PropsWithChildren;
 
 export const StoreProvider: React.FC<StoreProviderProps> = ({
   children,
-  accessToken,
 }) => {
   const [state, dispatch] = useReducer<StoreReducer>(reducer, {
     ...initialState,
-    accessToken,
   });
 
   const value = React.useMemo<ContextProps>(
@@ -37,16 +33,12 @@ export const StoreProvider: React.FC<StoreProviderProps> = ({
   );
 };
 
-export type StoreProviderType = {
-  accessToken?: string;
-};
-
 export function withStoreProvider<T>(
   WrappedComponent: ComponentType<T>,
-): ComponentType<T & StoreProviderType> {
-  return function (props: T & StoreProviderType) {
+): ComponentType<T & StoreProviderProps> {
+  return function (props: T & StoreProviderProps) {
     return (
-      <StoreProvider accessToken={props.accessToken}>
+      <StoreProvider>
         <WrappedComponent {...props} />
       </StoreProvider>
     );

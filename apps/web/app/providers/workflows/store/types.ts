@@ -11,7 +11,6 @@ export enum StoreActions {
 
 export type StoreState = {
   workflows: Record<WorkflowType, Array<Workflow<unknown>>>;
-  accessToken?: string;
 };
 
 export type StoreAction =

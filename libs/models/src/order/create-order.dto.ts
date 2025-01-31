@@ -51,3 +51,25 @@ export class CreateOrderDto extends OmitType(OrderDto, [
   @IsString()
   paymentMethod!: string;
 }
+
+export class OrderCreateResponseDto {
+  @ApiProperty({ description: 'Order ID' })
+  @IsDefined()
+  @IsInt()
+  orderId!: number;
+
+  @ApiProperty({ description: 'Reference ID' })
+  @IsDefined()
+  @IsString()
+  referenceId!: string;
+
+  @ApiProperty({ description: 'Client secret' })
+  @IsDefined()
+  @IsString()
+  clientSecret!: string;
+
+  @ApiProperty({ description: 'Message' })
+  @IsDefined()
+  @IsString()
+  message!: string;
+}

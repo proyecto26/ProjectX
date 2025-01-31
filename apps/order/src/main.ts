@@ -6,7 +6,8 @@ import { AppModule } from './app/app.module';
 // Export activities to be used in workflows
 export * from './app/activities/activities.service';
 
-bootstrapApp(AppModule).catch((err) => {
+// Enable raw body parsing for webhook events
+bootstrapApp(AppModule, { rawBody: true }).catch((err) => {
   Logger.error(
     `⚠️ Application failed to start: ${err}`
   )

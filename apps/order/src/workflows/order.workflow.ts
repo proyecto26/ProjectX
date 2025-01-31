@@ -18,23 +18,27 @@ import {
   createOrderUpdate,
   getOrderStateQuery,
   getWorkflowIdByPaymentOrder,
+  paymentWebHookEventSignal,
 } from '../../../../libs/backend/core/src/lib/order/workflow.utils';
 import { cancelWorkflowSignal } from '../../../../libs/backend/core/src/lib/workflows';
 import type { OrderStatusResponseDto } from '../../../../libs/models/src/order/order.dto';
 import type { ActivitiesService } from '../main';
-
-const { createOrder: createOrderActivity, reportPaymentFailed } =
-  proxyActivities<ActivitiesService>({
-    startToCloseTimeout: '5 seconds',
-    retry: {
-      initialInterval: '2s',
-      maximumInterval: '10s',
-      maximumAttempts: 10,
-      backoffCoefficient: 1.5,
-      nonRetryableErrorTypes: [OrderWorkflowNonRetryableErrors.UNKNOWN_ERROR],
-    },
-  });
 import { processPayment } from './process-payment.workflow';
+
+const {
+  createOrder: createOrderActivity,
+  reportPaymentFailed,
+  reportPaymentConfirmed,
+} = proxyActivities<ActivitiesService>({
+  startToCloseTimeout: '5 seconds',
+  retry: {
+    initialInterval: '2s',
+    maximumInterval: '10s',
+    maximumAttempts: 10,
+    backoffCoefficient: 1.5,
+    nonRetryableErrorTypes: [OrderWorkflowNonRetryableErrors.UNKNOWN_ERROR],
+  },
+});
 
 export enum OrderStatus {
   Pending = 'Pending',
@@ -76,6 +80,9 @@ export async function createOrder(
       log.error('The payment process has already finished, cannot cancel');
     }
   });
+  setHandler(paymentWebHookEventSignal, (e) =>
+    processPaymentWorkflow?.signal(paymentWebHookEventSignal, e)
+  );
   // Create the order and the payment intent with the payment provider
   setHandler(createOrderUpdate, async () => {
     const { order, clientSecret } = await createOrderActivity(data);
@@ -106,6 +113,7 @@ export async function createOrder(
     }
     processPaymentWorkflow = undefined;
     state.status = OrderStatus.Confirmed;
+    await reportPaymentConfirmed(state.orderId);
   }
 
   // TODO: Second step - Ship the order

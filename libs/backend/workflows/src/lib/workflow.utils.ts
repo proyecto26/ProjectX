@@ -10,7 +10,7 @@ export enum WorkflowSearchAttributes {
   OrderId = 'OrderId',
 }
 
-export const WORKFLOW_TTL = 1000 * 60 * 60 * 24; // 24 hours
+export const WORKFLOW_TTL = 1000 * 60 * 60 * 24; // 24 hours in milliseconds
 
 export const getWorkflowDescription = (
   client: WorkflowClient,

@@ -83,19 +83,21 @@ export class StripeService {
     let paymentIntent: Stripe.PaymentIntent | undefined;
     
     switch (event.type) {
+      case 'payment_intent.created':
+        paymentIntent = event.data.object as Stripe.PaymentIntent;
+        this.logger.log(`handleWebhookEvent(${paymentIntent.id}) - Payment intent created:`);
+        break;
       case 'payment_intent.succeeded':
         paymentIntent = event.data.object as Stripe.PaymentIntent;
-        // Handle successful payment
-        console.log('Payment succeeded:', paymentIntent.id);
+        this.logger.log(`handleWebhookEvent(${paymentIntent.id}) - Payment succeeded:`);
         break;
       case 'payment_intent.payment_failed':
         paymentIntent = event.data.object as Stripe.PaymentIntent;
-        // Handle failed payment
-        console.log('Payment failed:', paymentIntent.id);
+        this.logger.log(`handleWebhookEvent(${paymentIntent.id}) - Payment failed:`);
         break;
       // Add more event types as needed
       default:
-        console.log('Unhandled event type:', event.type);
+        this.logger.error(`handleWebhookEvent(${paymentIntent?.id}) - Unhandled event type: ${event.type}`);
     }
 
     return paymentIntent;
