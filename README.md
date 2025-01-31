@@ -224,7 +224,7 @@ docker-compose down --volumes
 brew install stripe/stripe-cli/stripe
 stripe login --api-key ...
 stripe trigger payment_intent.succeeded
-stripe listen --forward-to localhost:8081/order/webhook
+stripe listen --forward-to localhost:8081/order/webhook // or using the secure tunnel created by Ngrok
 ```
 
 ## Supporting 🍻
