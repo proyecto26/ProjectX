@@ -93,7 +93,7 @@ export type AppProps = PropsWithChildren<
 >;
 function App({ csrfToken, theme, user, accessToken, ENV }: AppProps) {
   // Connect Temporal workflows to your app
-  useWorkflows({ accessToken, email: user?.email });
+  useWorkflows({ accessToken: accessToken as string, email: user?.email as string });
 
   return (
     <AuthenticityTokenProvider token={csrfToken}>
