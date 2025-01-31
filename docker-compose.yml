@@ -149,6 +149,7 @@ services:
       bash -c "
       npm run prisma:generate &&
       npm run prisma:migrate &&
+      npm run prisma:seed &&
       npx nx reset &&
       npm run dev:product
       "

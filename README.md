@@ -76,9 +76,6 @@ cp .env.example .env
 # Build and start all services (db, temporal, backend services)
 docker-compose up -d
 
-# View service logs
-docker-compose logs -f [service]
-
 # Start web application
 npm install
 npm run dev:web
